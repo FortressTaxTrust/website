@@ -1,10 +1,12 @@
 {
   "/not-found": "app/not-found.js",
+  "/client-portal/page": "app/client-portal/page.js",
+  "/about/page": "app/about/page.js",
   "/services/page": "app/services/page.js",
-  "/services/business-structure/page": "app/services/business-structure/page.js",
-  "/services/business-consulting/page": "app/services/business-consulting/page.js",
-  "/services/trust-taxes/page": "app/services/trust-taxes/page.js",
-  "/services/business-accounting/page": "app/services/business-accounting/page.js",
-  "/services/business-tax-planning/page": "app/services/business-tax-planning/page.js",
-  "/blog/page": "app/blog/page.js"
+  "/case-studies/page": "app/case-studies/page.js",
+  "/testimonials/page": "app/testimonials/page.js",
+  "/blog/page": "app/blog/page.js",
+  "/faq/page": "app/faq/page.js",
+  "/contact/page": "app/contact/page.js",
+  "/page": "app/page.js"
 }

@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/page": [
+    "/blog/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/blog/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,30 +11,55 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+    "/services/business-structure/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/services/business-structure/page.js"
+    ],
+    "/services/business-accounting/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/services/business-accounting/page.js"
+    ],
+    "/services/Business-trust-and-estate-planning/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/services/Business-trust-and-estate-planning/page.js"
+    ],
+    "/services/business-consulting/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/services/business-consulting/page.js"
+    ],
+    "/services/business-tax-planning/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/services/business-tax-planning/page.js"
+    ],
+    "/services/trust-taxes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/services/trust-taxes/page.js"
+    ],
     "/services/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/services/page.js"
     ],
-    "/about/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/about/page.js"
-    ],
-    "/testimonials/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/testimonials/page.js"
-    ],
-    "/blog/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/blog/page.js"
-    ],
     "/faq/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/faq/page.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
+    ],
+    "/about/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/about/page.js"
     ],
     "/contact/page": [
       "static/chunks/webpack.js",
@@ -46,30 +71,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/client-portal/page.js"
     ],
-    "/services/business-structure/page": [
+    "/case-studies/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/services/business-structure/page.js"
+      "static/chunks/app/case-studies/page.js"
     ],
-    "/services/business-consulting/page": [
+    "/testimonials/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/services/business-consulting/page.js"
-    ],
-    "/services/trust-taxes/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/services/trust-taxes/page.js"
-    ],
-    "/services/business-accounting/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/services/business-accounting/page.js"
-    ],
-    "/services/business-tax-planning/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/services/business-tax-planning/page.js"
+      "static/chunks/app/testimonials/page.js"
     ],
     "/not-found": [
       "static/chunks/webpack.js",

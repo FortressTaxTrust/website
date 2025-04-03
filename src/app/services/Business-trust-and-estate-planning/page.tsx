@@ -180,8 +180,6 @@ export default function BusinessTrustAndEstatePlanningPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </main>
   );
 } 

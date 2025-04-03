@@ -180,8 +180,6 @@ export default function BusinessStructurePage() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </main>
   );
 } 

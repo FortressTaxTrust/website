@@ -13,13 +13,18 @@ export default function MobileMenu({ showOnScroll = false }: MobileMenuProps) {
 
   useEffect(() => {
     if (showOnScroll) {
-      const handleScroll = () => {
-        const scrollPosition = window.scrollY;
-        setIsVisible(scrollPosition > 100); // Show after scrolling 100px
+      // Only show on mobile screens, not on scroll
+      const handleResize = () => {
+        const isMobile = window.innerWidth < 768; // md breakpoint
+        setIsVisible(isMobile);
       };
 
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
+      // Initial check
+      handleResize();
+
+      // Add event listener
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
     }
   }, [showOnScroll]);
 

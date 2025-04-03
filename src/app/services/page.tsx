@@ -27,7 +27,7 @@ export default function ServicesPage() {
     {
       title: "Business trust and estate planning",
       description: "CohnReznick Advisory, strategic and fiercely objective consultants, leverage a proprietary platform founded on innovation to skillfully oversee your transaction or transform the way you do business.",
-      link: "/services/trust-taxes"
+      link: "/services/Business-trust-and-estate-planning"
     },
     {
       title: "Trust taxes",
@@ -56,21 +56,22 @@ export default function ServicesPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="relative h-[605px] mt-20">
+      <div className="relative h-[300px] md:h-[400px] lg:h-[605px]">
         <Image
           src="/services-hero.jpg"
           alt="Services hero"
           fill
           className="object-cover"
+          priority
         />
         <div className="absolute inset-0 bg-gradient-to-br from-[rgba(0,0,0,0.20)] via-[rgba(36.67,42.37,40.33,0.31)] to-primary" />
-        <div className="relative container mx-auto px-12 pt-40">
+        <div className="relative container mx-auto px-4 md:px-8 lg:px-12 pt-20 md:pt-32 lg:pt-40">
           <div className="text-white">
-            <div className="text-base mb-4">Home / Our Services</div>
-            <h1 className="text-[55px] font-bold font-inter capitalize mb-6">Our Services</h1>
-            <p className="max-w-[553px] text-base">
+            <div className="text-sm md:text-base mb-2 md:mb-4">Home / Our Services</div>
+            <h1 className="text-3xl md:text-4xl lg:text-[55px] font-bold font-inter capitalize mb-4 md:mb-6">Our Services</h1>
+            <p className="max-w-[553px] text-sm md:text-base">
               Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
             </p>
           </div>
@@ -78,18 +79,18 @@ export default function ServicesPage() {
       </div>
 
       {/* Services Grid */}
-      <div className="bg-[#FAFAFA] py-24">
-        <div className="container mx-auto px-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="bg-[#FAFAFA] py-12 md:py-16 lg:py-24">
+        <div className="container mx-auto px-4 md:px-8 lg:px-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {services.map((service, index) => (
-              <Link href={service.link} key={index} className="bg-white rounded-lg p-8 hover:shadow-lg transition-shadow duration-300">
-                <div className="flex flex-col gap-10">
-                  <div className="space-y-5">
-                    <h3 className="text-[28px] font-bold font-inter leading-8">{service.title}</h3>
-                    <p className="text-[#535353] text-base leading-6">{service.description}</p>
+              <Link href={service.link} key={index} className="bg-white rounded-lg p-6 md:p-8 hover:shadow-lg transition-shadow duration-300">
+                <div className="flex flex-col gap-6 md:gap-10">
+                  <div className="space-y-4 md:space-y-5">
+                    <h3 className="text-xl md:text-2xl lg:text-[28px] font-bold font-inter leading-tight">{service.title}</h3>
+                    <p className="text-gray-dark text-sm md:text-base leading-relaxed">{service.description}</p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <div className="w-[59px] h-[59px] border border-black rounded-full" />
+                    <div className="w-12 h-12 md:w-[59px] md:h-[59px] border border-black rounded-full" />
                     <div className="w-6 h-6 relative">
                       <div className="w-[22px] h-4 bg-black transform rotate-180" />
                     </div>
@@ -102,31 +103,31 @@ export default function ServicesPage() {
       </div>
 
       {/* FAQ Section */}
-      <div className="bg-primary py-16">
-        <div className="container mx-auto px-12">
-          <div className="bg-white rounded-3xl p-12">
-            <div className="flex flex-col md:flex-row gap-12">
+      <div className="bg-primary py-12 md:py-16">
+        <div className="container mx-auto px-4 md:px-8 lg:px-12">
+          <div className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-6 md:p-8 lg:p-12">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12">
               <div className="md:w-1/2">
-                <h2 className="text-[48px] font-semibold font-inter mb-12">Digital Marketing FAQs</h2>
-                <p className="text-[#535353] text-base mb-12">
+                <h2 className="text-3xl md:text-4xl lg:text-[48px] font-semibold font-inter mb-6 md:mb-8 lg:mb-12">Digital Marketing FAQs</h2>
+                <p className="text-gray-dark text-sm md:text-base mb-8 md:mb-12">
                   As a leading digital marketing agency, we are dedicated to providing comprehensive educational resources and answering frequently asked questions to help our clients.
                 </p>
-                <div className="flex gap-12">
-                  <button className="px-4 py-4 bg-primary text-white rounded-lg font-bold">
+                <div className="flex flex-col sm:flex-row gap-4 md:gap-12">
+                  <button className="px-4 py-3 md:py-4 bg-primary text-white rounded-lg font-bold w-full sm:w-auto">
                     More Questions
                   </button>
-                  <Link href="/contact" className="text-base font-semibold underline">Contact Us</Link>
+                  <Link href="/contact" className="text-sm md:text-base font-semibold underline text-center">Contact Us</Link>
                 </div>
               </div>
               <div className="md:w-1/2">
                 {faqs.map((faq, index) => (
-                  <div key={index} className="border-t border-black py-6">
-                    <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-2xl font-semibold font-inter">{faq.question}</h3>
+                  <div key={index} className="border-t border-black py-4 md:py-6">
+                    <div className="flex justify-between items-center mb-4 md:mb-6">
+                      <h3 className="text-lg md:text-xl lg:text-2xl font-semibold font-inter">{faq.question}</h3>
                       <div className="w-6 h-6" />
                     </div>
                     {faq.answer && (
-                      <p className="text-[#535353] text-base">{faq.answer}</p>
+                      <p className="text-gray-dark text-sm md:text-base">{faq.answer}</p>
                     )}
                   </div>
                 ))}
@@ -135,8 +136,6 @@ export default function ServicesPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
-    </main>
+    </div>
   )
 } 

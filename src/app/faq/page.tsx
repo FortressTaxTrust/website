@@ -56,48 +56,48 @@ export default function FAQPage() {
   }
 
   return (
-    <main>
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="bg-[#FAFAFA] pt-20 pb-16">
-        <div className="container mx-auto px-8">
-          <p className="text-[#535353] text-base mb-4">Home / FAQ's</p>
-          <h1 className="text-black text-5xl font-bold capitalize leading-[67px] mb-6">Frequently Asked Questions</h1>
-          <p className="text-[#535353] text-base max-w-[553px] capitalize">
+      <div className="bg-[#FAFAFA] pt-16 md:pt-20 pb-12 md:pb-16">
+        <div className="container mx-auto px-4 md:px-8 lg:px-12">
+          <p className="text-[#535353] text-sm md:text-base mb-2 md:mb-4">Home / FAQ's</p>
+          <h1 className="text-black text-3xl md:text-4xl lg:text-5xl font-bold capitalize leading-tight md:leading-[67px] mb-4 md:mb-6">Frequently Asked Questions</h1>
+          <p className="text-[#535353] text-sm md:text-base max-w-[553px] capitalize leading-relaxed">
             Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
           </p>
         </div>
       </div>
 
       {/* FAQ Accordion Section */}
-      <div className="container mx-auto px-8 py-16">
-        <div className="bg-white rounded-3xl overflow-hidden border border-black">
+      <div className="container mx-auto px-4 md:px-8 lg:px-12 py-12 md:py-16">
+        <div className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl overflow-hidden border border-black">
           {faqs.map((faq, index) => (
             <div 
               key={index} 
               className={`border-b border-black ${index === 0 ? 'border-t' : ''}`}
             >
               <button
-                className="w-full px-6 py-6 flex justify-between items-center text-left"
+                className="w-full px-4 md:px-6 py-4 md:py-6 flex justify-between items-center text-left"
                 onClick={() => toggleAccordion(index)}
               >
-                <h3 className="text-2xl font-semibold text-[#010205] leading-9">{faq.question}</h3>
-                <div className="w-6 h-6 flex items-center justify-center">
+                <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-[#010205] leading-tight md:leading-9">{faq.question}</h3>
+                <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0">
                   {activeIndex === index ? (
-                    <div className="w-4 h-4 border-2 border-black"></div>
+                    <div className="w-3 h-3 md:w-4 md:h-4 border-2 border-black"></div>
                   ) : (
-                    <div className="w-3.5 h-3.5 border-2 border-black"></div>
+                    <div className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 border-2 border-black"></div>
                   )}
                 </div>
               </button>
               {activeIndex === index && (
-                <div className="px-6 pb-6">
-                  <p className="text-base text-[#535353]">{faq.answer}</p>
+                <div className="px-4 md:px-6 pb-4 md:pb-6">
+                  <p className="text-sm md:text-base text-[#535353] leading-relaxed">{faq.answer}</p>
                 </div>
               )}
             </div>
           ))}
         </div>
       </div>
-    </main>
+    </div>
   )
 } 
