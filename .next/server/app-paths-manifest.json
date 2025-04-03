@@ -1,0 +1,10 @@
+{
+  "/not-found": "app/not-found.js",
+  "/services/page": "app/services/page.js",
+  "/services/business-structure/page": "app/services/business-structure/page.js",
+  "/services/business-consulting/page": "app/services/business-consulting/page.js",
+  "/services/trust-taxes/page": "app/services/trust-taxes/page.js",
+  "/services/business-accounting/page": "app/services/business-accounting/page.js",
+  "/services/business-tax-planning/page": "app/services/business-tax-planning/page.js",
+  "/blog/page": "app/blog/page.js"
+}
