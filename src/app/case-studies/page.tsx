@@ -40,9 +40,7 @@ export default function TestimonialsPage() {
           </div>
         </div>
       </div>
-      
-      {/* Footer */}
-      <Footer />
+
     </div>
   );
 } 
