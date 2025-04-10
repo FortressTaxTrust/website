@@ -10,20 +10,26 @@ export default function Footer() {
           <div className="absolute inset-0 bg-black/20 backdrop-blur-lg"></div>
           <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
             <h2 className="text-3xl md:text-5xl lg:text-7xl font-semibold text-white text-center md:text-left">Ready to work with us ?</h2>
-            <button className="w-full md:w-auto bg-white px-6 md:px-8 py-3 md:py-4 rounded-lg flex items-center justify-center md:justify-start gap-4 md:gap-10">
+            <Link href="/partner-portal" className="w-full md:w-auto bg-white px-6 md:px-8 py-3 md:py-4 rounded-lg flex items-center justify-center md:justify-start gap-4 md:gap-10">
               <span className="text-[#5A6863] font-bold text-sm md:text-base">Partners Portal</span>
               <div className="w-5 h-5 md:w-6 md:h-6">
-                <div className="w-1.5 h-3.5 border-2 border-[#5A6863]"></div>
+                <Image 
+                  src="/images/arrow.svg" 
+                  alt="Arrow" 
+                  width={24} 
+                  height={24} 
+                  className="w-full h-full"
+                />
               </div>
-            </button>
+            </Link>
           </div>
         </div>
 
         {/* Footer Content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           <div className="space-y-6 md:space-y-8">
-            <Link href="/" className="flex flex-col items-start">
-              <div className="relative w-[120px] md:w-[150px] h-[32px] md:h-[40px] mb-0">
+            <Link href="/" className="flex flex-col items-center w-full">
+              <div className="relative w-[220px] md:w-[280px] h-[60px] md:h-[80px] mb-0">
                 <Image
                   src="/images/Logo.svg"
                   alt="Tax Fortress Logo"
@@ -32,28 +38,14 @@ export default function Footer() {
                   priority
                 />
               </div>
-              <div className="text-center w-[120px] md:w-[150px] -mt-1">
-                <div style={{color: '#5A6863', fontSize: '18px', fontFamily: 'Agency FB', fontWeight: '700', wordWrap: 'break-word', marginBottom: '-8px'}}>FORTRESS</div>
-                <div style={{color: '#5A6863', fontSize: '8px', fontFamily: 'Inter', fontWeight: '500', wordWrap: 'break-word'}}>TAX & TRUST</div>
+              <div className="text-center w-[220px] md:w-[280px] -mt-1">
+                <div style={{color: '#5A6863', fontSize: '28px', fontFamily: 'Agency FB', fontWeight: '700', wordWrap: 'break-word', marginBottom: '-8px'}}>FORTRESS</div>
+                <div style={{color: '#5A6863', fontSize: '14px', fontFamily: 'Inter', fontWeight: '500', wordWrap: 'break-word'}}>TAX & TRUST</div>
               </div>
             </Link>
             <p className="text-sm text-black leading-relaxed">
               We are a catalyst for change; a national initiative working to diversify Qatar's economy through the provision of world-class infrastructures within strategically placed economic zones.
             </p>
-            <div className="flex gap-3">
-              <div className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-black flex items-center justify-center">
-                <div className="w-1.5 h-3.5 bg-[#192031]"></div>
-              </div>
-              <div className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-black flex items-center justify-center">
-                <div className="w-4.5 h-3.5 bg-[#192031]"></div>
-              </div>
-              <div className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-black flex items-center justify-center">
-                <div className="w-4 h-4 bg-[#192031]"></div>
-              </div>
-              <div className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-black flex items-center justify-center">
-                <div className="w-4 h-4 bg-[#192031]"></div>
-              </div>
-            </div>
           </div>
           <div>
             <h3 className="text-base md:text-lg font-semibold text-[#192031] mb-4 md:mb-6">Our services</h3>
@@ -103,28 +95,51 @@ export default function Footer() {
             <div className="space-y-4 md:space-y-5">
               <div className="flex items-start gap-3">
                 <div className="w-5 h-5 md:w-6 md:h-6 mt-1">
-                  <div className="w-4 h-4 md:w-5 md:h-5 bg-[#192031]"></div>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full text-[#192031]">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
                 </div>
-                <p className="text-sm text-black">(406) 555-0120</p>
+                <a href="tel:469-620-8516" className="text-sm text-black hover:underline">Main Line - 469-620-8516</a>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-5 h-5 md:w-6 md:h-6 mt-1">
-                  <div className="w-4 h-3 md:w-5 md:h-3.5 bg-[#192031]"></div>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full text-[#192031]">
+                    <rect x="2" y="4" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M6 18h12"></path>
+                    <path d="M6 18c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2"></path>
+                    <path d="M6 8h12"></path>
+                    <path d="M6 12h12"></path>
+                    <path d="M6 16h12"></path>
+                  </svg>
                 </div>
-                <p className="text-sm text-black">Hey@boostim.com</p>
+                <a href="tel:214-975-5594" className="text-sm text-black hover:underline">FAX - 214-975-5594</a>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-5 h-5 md:w-6 md:h-6 mt-1">
-                  <div className="w-3 h-3.5 md:w-3.5 md:h-4.5 bg-[#192031]"></div>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full text-[#192031]">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
                 </div>
-                <p className="text-sm text-black leading-relaxed">2972 Westheimer Rd. Santa Ana, Illinois 85486</p>
+                <a href="https://maps.google.com/?q=18170+Dallas+Pkwy.+Suite+303+Dallas+TX+75287" target="_blank" rel="noopener noreferrer" className="text-sm text-black leading-relaxed hover:underline">
+                  18170 Dallas Pkwy.<br />
+                  Suite 303<br />
+                  Dallas, TX 75287
+                </a>
               </div>
             </div>
           </div>
         </div>
-        <div className="mt-8 md:mt-12 lg:mt-16 pt-6 md:pt-8 border-t border-black flex flex-col md:flex-row justify-between gap-4 md:gap-6">
-          <p className="text-xs md:text-sm text-black">Copyright © 2024</p>
-          <p className="text-xs md:text-sm text-black">All Rights Reserved | Terms and Conditions | Privacy Policy</p>
+        <div className="mt-8 md:mt-12 lg:mt-16 pt-6 md:pt-8 border-t border-black">
+          <div className="mb-6 md:mb-8">
+            <p className="text-xs md:text-sm text-black leading-relaxed">
+              Any tax advice herein is based on the facts provided to us and on current tax law including judicial and administrative interpretation. Tax law is subject to continual change, at times on a retroactive basis and may result in incremental taxes, interest or penalties. Should the facts provided to us be incorrect or incomplete or should the law or its interpretation change, our advice may be inappropriate. We are not responsible for updating our advice for changes in law or interpretation after the date hereof.
+            </p>
+          </div>
+          <div className="flex flex-col md:flex-row justify-between gap-4 md:gap-6">
+            <p className="text-xs md:text-sm text-black">Copyright © 2025</p>
+            <p className="text-xs md:text-sm text-black">All Rights Reserved | Terms and Conditions | Privacy Policy</p>
+          </div>
         </div>
       </div>
     </div>

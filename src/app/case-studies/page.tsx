@@ -20,7 +20,7 @@ export default function TestimonialsPage() {
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 md:mb-4">Coming Soon</h2>
           <p className="text-base md:text-lg lg:text-xl text-gray-600 mb-6 md:mb-8">
-            We're currently collecting testimonials from our satisfied clients. 
+            We're currently collecting case studies from our satisfied clients. 
             This page will showcase real stories and experiences from our customers 
             who have benefited from our tax services.
           </p>

@@ -4,80 +4,47 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 
 // Testimonial data
 const testimonials = [
   {
     id: 1,
-    name: 'Olivia Green',
-    position: 'CEO, Company',
-    image: '/images/testimonials/person1.jpg',
-    content: 'Tax Fortress has been instrumental in helping our business navigate complex tax regulations. Their expertise and dedication have saved us significant time and resources.',
-    rating: 4
+    name: 'Mike A.',
+    position: 'Cranston, R.I.',
+    image: '/images/Testimonial Mike A..jpg',
+    content: 'I was referred to Fortress Tax & Trust by a business associate. Their ability to use my pass through and business trusts in order to significantly reduce tax liabilities has been nothing short of amazing. When I have tax questions, they have answers. I have been sleeping much better at night.',
+    rating: 5
   },
   {
     id: 2,
-    name: 'Michael Johnson',
-    position: 'CFO, Tech Solutions',
-    image: '/images/testimonials/person2.jpg',
-    content: 'The team at Tax Fortress provided exceptional tax planning services that helped us optimize our financial structure. Their attention to detail is unmatched.',
+    name: 'Shelly W.',
+    position: 'Seattle, WA',
+    image: '/images/Testimonial Shelly W..jpg',
+    content: 'The Team at Fortress have been so easy to work with. From tax planning to filing my business and trust taxes, they have gone above and beyond my expectations!',
     rating: 5
   },
   {
     id: 3,
-    name: 'Sarah Williams',
-    position: 'Owner, Small Business',
-    image: '/images/testimonials/person3.jpg',
-    content: 'As a small business owner, I was struggling with tax compliance. Tax Fortress simplified everything and gave me peace of mind knowing my taxes are in order.',
+    name: 'Mitchell R.',
+    position: 'Provo, UT',
+    image: '/images/Testimonial Mitchell R Provo, UT.jpg',
+    content: 'After my CPA retired, I was referred to Fortress and the attention to detail and the way the Took the time to learn about me and my business and the results have been extraordinary.',
     rating: 5
   },
   {
     id: 4,
-    name: 'David Chen',
-    position: 'Director, Finance',
-    image: '/images/testimonials/person4.jpg',
-    content: 'The tax strategies implemented by Tax Fortress have resulted in substantial savings for our company. Their proactive approach is truly valuable.',
-    rating: 4
+    name: 'Priya G.',
+    position: 'Chicago, IL',
+    image: '/images/Testimonial Priya G..jpg',
+    content: 'I needed help figuring out how to sell my business, direct the assets, and figure out how To transition to my next venture. The proferssionals at Fortress Tax & Trust stood by me and Saved me so much time and money.',
+    rating: 5
   },
   {
     id: 5,
-    name: 'Emily Rodriguez',
-    position: 'Manager, Operations',
-    image: '/images/testimonials/person5.jpg',
-    content: 'Working with Tax Fortress has transformed how we handle our tax obligations. Their team is responsive, knowledgeable, and always available when needed.',
-    rating: 5
-  },
-  {
-    id: 6,
-    name: 'James Wilson',
-    position: 'Founder, Startup',
-    image: '/images/testimonials/person6.jpg',
-    content: 'Tax Fortress helped us structure our startup in the most tax-efficient way possible. Their guidance has been invaluable to our growth and success.',
-    rating: 5
-  },
-  {
-    id: 7,
-    name: 'Lisa Thompson',
-    position: 'Accountant, Corporation',
-    image: '/images/testimonials/person7.jpg',
-    content: 'The tax compliance services provided by Tax Fortress have streamlined our processes and reduced our risk of errors. Highly recommended for any business.',
-    rating: 4
-  },
-  {
-    id: 8,
-    name: 'Robert Martinez',
-    position: 'CEO, Manufacturing',
-    image: '/images/testimonials/person8.jpg',
-    content: 'Tax Fortress has been our trusted tax advisor for years. Their expertise in manufacturing tax credits has saved us thousands annually.',
-    rating: 5
-  },
-  {
-    id: 9,
-    name: 'Jennifer Lee',
-    position: 'Owner, Retail Business',
-    image: '/images/testimonials/person9.jpg',
-    content: 'The personalized approach and attention to detail from Tax Fortress have made all the difference. They truly understand our business needs.',
+    name: 'Evan W.',
+    position: 'Seattle, WA',
+    image: '/images/Testimonial Evan W..jpg',
+    content: 'I needed someone to help me file 6 years of business and personal Taxes. Fortress made the process easy and as painless as it can be. They explained eVerything and helped me deal with the IRS.  I feel like A massive weight has been lifted off of me.',
     rating: 5
   }
 ];
@@ -121,10 +88,10 @@ export default function TestimonialsPage() {
               Home / Testimonials
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6">
-              What Our Customers Say
+              What Our Clients Say
             </h1>
             <p className="text-white text-sm md:text-base max-w-xl">
-              Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
+               
             </p>
           </div>
         </div>
@@ -133,6 +100,7 @@ export default function TestimonialsPage() {
       {/* Testimonials Grid */}
       <div className="py-12 md:py-16 lg:py-20 px-4 md:px-8 lg:px-12">
         <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 md:mb-12 text-center">Client Testimonials</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {testimonials.map((testimonial) => (
               <div 
@@ -170,6 +138,8 @@ export default function TestimonialsPage() {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 } 

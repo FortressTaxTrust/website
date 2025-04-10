@@ -2,42 +2,77 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export default function BusinessConsultingPage() {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+
+  const testimonials = [
+    {
+      name: "Mike A.",
+      title: "Cranston, R.I.",
+      image: "/images/Testimonial Mike A..jpg",
+      heading: "Strategic. Trustworthy. Effective.",
+      text: "I was referred to Fortress Tax & Trust by a business associate. Their ability to use my pass through and business trusts in order to significantly reduce tax liabilities has been nothing short of amazing. When I have tax questions, they have answers. I have been sleeping much better at night."
+    },
+    {
+      name: "Shelly W.",
+      title: "Seattle, WA",
+      image: "/images/Testimonial Shelly W..jpg",
+      heading: "Reliable. Proactive. Exceptional.",
+      text: "The Team at Fortress have been so easy to work with. From tax planning to filing my business and trust taxes, they have gone above and beyond my expectations!"
+    },
+    {
+      name: "Mitchell R.",
+      title: "Provo, UT",
+      image: "/images/Testimonial Mitchell R Provo, UT.jpg",
+      heading: "Personalized. Thorough. Outstanding.",
+      text: "After my CPA retired, I was referred to Fortress and the attention to detail and the way the Took the time to learn about me and my business and the results have been extraordinary."
+    },
+    {
+      name: "Priya G.",
+      title: "Chicago, IL",
+      image: "/images/Testimonial Priya G..jpg",
+      heading: "Supportive. Strategic. Impactful.",
+      text: "I needed help figuring out how to sell my business, direct the assets, and figure out how To transition to my next venture. The proferssionals at Fortress Tax & Trust stood by me and Saved me so much time and money."
+    }
+  ];
+
   const serviceOfferings = [
     {
-      title: "Strategic planning",
+      title: "Strategic Planning",
       description: "Our strategic planning services help businesses develop comprehensive plans for growth, market expansion, and operational excellence. We work closely with leadership teams to create actionable strategies that drive success."
     },
     {
-      title: "Process optimization",
-      description: ""
+      title: "Process Optimization",
+      description: "We identify inefficiencies and streamline operations by redesigning processes, eliminating bottlenecks, and enhancing productivity. Our goal is to help you do more — faster, smarter, and with fewer resources."
     },
     {
-      title: "Change management",
-      description: ""
+      title: "Change Management",
+      description: "We guide your organization through periods of change with structured strategies that reduce resistance, engage teams, and ensure smooth transitions — whether it's a new system, leadership, or business model."
     },
     {
-      title: "Performance improvement",
-      description: ""
+      title: "Performance Improvement",
+      description: "We help boost your bottom line by analyzing performance metrics, identifying gaps, and implementing solutions that drive measurable improvements across teams, departments, or your entire organization."
     },
     {
-      title: "Risk management",
-      description: ""
+      title: "Risk Management",
+      description: "We assess and mitigate business risks — from financial to operational — to protect your assets, ensure compliance, and strengthen your resilience in an unpredictable market."
     },
     {
-      title: "Market analysis",
-      description: ""
+      title: "Market Analysis",
+      description: "We provide in-depth market research and competitive insights to help you understand your industry landscape, identify trends, and make data-driven decisions that position your business for growth."
     },
     {
-      title: "Business transformation",
-      description: ""
+      title: "Business Transformation",
+      description: "We partner with you to lead bold, enterprise-wide change. From restructuring to rebranding, our team drives transformation strategies that align people, processes, and technology with your future vision."
     },
     {
-      title: "Digital strategy",
-      description: ""
+      title: "Digital Strategy",
+      description: "We help you embrace digital change by developing technology roadmaps, integrating automation, and aligning digital investments with your business objectives — driving innovation and long-term growth."
     }
   ];
 
@@ -67,6 +102,24 @@ export default function BusinessConsultingPage() {
       imageUrl: "https://placehold.co/205x258"
     }
   ];
+
+  const toggleAccordion = (index: number) => {
+    setActiveIndex(activeIndex === index ? null : index);
+  };
+
+  const handleTestimonialChange = (index: number) => {
+    setActiveTestimonial(index);
+  };
+
+  // Auto-rotate testimonials every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveTestimonial((current) => (current + 1) % testimonials.length);
+    }, 5000);
+
+    // Clean up the interval when component unmounts
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
 
   return (
     <main className="min-h-screen bg-white">
@@ -117,20 +170,36 @@ export default function BusinessConsultingPage() {
             {serviceOfferings.map((service, index) => (
               <div 
                 key={index} 
-                className={`p-6 flex flex-col gap-8 ${
+                className={`p-6 flex flex-col gap-4 ${
                   index === 0 
                     ? 'bg-white border-t-8 border-b border-primary' 
                     : 'bg-white border-b border-[#D3D3D3]'
                 }`}
               >
-                <div className="flex justify-between items-center">
+                <div 
+                  className="flex justify-between items-center cursor-pointer"
+                  onClick={() => toggleAccordion(index)}
+                >
                   <h3 className="text-2xl font-semibold font-inter capitalize">{service.title}</h3>
                   <div className="w-6 h-6 relative overflow-hidden">
-                    {/* Icon placeholder */}
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      className={`w-full h-full text-[#192031] transition-transform duration-300 ${activeIndex === index ? 'rotate-180' : ''}`}
+                    >
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
                   </div>
                 </div>
-                {service.description && (
-                  <p className="text-[#535353] text-base">{service.description}</p>
+                {activeIndex === index && (
+                  <div className="overflow-hidden transition-all duration-300 ease-in-out">
+                    <p className="text-[#535353] text-base">{service.description}</p>
+                  </div>
                 )}
               </div>
             ))}
@@ -141,42 +210,46 @@ export default function BusinessConsultingPage() {
       {/* Team Section */}
       <div className="bg-primary py-24">
         <div className="container mx-auto px-12">
-          <h2 className="text-[45px] font-semibold font-inter capitalize text-white mb-16">Get in touch with our specialists</h2>
+          <h2 className="text-[45px] font-semibold font-inter capitalize text-white mb-16">Client Testimonials</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member, index) => (
-              <div key={index} className="bg-white rounded-2xl overflow-hidden pb-8">
-                <div className="h-[230px] relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-[210px] h-[210px] rounded-full overflow-hidden">
-                      <Image 
-                        src={member.imageUrl} 
-                        alt={member.name}
-                        width={210}
-                        height={210}
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="px-4 flex flex-col items-center gap-6">
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold font-inter">{member.name}</h3>
-                    <p className="text-[#535353] text-sm">{member.title}</p>
-                    <p className="text-[#535353] text-sm mt-2">{member.description}</p>
-                  </div>
-                  
-                  <div className="flex gap-4">
-                    {[1, 2, 3, 4].map((_, i) => (
-                      <div key={i} className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
-                        {/* Social media icons */}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          <div className="flex flex-col md:flex-row">
+            <div className="md:w-1/3 bg-white p-6 md:p-8 relative rounded-2xl overflow-hidden">
+              <div className="relative h-[300px] md:h-[500px]">
+                <Image
+                  src={testimonials[activeTestimonial].image}
+                  alt={`${testimonials[activeTestimonial].name} Testimonial`}
+                  fill
+                  className="object-cover"
+                />
               </div>
-            ))}
+              <div className="mt-4 md:mt-8">
+                <h3 className="text-xl md:text-2xl font-inter font-bold text-primary">{testimonials[activeTestimonial].name}</h3>
+                <p className="text-[#535353]">{testimonials[activeTestimonial].title}</p>
+              </div>
+            </div>
+            <div className="md:w-2/3 p-6 md:p-8">
+              <div className="mb-8">
+                <div className="w-14 h-14 mb-4">
+                  <div className="w-14 h-0.5 bg-white"></div>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-inter font-semibold mb-4 md:mb-6 text-white">{testimonials[activeTestimonial].heading}</h2>
+                <p className="text-lg md:text-xl text-white">
+                  {testimonials[activeTestimonial].text}
+                </p>
+              </div>
+              <div className="flex items-center gap-4 md:gap-5">
+                {testimonials.map((_, index) => (
+                  <div 
+                    key={index} 
+                    className={`flex items-center gap-2 cursor-pointer ${index === activeTestimonial ? 'text-white' : 'text-white/50'}`}
+                    onClick={() => handleTestimonialChange(index)}
+                  >
+                    <span className="text-xl md:text-2xl font-medium">{String(index + 1).padStart(2, '0')}</span>
+                    {index === activeTestimonial && <div className="w-16 md:w-24 h-0.5 bg-white"></div>}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

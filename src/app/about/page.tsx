@@ -5,54 +5,69 @@ import Footer from '@/components/Footer'
 export default function AboutPage() {
   const values = [
     {
-      title: "People First",
-      description: "CohnReznick Advisory, strategic and fiercely objective consultants, leverage a proprietary platform founded on innovation to skillfully oversee your transaction or transform the way you do business."
+      title: "Clients Before Everything",
+      description: "We measure success by the trust and results we deliver to our clients. Every decision, strategy, and service is designed to protect what matters most — your future.",
+      image: "/images/high-five.svg"
     },
     {
-      title: "Embrace Change",
-      description: "CohnReznick Advisory, strategic and fiercely objective consultants, leverage a proprietary platform founded on innovation to skillfully oversee your transaction or transform the way you do business."
+      title: "Move with Intention",
+      description: "We don't react. We plan, we predict, and we execute with purpose. Every move we make is grounded in strategy, precision, and your long-term advantage.",
+      image: "/images/adapt-to-change.svg"
     },
     {
-      title: "Choose Accountability",
-      description: "CohnReznick Advisory, strategic and fiercely objective consultants, leverage a proprietary platform founded on innovation to skillfully oversee your transaction or transform the way you do business."
+      title: "Own the Outcome",
+      description: "We take full ownership — of the work, the results, and the impact. You'll never be left guessing. Accountability isn't just a principle — it's our standard.",
+      image: "/images/checks.svg"
     },
     {
-      title: "Innovation",
-      description: "CohnReznick Advisory, strategic and fiercely objective consultants, leverage a proprietary platform founded on innovation to skillfully oversee your transaction or transform the way you do business."
+      title: "Think Ahead",
+      description: "The rules change. The market shifts. But our clients stay ahead because we do. Innovation and adaptability are built into everything we offer.",
+      image: "/images/innovation.svg"
     },
     {
-      title: "Empowerment",
-      description: "CohnReznick Advisory, strategic and fiercely objective consultants, leverage a proprietary platform founded on innovation to skillfully oversee your transaction or transform the way you do business."
+      title: "Empower with Clarity",
+      description: "We break down complexity into clear, actionable steps. Whether you're an entrepreneur or an enterprise, we equip you with knowledge that builds confidence.",
+      image: "/images/empowerment.svg"
+    },
+    {
+      title: "Exceed the Standard",
+      description: "Good enough is never enough. We deliver elite service with relentless attention to detail, setting a new bar in tax strategy and advisory.",
+      image: "/images/number 1 trophy.svg"
     }
   ]
 
   const teamMembers = [
     {
-      name: "Amanda Fisher",
-      title: "Insert your title here",
-      description: "There are many variations of passages of Lorem Ipsum available"
+      name: "Tyler Ballein",
+      title: "Managing Partner / Director of Strategic Tax Planning",
+      description: "Specializing in corporate tax planning and international tax compliance with over 15 years of experience."
     },
     {
-      name: "Amanda Fisher",
-      title: "Insert your title here",
-      description: "There are many variations of passages of Lorem Ipsum available"
+      name: "Kevin MacKenzie",
+      title: "Managing Partner / Director of Operations",
+      description: "Expert in small business tax strategies and IRS representation with a focus on tax minimization."
     },
     {
-      name: "Mike Cannon",
-      title: "Insert your title here",
-      description: "There are many variations of passages of Lorem Ipsum available"
+      name: "Vance Wade",
+      title: "CPA / Special Projects Manager",
+      description: "Dedicated to ensuring businesses meet all regulatory requirements while optimizing tax positions."
     },
     {
-      name: "Erika Gofas",
-      title: "Insert your title here",
-      description: "There are many variations of passages of Lorem Ipsum available"
+      name: "Kathleen Caffey",
+      title: "Executive Client Services Specialist",
+      description: "Leading our digital transformation initiatives to streamline tax processes and improve efficiency."
+    },
+    {
+      name: "Eileen Kosoy",
+      title: "Executive Accounting Services Specialist",
+      description: "Providing comprehensive accounting services with a focus on accuracy, compliance, and strategic financial insights for businesses of all sizes."
     }
   ]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="w-full">
       {/* Hero Section */}
-      <div className="relative h-[300px] md:h-[400px] lg:h-[605px]">
+      <div className="relative h-[300px] md:h-[400px] lg:h-[605px] w-full">
         <Image 
           src="/services-hero.jpg" 
           alt="About Us Hero" 
@@ -61,22 +76,24 @@ export default function AboutPage() {
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-[#5A6863]/31 to-[#5A6863]" />
-        <div className="container mx-auto px-4 md:px-8 lg:px-12 relative h-full flex flex-col justify-center">
-          <p className="text-white text-sm md:text-base mb-2 md:mb-4">Home / About Us</p>
-          <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold capitalize leading-tight md:leading-[67px] mb-4 md:mb-6">Who We Are</h1>
-          <p className="text-white text-sm md:text-base max-w-[553px] capitalize">
-            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
-          </p>
+        <div className="absolute inset-0 flex items-center">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 w-full">
+            <p className="text-white text-sm md:text-base mb-2 md:mb-4">Home / About Us</p>
+            <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold capitalize leading-tight md:leading-[67px] mb-4 md:mb-6">Who We Are</h1>
+            <p className="text-white text-sm md:text-base max-w-[553px] capitalize">
+               
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Who We Are Section */}
-      <div className="bg-[#FAFAFA] py-12 md:py-16">
-        <div className="container mx-auto px-4 md:px-8 lg:px-12">
+      <section className="w-full bg-[#FAFAFA] py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
           <div className="flex flex-col md:flex-row gap-6 md:gap-8">
             <div className="w-full md:w-1/2">
               <Image 
-                src="/placeholder.jpg" 
+                src="/images/Who we are pic.png" 
                 alt="Who We Are" 
                 width={621} 
                 height={600} 
@@ -85,45 +102,25 @@ export default function AboutPage() {
             </div>
             <div className="w-full md:w-1/2">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold capitalize leading-tight md:leading-[56px] text-[#202020] mb-4 md:mb-8">who we are</h2>
-              <p className="text-sm md:text-base text-[#535353] capitalize leading-relaxed">
-                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem
+              <p className="text-sm md:text-base text-[#535353] leading-relaxed">
+                We're a tight-knit team with sharp minds, big hearts, and a clear mission. Fortress Tax & Trust was built to do meaningful work with people we genuinely care about — and that hasn't changed since day one.
+              </p>
+              <p className="text-sm md:text-base text-[#535353] leading-relaxed mt-4">
+                Each member of our team brings unique expertise, diverse perspectives, and a shared commitment to excellence. We're fueled by curiosity, grounded in integrity, and driven by the impact we create for our clients. More than a service provider, we're a trusted partner — building real relationships and growing alongside the businesses and communities we serve.
               </p>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Our Mission Section */}
-      <div className="bg-[#5A6863] py-12 md:py-16">
-        <div className="container mx-auto px-4 md:px-8 lg:px-12">
-          <div className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-6 md:p-8 lg:p-12 flex flex-col md:flex-row gap-6 md:gap-8 items-center">
-            <div className="w-full md:w-1/2">
-              <Image 
-                src="/placeholder.jpg" 
-                alt="Our Mission" 
-                width={530} 
-                height={437} 
-                className="rounded-xl md:rounded-2xl lg:rounded-3xl w-full h-auto"
-              />
-            </div>
-            <div className="w-full md:w-1/2">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold capitalize leading-tight md:leading-[56px] text-[#202020] mb-4 md:mb-8">Our Mission</h2>
-              <p className="text-sm md:text-base text-[#535353] capitalize leading-relaxed">
-                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      </section>
 
       {/* Our Purpose Section */}
-      <div className="bg-[#5A6863] py-12 md:py-16">
-        <div className="container mx-auto px-4 md:px-8 lg:px-12">
+      <section className="w-full bg-[#5A6863] py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
           <div className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-6 md:p-8 lg:p-12 flex flex-col md:flex-row gap-6 md:gap-8 items-center">
             <div className="w-full md:w-1/2 order-2 md:order-1">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold capitalize leading-tight md:leading-[56px] text-[#202020] mb-4 md:mb-8">Our Purpose</h2>
-              <p className="text-sm md:text-base text-[#535353] capitalize leading-relaxed">
-                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem
+              <p className="text-sm md:text-base text-[#535353] leading-relaxed">
+                To be the shield and strategist behind every great business and legacy. At Fortress Tax & Trust, our purpose is to protect what matters most — your profits, your peace of mind, and your future. We exist to simplify the complex, outmaneuver risk, and empower bold decisions that build lasting wealth.
               </p>
             </div>
             <div className="w-full md:w-1/2 order-1 md:order-2">
@@ -137,59 +134,89 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Our Mission Section */}
+      <section className="w-full bg-[#5A6863] py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
+          <div className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-6 md:p-8 lg:p-12 flex flex-col md:flex-row gap-6 md:gap-8 items-center">
+            <div className="w-full md:w-1/2">
+              <Image 
+                src="/placeholder.jpg" 
+                alt="Our Mission" 
+                width={530} 
+                height={437} 
+                className="rounded-xl md:rounded-2xl lg:rounded-3xl w-full h-auto"
+              />
+            </div>
+            <div className="w-full md:w-1/2">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold capitalize leading-tight md:leading-[56px] text-[#202020] mb-4 md:mb-8">Our Mission</h2>
+              <p className="text-sm md:text-base text-[#535353] leading-relaxed">
+                To lead with precision, act with integrity, and deliver tax strategies that move businesses forward. We partner with entrepreneurs, families, and enterprises to navigate tax law with confidence, uncover new opportunities, and build structures that stand the test of time. Every plan we create is built on trust — and engineered for growth.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Our Values Section */}
-      <div className="bg-[#FAFAFA] py-12 md:py-16">
-        <div className="container mx-auto px-4 md:px-8 lg:px-12">
+      <section className="w-full bg-[#FAFAFA] py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold capitalize leading-tight md:leading-[56px] text-[#202020] text-center mb-6 md:mb-10">Our Values</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {values.map((value, index) => (
               <div key={index} className="bg-white p-6 md:p-8 rounded-lg">
-                <div className="w-12 h-12 md:w-[59px] md:h-[59px] bg-black mb-6 md:mb-9"></div>
+                <div className="w-12 h-12 md:w-[59px] md:h-[59px] mb-6 md:mb-9 flex items-center justify-center">
+                  {value.image ? (
+                    <Image 
+                      src={value.image} 
+                      alt={value.title} 
+                      width={59} 
+                      height={59} 
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-black rounded-full"></div>
+                  )}
+                </div>
                 <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-5">{value.title}</h3>
                 <p className="text-sm md:text-base text-[#535353] leading-relaxed">{value.description}</p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Team Section */}
-      <div className="bg-[#5A6863] py-12 md:py-16">
-        <div className="container mx-auto px-4 md:px-8 lg:px-12">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold capitalize leading-tight md:leading-[60px] text-white text-center mb-6 md:mb-10">Get in touch with our specialists</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+      <section className="w-full bg-[#5A6863] py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold capitalize leading-tight md:leading-[60px] text-white text-center mb-6 md:mb-10">Meet our team</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
             {teamMembers.map((member, index) => (
               <div key={index} className="bg-white rounded-xl md:rounded-2xl overflow-hidden pb-6 md:pb-8">
                 <div className="h-[200px] md:h-[230px] relative overflow-hidden">
                   <Image 
-                    src="/placeholder.jpg" 
+                    src={index === 0 ? "/images/Tyler Portrait.jpg" : 
+                          index === 1 ? "/images/Kevin Portrait.jpg" : 
+                          index === 2 ? "/images/Vance Portrait.jpg" : 
+                          index === 3 ? "/images/Kathleen Portait.jpg" : 
+                          index === 4 ? "/images/Eileen Kosoy portrait.png" : 
+                          "/placeholder.jpg"} 
                     alt={member.name} 
                     fill 
-                    className="object-cover"
+                    className="object-contain"
                   />
                 </div>
                 <div className="px-4 pt-4 md:pt-6">
                   <h3 className="text-base md:text-lg font-semibold text-center mb-1">{member.name}</h3>
                   <p className="text-xs md:text-sm text-[#535353] text-center mb-2">{member.title}</p>
                   <p className="text-xs md:text-sm text-[#535353] text-center mb-4 md:mb-6">{member.description}</p>
-                  <div className="flex justify-center gap-4 md:gap-6">
-                    <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#5A6863] flex items-center justify-center">
-                      <div className="w-3 h-2.5 md:w-4 md:h-3 border border-white"></div>
-                    </div>
-                    <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#5A6863] flex items-center justify-center">
-                      <div className="w-2 h-2.5 md:w-2.5 md:h-3 border border-white"></div>
-                    </div>
-                    <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#5A6863] flex items-center justify-center"></div>
-                    <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#5A6863] flex items-center justify-center"></div>
-                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
     </div>
   )
 } 

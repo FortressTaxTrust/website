@@ -23,23 +23,39 @@ export default function ContactPage() {
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="flex-1 p-3 md:p-3.5 bg-white flex items-center gap-3">
-                      <div className="w-4 h-4 md:w-[18px] md:h-[18px] transform rotate-180">
-                        <div className="w-3 h-3 md:w-[14.48px] md:h-[14.48px] bg-[#192031]"></div>
+                      <div className="w-4 h-4 md:w-[18px] md:h-[18px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full text-[#192031]">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
                       </div>
-                      <p className="text-black text-xs md:text-sm">(406) 555-0120</p>
+                      <a href="tel:469-620-8516" className="text-black text-xs md:text-sm hover:underline">Main Line - 469-620-8516</a>
                     </div>
                     <div className="flex-1 p-3 md:p-3.5 bg-white flex items-center gap-3">
-                      <div className="w-4 h-4 md:w-[18px] md:h-[18px] flex items-center justify-center">
-                        <div className="w-3 h-2 md:w-[14px] md:h-[10px] bg-[#192031]"></div>
+                      <div className="w-4 h-4 md:w-[18px] md:h-[18px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full text-[#192031]">
+                          <rect x="2" y="4" width="20" height="14" rx="2" ry="2"></rect>
+                          <path d="M6 18h12"></path>
+                          <path d="M6 18c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2"></path>
+                          <path d="M6 8h12"></path>
+                          <path d="M6 12h12"></path>
+                          <path d="M6 16h12"></path>
+                        </svg>
                       </div>
-                      <p className="text-black text-xs md:text-sm">Hey@boostim.com</p>
+                      <a href="tel:214-975-5594" className="text-black text-xs md:text-sm hover:underline">FAX - 214-975-5594</a>
                     </div>
                   </div>
                   <div className="p-3 md:p-3.5 bg-white flex items-center gap-3">
-                    <div className="w-4 h-4 md:w-[18px] md:h-[17px] flex items-center justify-center">
-                      <div className="w-2.5 h-3 md:w-[10px] md:h-[13px] bg-[#192031]"></div>
+                    <div className="w-4 h-4 md:w-[18px] md:h-[18px]">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full text-[#192031]">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
                     </div>
-                    <p className="text-black text-xs md:text-sm leading-relaxed">2972 Westheimer Rd. Santa Ana, Illinois 85486</p>
+                    <a href="https://maps.google.com/?q=18170+Dallas+Pkwy.+Suite+303+Dallas+TX+75287" target="_blank" rel="noopener noreferrer" className="text-black text-xs md:text-sm leading-relaxed hover:underline">
+                      18170 Dallas Pkwy.<br />
+                      Suite 303<br />
+                      Dallas, TX 75287
+                    </a>
                   </div>
                 </div>
               </div>

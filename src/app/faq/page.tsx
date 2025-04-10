@@ -10,44 +10,44 @@ export default function FAQPage() {
 
   const faqs = [
     {
-      question: "Why is digital marketing important for my business?",
-      answer: "Digital marketing allows businesses to reach and engage with a wider audience, generate leads, drive website traffic, and increase brand visibility. It provides measurable results, allows for targeted marketing efforts, and enables businesses to adapt and optimize their strategies based on data and insights."
+      question: "How Will Pass-Through Business Income Be Taxed After Transfer?",
+      answer: "If you own a pass-through business (such as an S corporation, partnership, or LLC), the tax treatment of business income after transfer depends on whether it's classified as active, passive, or portfolio income. Active income is typically taxed more favorably, potentially qualifying for lower rates or loss deductions. However, determining active vs. passive income for a trust or estate is more complex than for individuals. Courts have ruled that participation is based on the fiduciary's (or their agent's) involvement in the business. Since IRS guidance is limited, proper trustee or executor selection is crucial to preserving favorable tax treatment."
     },
     {
-      question: "How can digital marketing help improve my website's visibility?",
-      answer: "Digital marketing can improve your website's visibility through SEO optimization, content marketing, social media promotion, and paid advertising campaigns. These strategies help increase your search engine rankings, drive organic traffic, and enhance your online presence."
+      question: "Will an S Corporation Keep Its Tax Benefits After Transfer?",
+      answer: "S corporations offer pass-through taxation, avoiding double taxation like C corporations. However, not all trusts or beneficiaries can hold S corporation stock—some require special elections, and foreign trusts, IRAs, and certain other entities are ineligible. After death, estates and certain trusts can hold S corporation stock temporarily, but long-term planning is key to maintaining eligibility."
     },
     {
-      question: "How long does it take to see results from digital marketing efforts?",
-      answer: "The timeline for seeing results from digital marketing varies depending on the strategies used and your industry. Some tactics like paid advertising can show immediate results, while others like SEO may take several months to show significant impact."
+      question: "Should You Transfer a Partnership Interest During Life or at Death?",
+      answer: "Gifting a partnership interest during life keeps your original tax basis, while transferring at death may provide a step-up in basis, eliminating capital gains on appreciation. However, gifting can remove future growth from your taxable estate. If the partnership has a negative capital account, gifting could trigger unexpected tax liabilities. Holding until death may offer better tax efficiency, especially if the partnership makes certain elections (like a Sec. 754 step-up)."
     },
     {
-      question: "How do you measure the success of digital marketing campaigns?",
-      answer: "Digital marketing success is measured through key performance indicators (KPIs) such as website traffic, conversion rates, engagement metrics, lead generation, and return on investment (ROI). Regular analytics and reporting help track these metrics."
+      question: "How Will Beneficiaries Be Taxed on Inherited Retirement Accounts?",
+      answer: "The SECURE Act changed distribution rules for inherited retirement accounts (IRAs, 401(k)s, etc.), requiring most non-spouse beneficiaries to withdraw funds within 10 years. Trusts inheriting these accounts face additional complexities. Roth conversions can be a smart strategy—paying taxes upfront to eliminate future tax burdens for heirs. Alternatively, leaving retirement accounts to charity can reduce overall tax liability."
     },
     {
-      question: "What social media platforms should my business be on?",
-      answer: "The choice of social media platforms depends on your target audience, industry, and business goals. Research where your audience is most active and focus your efforts on those platforms rather than trying to maintain a presence everywhere."
+      question: "Does Your Estate Include a Home with Significant Appreciation?",
+      answer: "Homes often have low tax basis, meaning selling during life could trigger capital gains taxes. Holding until death typically provides a step-up in basis, minimizing taxes for heirs. A Qualified Personal Residence Trust (QPRT) can freeze the home's value for estate tax purposes, but you'll lose the step-up in basis. Alternatively, estates may deduct losses on home sales under certain conditions."
     },
     {
-      question: "How often should I update my website content?",
-      answer: "Regular content updates are important for SEO and keeping your audience engaged. Aim to publish new blog posts, case studies, or other content at least once a month, and update existing content as needed to keep it current and relevant."
+      question: "Can Your Estate Claim a Charitable Income Tax Deduction?",
+      answer: "Trusts and estates can deduct 100% of income donated to charity (unlike individuals, who face AGI limits). However, the governing document must explicitly authorize charitable giving. Special elections allow trusts to treat next-year donations as current-year deductions, offering flexibility in tax planning."
     },
     {
-      question: "What is the difference between organic and paid search?",
-      answer: "Organic search results appear naturally based on relevance and authority, while paid search results are advertisements that appear at the top of search results. Organic takes time to build but is free, while paid provides immediate visibility but requires ongoing investment."
+      question: "Will Beneficiaries Receive Expected Distributions from a 'Simple' Trust?",
+      answer: "A simple trust must distribute all income annually, but 'income' definitions vary. If the trust holds pass-through entities (like partnerships), beneficiaries may receive less than expected if distributions are minimal."
     },
     {
-      question: "How can I improve my email marketing campaigns?",
-      answer: "Improve email marketing by segmenting your audience, personalizing content, optimizing subject lines, ensuring mobile responsiveness, testing different approaches, and analyzing performance metrics to refine your strategy."
+      question: "How Can Irrevocable Grantor Trusts Enhance Tax Planning?",
+      answer: "Grantor trusts allow you to pay the trust's income taxes, reducing your taxable estate without gift tax consequences. However, if the trustee must reimburse you, the trust assets could be pulled back into your estate."
     },
     {
-      question: "What is content marketing and why is it important?",
-      answer: "Content marketing involves creating and distributing valuable, relevant content to attract and retain a target audience. It's important because it builds trust, establishes authority, improves SEO, and nurtures leads through the sales funnel."
+      question: "How Does Divorce Affect a Trust for a Spouse?",
+      answer: "If a trust benefits a spouse and you divorce, you may still owe taxes on trust income. Solutions include modifying the trust, distributing assets, or requiring reimbursement in the divorce settlement."
     },
     {
-      question: "How can I integrate digital marketing with traditional marketing?",
-      answer: "Integrate digital and traditional marketing by maintaining consistent messaging across channels, using traditional methods to drive traffic to digital platforms, and leveraging digital tools to amplify traditional campaigns."
+      question: "How Can Life Insurance Help an Illiquid Estate?",
+      answer: "If your estate lacks cash to pay taxes, life insurance can provide liquidity without income or estate tax if structured properly. Policies can also replace wealth donated to charity, benefiting heirs tax-efficiently."
     }
   ]
 
@@ -63,7 +63,7 @@ export default function FAQPage() {
           <p className="text-[#535353] text-sm md:text-base mb-2 md:mb-4">Home / FAQ's</p>
           <h1 className="text-black text-3xl md:text-4xl lg:text-5xl font-bold capitalize leading-tight md:leading-[67px] mb-4 md:mb-6">Frequently Asked Questions</h1>
           <p className="text-[#535353] text-sm md:text-base max-w-[553px] capitalize leading-relaxed">
-            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
+            Estate planning involves more than just distributing assets—it requires careful attention to income tax implications at every stage. Decisions made during life and after death can significantly impact taxes for you, your spouse, your estate, and your beneficiaries.
           </p>
         </div>
       </div>
@@ -83,9 +83,21 @@ export default function FAQPage() {
                 <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-[#010205] leading-tight md:leading-9">{faq.question}</h3>
                 <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center flex-shrink-0">
                   {activeIndex === index ? (
-                    <div className="w-3 h-3 md:w-4 md:h-4 border-2 border-black"></div>
+                    <Image 
+                      src="/images/FAQ minus.svg" 
+                      alt="Collapse" 
+                      width={24} 
+                      height={24} 
+                      className="w-5 h-5 md:w-6 md:h-6"
+                    />
                   ) : (
-                    <div className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 border-2 border-black"></div>
+                    <Image 
+                      src="/images/FAQ plus sign.svg" 
+                      alt="Expand" 
+                      width={24} 
+                      height={24} 
+                      className="w-5 h-5 md:w-6 md:h-6"
+                    />
                   )}
                 </div>
               </button>

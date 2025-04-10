@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import MobileMenu from './MobileMenu'
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 
 export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
   
   // Function to check if a link is active
@@ -127,27 +128,140 @@ export default function Header() {
 
           {/* Right side buttons */}
           <div className="flex items-center space-x-4">
-            <Link
-              href="/client-portal"
-              className={`px-6 py-2 rounded-lg transition-all duration-300 ${
-                isActive('/client-portal') 
-                  ? 'bg-primary text-white' 
-                  : 'bg-primary/10 text-primary hover:bg-primary hover:text-white'
-              }`}
-            >
-              Client Portal
-            </Link>
-            {/* Mobile Menu - Always visible on mobile */}
-            <div className="md:hidden">
-              <MobileMenu />
+            {/* Partner Portal Button - Desktop Only */}
+            <div className="hidden md:block">
+              <Link 
+                href="/partner-portal" 
+                className={`inline-flex items-center justify-center px-6 py-2.5 rounded-lg transition-colors duration-200 ${
+                  isActive('/partner-portal') 
+                    ? 'bg-primary/10 text-primary hover:bg-primary hover:text-white' 
+                    : 'bg-primary text-white hover:bg-primary/10 hover:text-primary'
+                }`}
+                style={{
+                  width: 'auto',
+                  height: 'auto',
+                  paddingLeft: 24,
+                  paddingRight: 24,
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                  borderRadius: 8,
+                  gap: 10,
+                }}
+              >
+                <span className="text-base font-normal capitalize">Partner Portal</span>
+              </Link>
             </div>
 
-            {/* Desktop Menu - Only visible on desktop */}
-            <div className="hidden md:block">
-              <MobileMenu showOnScroll={true} />
-            </div>
+            {/* Mobile Menu Button */}
+            <button 
+              className="md:hidden text-gray-600 hover:text-primary"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <svg 
+                className="w-6 h-6" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                {isMenuOpen ? (
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4">
+            <nav className="flex flex-col space-y-4">
+              <Link 
+                href="/" 
+                className={`text-base capitalize transition-colors duration-200 ${
+                  isActive('/') ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link 
+                href="/services" 
+                className={`text-base capitalize transition-colors duration-200 ${
+                  isActive('/services') ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Services
+              </Link>
+              <Link 
+                href="/about" 
+                className={`text-base capitalize transition-colors duration-200 ${
+                  isActive('/about') ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link 
+                href="/blog" 
+                className={`text-base capitalize transition-colors duration-200 ${
+                  isActive('/blog') ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Blog
+              </Link>
+              <Link 
+                href="/testimonials" 
+                className={`text-base capitalize transition-colors duration-200 ${
+                  isActive('/testimonials') ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Testimonials
+              </Link>
+              <Link 
+                href="/contact" 
+                className={`text-base capitalize transition-colors duration-200 ${
+                  isActive('/contact') ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <Link 
+                href="/partner-portal" 
+                className={`inline-flex items-center justify-center px-4 py-2 rounded-lg transition-colors duration-200 mx-auto w-1/2 ${
+                  isActive('/partner-portal') 
+                    ? 'bg-primary/10 text-primary hover:bg-primary hover:text-white' 
+                    : 'bg-primary text-white hover:bg-primary/10 hover:text-primary'
+                }`}
+                style={{
+                  height: 'auto',
+                  paddingTop: 8,
+                  paddingBottom: 8,
+                  borderRadius: 8,
+                  gap: 8,
+                }}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span className="text-sm font-normal capitalize">Partner Portal</span>
+              </Link>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   )
