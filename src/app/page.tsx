@@ -101,7 +101,7 @@ export default function Home() {
             </div>
             <div className="text-white text-base md:text-xl font-inter font-normal">
               <span className="capitalize">We</span>
-              <span className="lowercase">
+              <span>
                 {" offer end-to-end tax and advisory services built to protect your assets, minimize your tax burden, and power your business forward. From entity selection to trust and estate planning, our team delivers strategy with precision."}
               </span>
             </div>

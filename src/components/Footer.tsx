@@ -29,7 +29,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           <div className="space-y-6 md:space-y-8">
             <Link href="/" className="flex flex-col items-center w-full">
-              <div className="relative w-[220px] md:w-[280px] h-[60px] md:h-[80px] mb-0">
+              <div className="relative w-[160px] md:w-[200px] h-[45px] md:h-[55px] mb-0">
                 <Image
                   src="/images/Logo.svg"
                   alt="Tax Fortress Logo"
@@ -38,13 +38,13 @@ export default function Footer() {
                   priority
                 />
               </div>
-              <div className="text-center w-[220px] md:w-[280px] -mt-1">
-                <div style={{color: '#5A6863', fontSize: '28px', fontFamily: 'Agency FB', fontWeight: '700', wordWrap: 'break-word', marginBottom: '-8px'}}>FORTRESS</div>
-                <div style={{color: '#5A6863', fontSize: '14px', fontFamily: 'Inter', fontWeight: '500', wordWrap: 'break-word'}}>TAX & TRUST</div>
+              <div className="text-center w-[160px] md:w-[200px] -mt-2">
+                <div style={{color: '#5A6863', fontSize: '22px', fontFamily: 'Agency FB', fontWeight: '700', wordWrap: 'break-word', marginBottom: '-8px'}}>FORTRESS</div>
+                <div style={{color: '#5A6863', fontSize: '12px', fontFamily: 'Inter', fontWeight: '500', wordWrap: 'break-word'}}>TAX & TRUST</div>
               </div>
             </Link>
-            <p className="text-sm text-black leading-relaxed">
-              We are a catalyst for change; a national initiative working to diversify Qatar's economy through the provision of world-class infrastructures within strategically placed economic zones.
+            <p className="text-sm text-black leading-relaxed -mt-2">
+              We don't just manage taxes — we design smart, forward-thinking strategies that protect what you've built and fuel what's next. Every solution is tailored, every detail intentional, and every outcome focused on your success.
             </p>
           </div>
           <div>
