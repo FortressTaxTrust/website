@@ -22,7 +22,7 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 flex flex-col items-center mt-2">
+          <Link href="/" className="flex-shrink-0 flex flex-col items-start md:items-center mt-2">
             <div className="relative w-[150px] h-[40px] mb-1">
               <Image
                 src="/images/Logo.svg"
