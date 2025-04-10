@@ -1,8 +1,9 @@
 {
   "/not-found": "app/not-found.js",
-  "/services/trust-taxes/page": "app/services/trust-taxes/page.js",
-  "/case-studies/page": "app/case-studies/page.js",
-  "/contact/page": "app/contact/page.js",
   "/page": "app/page.js",
-  "/partner-portal/page": "app/partner-portal/page.js"
+  "/testimonials/page": "app/testimonials/page.js",
+  "/case-studies/page": "app/case-studies/page.js",
+  "/blog/page": "app/blog/page.js",
+  "/faq/page": "app/faq/page.js",
+  "/contact/page": "app/contact/page.js"
 }

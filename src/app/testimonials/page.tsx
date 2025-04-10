@@ -138,8 +138,6 @@ export default function TestimonialsPage() {
           </div>
         </div>
       </div>
-      
-      <Footer />
     </div>
   );
 } 
