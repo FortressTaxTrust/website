@@ -123,7 +123,7 @@ export default function Home() {
             <div className="flex flex-col">
               <div className="aspect-square bg-white/10 rounded-lg overflow-hidden">
                 <Image
-                  src="/images/Buisness structure image.png"
+                  src="/images/buisnesss accounting image.png"
                   alt="Business Accounting"
                   width={300}
                   height={300}
