@@ -9,7 +9,7 @@ A modern, responsive website for Tax Fortress, a professional tax and trust serv
 - Comprehensive service pages
 - Testimonials section with auto-rotation
 - Blog section (coming soon)
-- Partner portal (coming soon)
+- Client Portal (coming soon)
 - Contact forms and information
 - Case studies showcase
 - FAQ section

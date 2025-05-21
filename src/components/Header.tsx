@@ -128,7 +128,7 @@ export default function Header() {
 
           {/* Right side buttons */}
           <div className="flex items-center space-x-4">
-            {/* Partner Portal Button - Desktop Only */}
+            {/* Client Portal Button - Desktop Only */}
             <div className="hidden md:block">
               <Link 
                 href="/partner-portal" 
@@ -148,7 +148,7 @@ export default function Header() {
                   gap: 10,
                 }}
               >
-                <span className="text-base font-normal capitalize">Partner Portal</span>
+                <span className="text-base font-normal capitalize">Client Portal</span>
               </Link>
             </div>
 
@@ -257,7 +257,7 @@ export default function Header() {
                 }}
                 onClick={() => setIsMenuOpen(false)}
               >
-                <span className="text-sm font-normal capitalize">Partner Portal</span>
+                <span className="text-sm font-normal capitalize">Client Portal</span>
               </Link>
             </nav>
           </div>
