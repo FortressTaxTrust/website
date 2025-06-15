@@ -87,39 +87,22 @@ export async function POST(request: Request) {
         }
 
         if (response.AuthenticationResult) {
-            // Set cookies with detailed logging
-            console.log('Setting cookies with auth result:', {
-                hasAccessToken: !!response.AuthenticationResult?.AccessToken,
-                hasIdToken: !!response.AuthenticationResult?.IdToken,
-                hasRefreshToken: !!response.AuthenticationResult?.RefreshToken,
-                accessTokenLength: response.AuthenticationResult?.AccessToken?.length,
-                idTokenLength: response.AuthenticationResult?.IdToken?.length,
-                refreshTokenLength: response.AuthenticationResult?.RefreshToken?.length
-            });
+            // Set secure HTTP-only cookies
+            const cookies = [
+                `accessToken=${response.AuthenticationResult.AccessToken}; HttpOnly; Secure; Path=/; SameSite=Strict`,
+                `idToken=${response.AuthenticationResult.IdToken}; HttpOnly; Secure; Path=/; SameSite=Strict`,
+                `refreshToken=${response.AuthenticationResult.RefreshToken}; HttpOnly; Secure; Path=/; SameSite=Strict`
+            ];
 
-            // Create response with cookies
-            const nextResponse = NextResponse.json(
+            return NextResponse.json(
                 { success: true },
                 {
                     status: 200,
                     headers: {
-                        'Set-Cookie': [
-                            `accessToken=${response.AuthenticationResult?.AccessToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=3600`,
-                            `idToken=${response.AuthenticationResult?.IdToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=3600`,
-                            `refreshToken=${response.AuthenticationResult?.RefreshToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`
-                        ].join(', ')
+                        'Set-Cookie': cookies.join(', ')
                     }
                 }
             );
-
-            // Log the response headers
-            console.log('Response headers after setting cookies:', {
-                hasSetCookie: nextResponse.headers.has('Set-Cookie'),
-                setCookieHeader: nextResponse.headers.get('Set-Cookie'),
-                allHeaders: Object.fromEntries(nextResponse.headers.entries())
-            });
-
-            return nextResponse;
         }
 
         return NextResponse.json(
