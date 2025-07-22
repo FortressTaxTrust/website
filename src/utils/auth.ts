@@ -113,42 +113,42 @@ export const isAuthenticated = (): boolean => {
 
 // Auth API calls
 export const login = async (username: string, password: string) => {
-  const response = await api.post('/login', { username, password });
+  const response = await api.post('/auth/login', { username, password });
   return response.data;
 };
 
 export const respondToMFA = async (username: string, code: string, session: string) => {
-  const response = await api.post('/respond-to-mfa', { username, code, session });
+  const response = await api.post('/auth/respond-to-mfa', { username, code, session });
   return response.data;
 };
 
 export const setupAuthenticator = async (accessToken: string, email: string) => {
-  const response = await api.post('/setup-authenticator', { accessToken, email });
+  const response = await api.post('/auth/setup-authenticator', { accessToken, email });
   return response.data;
 };
 
 export const verifyAuthenticator = async (accessToken: string, userCode: string, session?: string) => {
-  const response = await api.post('/verify-authenticator', { accessToken, userCode, session });
+  const response = await api.post('/auth/verify-authenticator', { accessToken, userCode, session });
   return response.data;
 };
 
 export const forgotPassword = async (username: string) => {
-  const response = await api.post('/forgot-password', { username });
+  const response = await api.post('/auth/forgot-password', { username });
   return response.data;
 };
 
 export const confirmForgotPassword = async (username: string, code: string, newPassword: string) => {
-  const response = await api.post('/confirm-forgot-password', { username, code, newPassword });
+  const response = await api.post('/auth/confirm-forgot-password', { username, code, newPassword });
   return response.data;
 };
 
 export const signup = async (username: string, password: string, email: string) => {
-  const response = await api.post('/signup', { username, password, email });
+  const response = await api.post('/auth/signup', { username, password, email });
   return response.data;
 };
 
 export const confirmSignup = async (username: string, code: string) => {
-  const response = await api.post('/confirm-signup', { username, code });
+  const response = await api.post('/auth/confirm-signup', { username, code });
   return response.data;
 };
 
