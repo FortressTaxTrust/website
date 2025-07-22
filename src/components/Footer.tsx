@@ -10,8 +10,8 @@ export default function Footer() {
           <div className="absolute inset-0 bg-black/20 backdrop-blur-lg"></div>
           <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
             <h2 className="text-3xl md:text-5xl lg:text-7xl font-semibold text-white text-center md:text-left">Ready to work with us ?</h2>
-            <Link href="/partner-portal" className="w-full md:w-auto bg-white px-6 md:px-8 py-3 md:py-4 rounded-lg flex items-center justify-center md:justify-start gap-4 md:gap-10">
-              <span className="text-[#5A6863] font-bold text-sm md:text-base">Partners Portal</span>
+            <Link href="/client-portal" className="w-full md:w-auto bg-white px-6 md:px-8 py-3 md:py-4 rounded-lg flex items-center justify-center md:justify-start gap-4 md:gap-10">
+              <span className="text-[#5A6863] font-bold text-sm md:text-base">Client Portal</span>
               <div className="w-5 h-5 md:w-6 md:h-6">
                 <Image 
                   src="/images/arrow.svg" 
