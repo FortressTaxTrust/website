@@ -1,7 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Breadcrumb, { BreadcrumbItem } from "../../../../../components/Breadcrumb";
+import Breadcrumb, {
+  BreadcrumbItem,
+} from "../../../../../components/Breadcrumb";
 import FolderView, { FolderItem } from "../../../../../components/FolderView";
 
 interface NestedFolderProps {
@@ -20,13 +22,33 @@ export default function NestedFolder({ params }: NestedFolderProps) {
   const [folderNames, setFolderNames] = useState<BreadcrumbItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [currentFolder , setCurrentFolder] = useState<{ 
+  const [search, setSearch] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  const [currentFolder, setCurrentFolder] = useState<{
     id?: string;
     name?: string;
     type?: "folder" | "file";
     link?: string;
   }>();
+  const [filteredFolders, setFilteredFolders] = useState<FolderItem[]>([]);
 
+
+  // for search
+  useEffect(() => {
+    setSearchLoading(true);
+    const timer = setTimeout(() => {
+      const results = folders.filter((folder) =>
+        folder?.name?.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredFolders(results);
+      setSearchLoading(false);
+    }, 400); 
+    return () => clearTimeout(timer);
+}, [search]);
+
+
+// Get folder and breadcrumb
   useEffect(() => {
     async function fetchFolderContents() {
       if (!path || path.length === 0) return;
@@ -51,21 +73,23 @@ export default function NestedFolder({ params }: NestedFolderProps) {
 
         const data = await res.json();
 
-          const folderInfo = await fetch(
+        const folderInfo = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/zoho/workdrive/file/${folderId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (!folderInfo.ok) throw new Error("Failed to fetch folder contents");
 
         const folderInfoData = await folderInfo.json();
-        console.log("folderInfoData" , folderInfoData)
+        console.log("folderInfoData", folderInfoData);
         const current = {
           id: folderInfoData.fileId,
           name: folderInfoData?.metadata?.attributes.name,
           type: folderInfoData?.metadata?.attributes.type,
-          link: folderInfoData?.metadata?.attributes.permalink || folderInfoData?.metadata?.attributes?.download_url,
+          link:
+            folderInfoData?.metadata?.attributes.permalink ||
+            folderInfoData?.metadata?.attributes?.download_url,
         };
-        console.log("current", current);  
+        console.log("current", current);
         setCurrentFolder(current);
 
         // Map folder/file data for display
@@ -86,31 +110,38 @@ export default function NestedFolder({ params }: NestedFolderProps) {
           let cumulativePath: string[] = [];
           const breadcrumbPath: BreadcrumbItem[] = [
             { label: "Dashboard", href: "/client-portal/dashboard" },
-            { label: "Workdrive", href: `/client-portal/dashboard/${accountId}` },
+            {
+              label: "Workdrive",
+              href: `/client-portal/dashboard/${accountId}`,
+            },
           ];
 
           crumb
-            .filter((p: any) => p.res_type !== "team" && p.res_type !== "workspace") // Skip team if you don't want it clickable
+            .filter(
+              (p: any) => p.res_type !== "team" && p.res_type !== "workspace"
+            ) // Skip team if you don't want it clickable
             .forEach((p: any) => {
               cumulativePath.push(p.resource_id);
               breadcrumbPath.push({
                 label: p.name,
-                href: `/client-portal/dashboard/${accountId}/${cumulativePath.join("/")}`,
+                href: `/client-portal/dashboard/${accountId}/${cumulativePath.join(
+                  "/"
+                )}`,
               });
             });
 
           // Add current folder at the end (non-clickable)
-        
+
           breadcrumbPath.push({ label: current?.name || "Current Folder" });
-          
 
           console.log("breadcrumbPath", breadcrumbPath);
           setFolderNames(breadcrumbPath);
         }
-
       } catch (err: any) {
         console.error("Error fetching folder:", err);
-        setError(err.message || "Something went wrong while fetching folder contents");
+        setError(
+          err.message || "Something went wrong while fetching folder contents"
+        );
         setFolders([]);
       } finally {
         setLoading(false);
@@ -122,19 +153,30 @@ export default function NestedFolder({ params }: NestedFolderProps) {
 
   const handleFolderClick = (item: FolderItem) => {
     if (item.type === "folder" && item.id) {
-      router.push(`/client-portal/dashboard/${accountId}/${[...path, item.id].join("/")}`);
+      router.push(
+        `/client-portal/dashboard/${accountId}/${[...path, item.id].join("/")}`
+      );
     } else if (item.type !== "file" && item.link) {
       window.open(item.link, "_blank");
     }
   };
 
-
-
   return (
-    <div className="p-4">
+    <div className="min-h-screen flex flex-col bg-gray-50 px-4 sm:px-10 py-6">
       <Breadcrumb items={folderNames} />
-
-      {loading ? (
+      <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+        <h2 className="text-xl font-semibold text-gray-900">
+          {currentFolder?.name}
+        </h2>
+        <input
+          type="text"
+          placeholder="Search folder or a file..."
+          className="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-primary focus:outline-none"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+      {loading ||searchLoading ? (
         <div className="grid grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, idx) => (
             <div
@@ -161,14 +203,16 @@ export default function NestedFolder({ params }: NestedFolderProps) {
             {error}
           </div>
         </div>
-      ) : folders.length === 0 ? (
+      ) : filteredFolders.length > 0 ? (
+        <FolderView data={filteredFolders} onFolderClick={handleFolderClick} />
+      ) : folders.length > 0 && !search ? (
+        <FolderView data={folders} onFolderClick={handleFolderClick} />
+      ) : (
         <div className="flex items-center justify-center h-[60vh]">
           <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-6 py-4 rounded-lg text-center text-lg font-semibold shadow-md">
             No files or folders found.
           </div>
         </div>
-      ) : (
-        <FolderView data={folders} onFolderClick={handleFolderClick} />
       )}
     </div>
   );
