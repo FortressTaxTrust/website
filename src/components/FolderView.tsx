@@ -53,13 +53,13 @@ export default function FolderView({ data, onFolderClick }: FolderViewProps) {
           )} */}
           <div className="absolute top-2 right-2 flex gap-1 sm:gap-2">
             {/* Preview button - always visible */}
-            <button
+            {/* <button
               className="p-1 sm:p-1.5 bg-gray-100 rounded hover:bg-gray-200"
               title="Preview in Zoho"
               onClick={(e) => handlePreview(item.workdriveFolderLink ? item.workdriveFolderLink : item.link, e)}
             >
               <FiExternalLink className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-600" />
-            </button>
+            </button> */}
 
             {/* Download button - only if NOT folder */}
             {item.type !== "folder" && (

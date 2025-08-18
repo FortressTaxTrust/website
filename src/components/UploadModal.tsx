@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, DragEvent } from "react";
+import { AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -74,7 +75,7 @@ export default function UploadModal({
 }: UploadModalProps) {
   const router = useRouter();
   if (!isOpen) return null;
-
+  const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [selectedRows, setSelectedRows] = useState<Record<number, boolean>>({});
   const [account, setAccount] = useState("");
@@ -82,6 +83,8 @@ export default function UploadModal({
   const [analysisByIndex, setAnalysisByIndex] = useState<Record<number, any>>(
     {}
   );
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const [analyzing, setAnalyzing] = useState(false);
   const [context, setContext] = useState("");
   const [docTypeByIndex, setDocTypeByIndex] = useState<Record<number, string>>(
@@ -99,10 +102,10 @@ export default function UploadModal({
   >({});
 
   // Folder Picker
-  const [pickerOpen, setPickerOpen] = useState(false);
-  const [pickerTargetIndex, setPickerTargetIndex] = useState<number | null>(
-    null
-  );
+  // const [pickerOpen, setPickerOpen] = useState(false);
+  // const [pickerTargetIndex, setPickerTargetIndex] = useState<number | null>(
+  //   null
+  // );
 
   const token =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
@@ -144,101 +147,151 @@ export default function UploadModal({
     });
   };
 
-  const runAnalysisUnassigned = async () => {
-    const toAnalyze = files
-      .map((f, i) => ({ file: f, index: i }))
-      .filter(({ index }) => !folderPathByIndex[index]);
-    if (!toAnalyze.length) return;
+  // const runAnalysisUnassigned = async () => {
+  //   const toAnalyze = files
+  //     .map((f, i) => ({ file: f, index: i }))
+  //     .filter(({ index }) => !folderPathByIndex[index]);
+  //   if (!toAnalyze.length) return;
 
-    setAnalyzing(true);
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/ai/analyze-files`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            files: toAnalyze.map(({ file }) => ({
-              filename: file.name,
-              fileType: file.type,
-            })),
-            userContext: context || null,
-          }),
-        }
-      );
-      if (!res.ok) throw new Error("Analyze failed");
-      const data = await res.json();
-      const byName: Record<string, any> = {};
-      (data.analyses || []).forEach((a: any) => (byName[a.filename] = a));
+  //   setAnalyzing(true);
+  //   try {
+  //     const res = await fetch(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/ai/analyze-files/and/create-folders`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify({
+  //           files: toAnalyze.map(({ file }) => ({
+  //             filename: file.name,
+  //             fileType: file.type,
+  //           })),
+  //           userContext: context || null,
+  //         }),
+  //       }
+  //     );
+  //     if (!res.ok) setError("Failed to Analyze or Login again!");
+  //     const data = await res.json();
+  //     const byName: Record<string, any> = {};
+  //     (data.analyses || []).forEach((a: any) => (byName[a.filename] = a));
 
-      const newAnalysis: Record<number, any> = {};
-      const newFolderPaths = { ...folderPathByIndex };
+  //     const newAnalysis: Record<number, any> = {};
+  //     const newFolderPaths = { ...folderPathByIndex };
 
-      toAnalyze.forEach(({ file, index }) => {
-        newAnalysis[index] = byName[file?.name];
-        if (byName[file?.name]?.analysis?.suggested_path) {
-          newFolderPaths[index] = {
-            ...newFolderPaths[index],
-            name: byName[file?.name]?.analysis.suggested_path,
-            folder_id: null,
-            parent_id: null,
-          };
-        }
-      });
+  //     toAnalyze.forEach(({ file, index }) => {
+  //       newAnalysis[index] = byName[file?.name];
+  //       if (byName[file?.name]?.analysis?.suggested_path) {
+  //         newFolderPaths[index] = {
+  //           ...newFolderPaths[index],
+  //           name: byName[file?.name]?.analysis.suggested_path,
+  //           folder_id: null,
+  //           parent_id: null,
+  //         };
+  //       }
+  //     });
 
-      setAnalysisByIndex((prev) => ({ ...prev, ...newAnalysis }));
-      setFolderPathByIndex(newFolderPaths);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setAnalyzing(false);
-    }
-  };
+  //     setAnalysisByIndex((prev) => ({ ...prev, ...newAnalysis }));
+  //     setFolderPathByIndex(newFolderPaths);
+  //   } catch (e) {
+  //     console.error(e);
+  //   } finally {
+  //     setAnalyzing(false);
+  //   }
+  // };
 
-  const openPickerFor = (idx: number) => {
-    setPickerTargetIndex(idx);
-    setPickerOpen(true);
-  };
+const uploadAndAnalyze = async () => {
+  if (!files?.length && !account) return;
 
-  const onPickFolder = (node: FolderNode) => {
-    setFolderPathByIndex((prev) => ({
-      ...prev,
-      [pickerTargetIndex!]: {
-        folder_id: node.folder_id,
-        parent_id: node.parent_id,
-        name: node.name,
-      },
-    }));
-    setAnalysisByIndex((prev) => {
-      const copy = { ...prev };
-      delete copy[pickerTargetIndex!];
-      return copy;
+  setAnalyzing(true);
+  setError(null);
+  setSuccessMessage(null);
+
+  try {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("files", file, file.name);
     });
-    setPickerTargetIndex(null);
-  };
+    if (context) formData.append("userContext", JSON.stringify(context));
+    formData.append("accountId", account);
 
-  const handleConfirmUpload = () => {
-    if (!account || !files.length) return;
-    const payload = files.map((f, i) => ({
-      filename: f.name,
-      fileType: f.type,
-      selectedFolderPath: folderPathByIndex[i] || null,
-      documentType: docTypeByIndex[i] || null,
-      analysis: analysisByIndex[i] || null,
-    }));
-    onUpload(files, account, payload);
-    // setFiles([]);
-    // setSelectedRows({});
-    // setAccount("");
-    // setContext("");
-    // setDocTypeByIndex({});
-    // setFolderPathByIndex({});
-    // setAnalysisByIndex({});
-  };
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/ai/analyze-files`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      }
+    );
 
+    if (!res.ok) throw new Error("Failed to upload and analyze files.");
+
+    const data = await res.json();
+    console.log("Analysis & upload result:", data);
+
+    // Show success message
+    setSuccessMessage("Files uploaded successfully!");
+    setFiles([]);
+    setSelectedRows({});
+    setAccount("");
+    setContext("");
+    setDocTypeByIndex({});
+    setFolderPathByIndex({});
+    setAnalysisByIndex({});
+  } catch (e) {
+    console.error(e);
+    setError("Failed to upload file.");
+  } finally {
+    setAnalyzing(false);
+  }
+};
+
+
+
+
+  // const openPickerFor = (idx: number) => {
+  //   setPickerTargetIndex(idx);
+  //   setPickerOpen(true);
+  // };
+
+  // const onPickFolder = (node: FolderNode) => {
+  //   setFolderPathByIndex((prev) => ({
+  //     ...prev,
+  //     [pickerTargetIndex!]: {
+  //       folder_id: node.folder_id,
+  //       parent_id: node.parent_id,
+  //       name: node.name,
+  //     },
+  //   }));
+  //   setAnalysisByIndex((prev) => {
+  //     const copy = { ...prev };
+  //     delete copy[pickerTargetIndex!];
+  //     return copy;
+  //   });
+  //   setPickerTargetIndex(null);
+  // };
+
+  // const handleConfirmUpload = () => {
+  //   if (!account || !files.length) return;
+  //   const payload = files.map((f, i) => ({
+  //     filename: f.name,
+  //     fileType: f.type,
+  //     selectedFolderPath: folderPathByIndex[i] || null,
+  //     documentType: docTypeByIndex[i] || null,
+  //     analysis: analysisByIndex[i] || null,
+  //   }));
+  //   onUpload(files, account, payload);
+  //   // setFiles([]);
+  //   // setSelectedRows({});
+  //   // setAccount("");
+  //   // setContext("");
+  //   // setDocTypeByIndex({});
+  //   // setFolderPathByIndex({});
+  //   // setAnalysisByIndex({});
+  // };
+
+  
   const getFileIcon = (file: File) => {
     if (file.type.startsWith("image/"))
       return <Image className="w-5 h-5 text-primary" />;
@@ -277,9 +330,36 @@ export default function UploadModal({
           sx: { display: "flex", flexDirection: "column", maxHeight: "90vh" },
         }}
       >
-        <DialogTitle className="font-inter font-bold text-primary text-xl">
-          📂 Upload & Organize Documents
-        </DialogTitle>
+        <Box className="flex items-center justify-between w-full border-b p-2 mb-3">
+          {/* Left: Title */}
+          <DialogTitle className="!p-0 font-inter font-bold text-primary text-xl">
+            📂 Upload & Organize Documents
+          </DialogTitle>
+
+          {/* Right: Error (if exists) */}
+          {error && (
+            <Box className="flex items-center gap-1 border border-red-300 bg-red-50 rounded-lg px-2 py-1">
+              <AlertCircle className="w-4 h-4 text-red-600" />
+              <Typography
+                variant="body2"
+                className="text-red-600 font-medium text-sm"
+              >
+                {error}
+              </Typography>
+            </Box>
+          )}
+           {successMessage && (
+            <Box className="flex items-center gap-1 border border-blue-300 bg-blue-50 rounded-lg px-2 py-1">
+              <AlertCircle className="w-4 h-4 text-blue-600" />
+              <Typography
+                variant="body2"
+                className="text-blue-600 font-medium text-sm"
+              >
+                {successMessage}
+              </Typography>
+            </Box>
+          )}
+        </Box>
 
         <DialogContent
           dividers
@@ -368,9 +448,9 @@ export default function UploadModal({
                         </TableCell>
                         <TableCell>File</TableCell>
                         <TableCell>Type</TableCell>
-                        <TableCell>Folder</TableCell>
+                        {/* <TableCell>Folder</TableCell>
                         <TableCell width={200}>Select Folder</TableCell>
-                        <TableCell width={200}>Analysis</TableCell>
+                        <TableCell width={200}>Analysis</TableCell> */}
                         <TableCell align="right">Remove</TableCell>
                       </TableRow>
                     </TableHead>
@@ -399,11 +479,11 @@ export default function UploadModal({
                                 direction="row"
                                 alignItems="center"
                                 spacing={2}
-                                className="max-w-[200px] sm:max-w-[300px] truncate"
+                                className="max-w-[350px] sm:max-w-[500px]" // increased max width
                               >
                                 {getFileIcon(f)}
                                 <Typography
-                                  className="text-gray-800 text-sm truncate"
+                                  className="text-gray-800 text-sm truncate" // truncate long names
                                   title={f.name}
                                 >
                                   {f.name}
@@ -420,7 +500,7 @@ export default function UploadModal({
                               />
                             </TableCell>
 
-                            <TableCell className="min-w-[180px]">
+                            {/* <TableCell className="min-w-[180px]">
                               {folder?.name ? (
                                 folder.name
                               ) : (
@@ -428,9 +508,9 @@ export default function UploadModal({
                                   Not selected
                                 </Typography>
                               )}
-                            </TableCell>
+                            </TableCell> */}
 
-                            <TableCell>
+                            {/* <TableCell>
                               <Stack
                                 direction="row"
                                 spacing={2}
@@ -443,9 +523,9 @@ export default function UploadModal({
                                   onClick={() => openPickerFor(idx)}
                                 />
                               </Stack>
-                            </TableCell>
+                            </TableCell> */}
 
-                            <TableCell>
+                            {/* <TableCell>
                               {!folder?.folder_id && ai ? (
                                 <div className="p-1 border border-gray-300 bg-gray-50 rounded-sm">
                                   <p className="text-gray-800 text-xs break-words">
@@ -460,7 +540,7 @@ export default function UploadModal({
                                   N/A
                                 </Typography>
                               )}
-                            </TableCell>
+                            </TableCell> */}
 
                             <TableCell align="right">
                               <IconButton
@@ -488,12 +568,13 @@ export default function UploadModal({
             onClick={onClose}
             className="py-2 px-4 text-sm font-inter font-medium text-[#535353] border border-[#B8B8B8] rounded-md hover:border-[#5A6863] hover:text-[#5A6863] transition-colors"
           >
-            Cancel
+            {successMessage ? "Close" : "Cancel"}
           </button>
 
           {/* Analyze Unassigned Button */}
+           {!successMessage && (
           <button
-            onClick={runAnalysisUnassigned}
+            onClick={uploadAndAnalyze}
             disabled={
               analyzing || files.every((_, i) => !!folderPathByIndex[i]?.name)
             }
@@ -504,31 +585,31 @@ export default function UploadModal({
             ) : (
               <>
                 <Sparkles size={16} />
-                Analyze Unassigned
+                Analyze & Upload
               </>
             )}
           </button>
-
+           )}
           {/* Confirm Button */}
-          <button
+          {/* <button
             onClick={handleConfirmUpload}
-            disabled={!files.length || !account}
+            disabled={!files.length || !account || !folderPathByIndex}
             className="py-2 px-4 text-sm font-inter font-medium text-[#FFFFFF] rounded-md bg-[#5A6863] hover:bg-[#535353] transition-colors disabled:opacity-50"
           >
             Confirm
-          </button>
+          </button> */}
         </DialogActions>
       </Dialog>
 
       {/* Folder Picker */}
-      {pickerOpen && (
+      {/* {pickerOpen && (
         <FolderTreeDialog
           open={pickerOpen}
           onClose={() => setPickerOpen(false)}
           accountId={account}
           onSelectPath={onPickFolder}
         />
-      )}
+      )} */}
     </>
   );
 }
