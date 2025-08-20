@@ -30,12 +30,12 @@ export default function ClientPortalLayout({ children }: ClientPortalLayoutProps
   const [contact, setContact] = useState<any>(null);
   const [contactLoading, setContactLoading] = useState(true);
 
-  const token = localStorage.getItem("accessToken");
+  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   useEffect(() => {
     if (!token) router.replace("/client-portal");
 
-    const idToken = localStorage.getItem("idToken");
+    const idToken = typeof window !== "undefined" ? localStorage.getItem("idToken") : null;
     if (idToken) {
       const payload = parseJWT(idToken);
       setUser({

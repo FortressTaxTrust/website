@@ -15,6 +15,7 @@ import {
   IconButton,
   Skeleton,
   Typography,
+  ListItemButton
 } from "@mui/material";
 import { ExpandLess, ExpandMore, CreateNewFolder } from "@mui/icons-material";
 
@@ -104,7 +105,7 @@ export default function FolderTreeDialog({
   const loadChildren = async (parentId: string, parentNode: Folder | null, isRoot: boolean = false) => {
     try {
       setLoading((prev) => ({ ...prev, [parentId]: true }));
-      const token = localStorage.getItem("accessToken");
+      const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
       if (!token) throw new Error("Missing token");
 
       const res = await fetch(
@@ -191,10 +192,12 @@ export default function FolderTreeDialog({
 
     return (
       <div key={folder.id} className="w-full text-sm">
-        <ListItem
-          button
-          className={`rounded hover:bg-gray-100 px-2 py-1 ml-${level * 4} flex items-center justify-between`}
-        >
+          <ListItem disablePadding>
+            <ListItemButton
+              className={`rounded hover:bg-gray-100 px-2 py-1 flex items-center justify-between`}
+              style={{ marginLeft: `${level * 16}px` }} // dynamic indent
+            >
+            </ListItemButton>
           <div className="flex items-center gap-1">
             {folder.hasSubfolders && (
               <IconButton

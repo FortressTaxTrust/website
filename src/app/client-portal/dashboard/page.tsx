@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Breadcrumb, { BreadcrumbItem } from "../../../components/Breadcrumb";
 import UploadModal from "@/components/UploadModal";
 import { UploadCloud } from "lucide-react";
-
 function parseJWT(token: string) {
   try {
     const base64Url = token.split(".")[1];
@@ -36,7 +35,7 @@ export default function ClientPortalDashboard() {
   const [search, setSearch] = useState("");
   const [userData, setUserData] = useState<{ cognitoUserId?: string }>({});
   const [isUploadOpen, setIsUploadOpen] = useState(false);
-  const token = localStorage.getItem("accessToken");
+  const [token, setToken] = useState<string | null>(null);
 
   const handleNavigateAccount = (accountName: string, accountId: string) => {
     router.push(`/client-portal/dashboard/${accountId}`);
@@ -60,9 +59,7 @@ export default function ClientPortalDashboard() {
     if (!files.length || !accountId) return;
 
     try {
-      setLoading((prev) => ({ ...prev, accounts: true })); // optional: show uploading loader
-      const token = localStorage.getItem("accessToken");
-
+      setLoading((prev) => ({ ...prev, accounts: true }));
       const formData = new FormData();
       files.forEach((file) => formData.append("files", file));
       formData.append("accountId", accountId);
@@ -82,7 +79,6 @@ export default function ClientPortalDashboard() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Upload failed");
 
-      // Show success feedback but keep modal open
       alert("Files uploaded successfully!");
     } catch (err: any) {
       console.error(err);
@@ -91,11 +87,19 @@ export default function ClientPortalDashboard() {
       setLoading((prev) => ({ ...prev, accounts: false }));
     }
   };
-
   useEffect(() => {
-    if (!token) return router.replace("/client-portal");
+    if (typeof window === "undefined") return; 
 
-    const idToken = localStorage.getItem("idToken");
+    const idToken = typeof window !== "undefined" ? localStorage.getItem("idToken") : null;
+    const storedToken = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
+    if (!storedToken) {
+      router.replace("/client-portal");
+      return;
+    }
+
+    setToken(storedToken);
+
     if (idToken) {
       const payload = parseJWT(idToken);
       setUser({
@@ -105,18 +109,17 @@ export default function ClientPortalDashboard() {
       });
     }
 
-    fetchContact(token);
-  }, [router]);
+  fetchContact(storedToken);
+}, [router]);
 
   useEffect(() => {
     if (token && contact && userData?.cognitoUserId) {
       fetchLinkedAccounts(token, userData.cognitoUserId);
     }
-  }, [contact, userData]);
+  }, [contact, userData, token]);
 
   const fetchContact = async (accessToken: string) => {
     setLoading((prev) => ({ ...prev, contact: true }));
-    setErrorMessage(null);
 
     try {
       const res = await fetch(
@@ -130,10 +133,8 @@ export default function ClientPortalDashboard() {
       const data = await res.json();
       setContact(data.contactData || data.data?.[0] || null);
       setUserData(data.userInfo || {});
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      // setErrorMessage(err.message || "Error fetching contact");
-      setLoading((prev) => ({ ...prev, accounts: false }));
       setContact(null);
     } finally {
       setLoading((prev) => ({ ...prev, contact: false }));
@@ -145,7 +146,6 @@ export default function ClientPortalDashboard() {
     cognitoId: string
   ) => {
     setLoading((prev) => ({ ...prev, accounts: true }));
-    setErrorMessage(null);
 
     try {
       const res = await fetch(
@@ -156,10 +156,8 @@ export default function ClientPortalDashboard() {
 
       const data = await res.json();
       setAccounts(data.linkedAccounts || []);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setErrorMessage(err.message || "Error fetching accounts");
-      setLoading((prev) => ({ ...prev, accounts: false }));
       setAccounts([]);
     } finally {
       setLoading((prev) => ({ ...prev, accounts: false }));
@@ -167,12 +165,13 @@ export default function ClientPortalDashboard() {
   };
 
   const filteredAccounts = accounts.filter((acc) =>
-    acc.accountName.toLowerCase().includes(search.toLowerCase())
+    acc.accountName?.toLowerCase().includes(search.toLowerCase())
   );
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: "Dashboard", href: "/client-portal/dashboard" },
   ];
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 px-4 sm:px-10 py-6">
