@@ -122,7 +122,7 @@ export default function Footer() {
                   </svg>
                 </div>
                 <a href="https://maps.google.com/?q=18170+Dallas+Pkwy.+Suite+303+Dallas+TX+75287" target="_blank" rel="noopener noreferrer" className="text-sm text-black leading-relaxed hover:underline">
-                  18170 Dallas Pkwy.<br />
+                  18170 Dallas Pkwy<br />
                   Suite 303<br />
                   Dallas, TX 75287
                 </a>
