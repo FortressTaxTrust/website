@@ -72,16 +72,24 @@ export default function ClientPortalLayout({ children }: ClientPortalLayoutProps
         <h1 className="text-2xl font-semibold mb-2 sm:mb-0">
           {welcomeName ? `Welcome, ${welcomeName}!` : "Welcome!"}
         </h1>
-        <button
-          onClick={() => {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("idToken");
-            router.push("/client-portal");
-          }}
-          className="px-4 py-2 bg-white text-primary font-medium rounded-md hover:bg-gray-100 transition"
-        >
-          Sign Out
-        </button>
+        <div className="flex space-x-3">
+          <button
+            onClick={() => router.push("/client-portal/profile")}
+            className="px-4 py-2 bg-white text-primary font-medium rounded-md hover:bg-gray-100 transition"
+          >
+            Profile
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("accessToken");
+              localStorage.removeItem("idToken");
+              router.push("/client-portal");
+            }}
+            className="px-4 py-2 bg-white text-primary font-medium rounded-md hover:bg-gray-100 transition"
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
 
       {/* Contact Info */}

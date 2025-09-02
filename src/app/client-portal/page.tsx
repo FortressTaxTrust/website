@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Link from "next/link";
 
 export default function ClientPortalLogin() {
   const router = useRouter();
@@ -28,15 +29,29 @@ export default function ClientPortalLogin() {
         localStorage.setItem("refreshToken", res.data.tokens.refreshToken);
         localStorage.setItem("expiresIn", res.data.tokens.expiresIn);
         router.push("/client-portal/dashboard");
-      } else if (res.data.status === "TOTP_MFA_REQUIRED") {
+      } else if (res.data.status === "TOTP_MFA_REQUIRED" || res.data.status === "SOFTWARE_TOKEN_MFA") {
         // Store session and username for MFA
         sessionStorage.setItem("mfa_session", res.data.session);
         sessionStorage.setItem("mfa_username", username);
         router.push("/client-portal/mfa-challenge");
-      } else if (res.data.status === "MFA_SETUP_REQUIRED") {
+      } else if (res.data.status === "MFA_SETUP_REQUIRED" || res.data.status === "MFA_SETUP") {
         sessionStorage.setItem("mfa_session", res.data.session);
         sessionStorage.setItem("mfa_username", username);
         router.push("/client-portal/mfa-setup");
+      } else if (res.data.status === "NEW_PASSWORD_REQUIRED") {
+        sessionStorage.setItem("mfa_session", res.data.session);
+        sessionStorage.setItem("mfa_username", username);
+        router.push("/client-portal/new-password");
+      } else if (res.data.status === "SMS_MFA_REQUIRED" || res.data.status === "SMS_MFA") {
+        // Handle SMS MFA (if you have a page for this)
+        sessionStorage.setItem("mfa_session", res.data.session);
+        sessionStorage.setItem("mfa_username", username);
+        setError("SMS MFA is not yet implemented. Please contact support.");
+      } else if (res.data.status === "PASSWORD_RESET_REQUIRED") {
+        // Handle password reset required
+        sessionStorage.setItem("mfa_session", res.data.session);
+        sessionStorage.setItem("mfa_username", username);
+        router.push("/client-portal/forgot-password");
       } else {
         setError(res.data.message || "Unknown error");
       }
@@ -108,6 +123,26 @@ export default function ClientPortalLogin() {
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
+          </div>
+
+          <div className="mt-6 text-center space-y-3">
+            <div>
+              <Link 
+                href="/client-portal/forgot-password"
+                className="text-primary hover:text-primary/80 text-sm font-medium"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+            <div>
+              <span className="text-gray-600 text-sm">Don't have an account? </span>
+              <Link 
+                href="/client-portal/signup"
+                className="text-sm font-medium text-primary hover:text-primary/80"
+              >
+                Sign up
+              </Link>
+            </div>
           </div>
         </form>
       </div>
