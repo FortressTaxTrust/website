@@ -34,21 +34,32 @@ export default function MFASetup() {
         return;
       }
 
+      console.log("Setting up MFA with:", { 
+        session: storedSession.substring(0, 20) + "...", 
+        username: storedUsername 
+      });
+
       const res = await axios.post(
         process.env.NEXT_PUBLIC_API_URL + "/auth/setup-authenticator-challenge",
         { session: storedSession, username: storedUsername },
         { headers: { "Content-Type": "application/json" } }
       );
       
+      console.log("MFA setup response:", res.data);
+      
       if (res.data.status === "success") {
         setQrCode(res.data.qrCode);
         setSecretCode(res.data.secretCode);
         setSession(res.data.session);
+        // Update sessionStorage with the new session
+        sessionStorage.setItem("mfa_session", res.data.session);
+        console.log("Updated session in storage:", res.data.session.substring(0, 20) + "...");
         setIsSetupComplete(true);
       } else {
         setError("Failed to setup authenticator");
       }
     } catch (err: any) {
+      console.error("MFA setup error:", err.response?.data || err.message);
       setError(
         err.response?.data?.message ||
         err.response?.data?.error ||
@@ -94,11 +105,19 @@ export default function MFASetup() {
         return;
       }
 
+      console.log("Verifying MFA with:", { 
+        session: storedSession.substring(0, 20) + "...", 
+        username: storedUsername, 
+        userCode 
+      });
+
       const res = await axios.post(
         process.env.NEXT_PUBLIC_API_URL + "/auth/verify-authenticator-challenge",
         { session: storedSession, userCode, username: storedUsername },
         { headers: { "Content-Type": "application/json" } }
       );
+      
+      console.log("MFA verification response:", res.data);
       
       if (res.data.status === "success") {
         // Store tokens and redirect to dashboard
@@ -109,10 +128,20 @@ export default function MFASetup() {
         sessionStorage.removeItem("mfa_session");
         sessionStorage.removeItem("mfa_username");
         router.push("/client-portal/dashboard");
+      } else if (res.data.status === "SUCCESS") {
+        // Handle case where backend returns "SUCCESS" instead of "success"
+        localStorage.setItem("accessToken", res.data.tokens.accessToken);
+        localStorage.setItem("idToken", res.data.tokens.idToken);
+        localStorage.setItem("refreshToken", res.data.tokens.refreshToken);
+        localStorage.setItem("expiresIn", res.data.tokens.expiresIn);
+        sessionStorage.removeItem("mfa_session");
+        sessionStorage.removeItem("mfa_username");
+        router.push("/client-portal/dashboard");
       } else {
-        setError("Invalid code. Please try again.");
+        setError(res.data.message || "Invalid code. Please try again.");
       }
     } catch (err: any) {
+      console.error("MFA verification error:", err.response?.data || err.message);
       const errorMessage = err.response?.data?.message || err.response?.data?.error || "Verification failed";
       
       // Handle specific error cases
@@ -123,8 +152,12 @@ export default function MFASetup() {
         }, 2000);
       } else if (errorMessage.includes("Invalid code")) {
         setError("Invalid verification code. Please check your authenticator app and try again.");
+      } else if (errorMessage.includes("CodeMismatchException")) {
+        setError("Invalid verification code. Please check your authenticator app and try again.");
+      } else if (errorMessage.includes("ExpiredCodeException")) {
+        setError("Verification code has expired. Please get a new code from your authenticator app.");
       } else {
-        setError(errorMessage);
+        setError(`Verification failed: ${errorMessage}`);
       }
     } finally {
       setLoading(false);
