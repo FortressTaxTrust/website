@@ -96,24 +96,26 @@ export default function MFASetup() {
     setLoading(true);
     
     try {
-      const storedSession = sessionStorage.getItem("mfa_session");
+      // Use the session from state first, then fallback to sessionStorage
+      const currentSession = session || sessionStorage.getItem("mfa_session");
       const storedUsername = sessionStorage.getItem("mfa_username");
       
-      if (!storedSession || !storedUsername) {
+      if (!currentSession || !storedUsername) {
         setError("Session expired. Please log in again.");
         router.push("/client-portal");
         return;
       }
 
       console.log("Verifying MFA with:", { 
-        session: storedSession.substring(0, 20) + "...", 
+        session: currentSession.substring(0, 20) + "...", 
         username: storedUsername, 
-        userCode 
+        userCode,
+        sessionSource: session ? "state" : "sessionStorage"
       });
 
       const res = await axios.post(
         process.env.NEXT_PUBLIC_API_URL + "/auth/verify-authenticator-challenge",
-        { session: storedSession, userCode, username: storedUsername },
+        { session: currentSession, userCode, username: storedUsername },
         { headers: { "Content-Type": "application/json" } }
       );
       
@@ -145,8 +147,11 @@ export default function MFASetup() {
       const errorMessage = err.response?.data?.message || err.response?.data?.error || "Verification failed";
       
       // Handle specific error cases
-      if (errorMessage.includes("Invalid session")) {
+      if (errorMessage.includes("Invalid session") || errorMessage.includes("NotAuthorizedException")) {
         setError("Session expired. Please start the login process again.");
+        // Clear all stored sessions
+        sessionStorage.removeItem("mfa_session");
+        sessionStorage.removeItem("mfa_username");
         setTimeout(() => {
           router.push("/client-portal");
         }, 2000);
@@ -290,6 +295,20 @@ export default function MFASetup() {
             {error && (
               <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-md">
                 {error}
+                {error.includes("Session expired") && (
+                  <div className="mt-2">
+                    <button
+                      onClick={() => {
+                        setError("");
+                        setIsSetupComplete(false);
+                        setupAuthenticator();
+                      }}
+                      className="text-sm underline hover:no-underline"
+                    >
+                      Try refreshing the session
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
