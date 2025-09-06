@@ -45,6 +45,8 @@ export default function MFAManagement() {
       }
     } catch (err: any) {
       console.error("Failed to fetch MFA preferences:", err);
+      // If MFA is forced by Cognito, assume it's enabled
+      setMfaPreferences({ preferredMfa: 'SOFTWARE_TOKEN_MFA' });
     }
   };
 
@@ -115,41 +117,6 @@ export default function MFAManagement() {
     }
   };
 
-  const handleDisableMFA = async () => {
-    if (!confirm("Are you sure you want to disable MFA? This will make your account less secure.")) {
-      return;
-    }
-
-    setLoading(true);
-    const accessToken = localStorage.getItem("accessToken");
-    
-    try {
-      const res = await axios.post(
-        process.env.NEXT_PUBLIC_API_URL + "/auth/verify-authenticator",
-        { 
-          accessToken, 
-          userCode: "000000", // This would need a proper disable endpoint
-          session: null
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      
-      if (res.data.status === "SUCCESS") {
-        setSuccess("MFA disabled successfully!");
-        fetchMFAPreferences();
-      } else {
-        setError("Failed to disable MFA");
-      }
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Failed to disable MFA"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (step === "overview") {
     return (
@@ -167,52 +134,26 @@ export default function MFAManagement() {
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-900">Current Status</h2>
-              <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                mfaPreferences?.preferredMfa === 'SOFTWARE_TOKEN_MFA' 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
-                {mfaPreferences?.preferredMfa === 'SOFTWARE_TOKEN_MFA' ? 'Enabled' : 'Disabled'}
+              <div className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                Required
               </div>
             </div>
 
-            {mfaPreferences?.preferredMfa === 'SOFTWARE_TOKEN_MFA' ? (
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  Two-factor authentication is currently enabled for your account. 
-                  You'll need to enter a code from your authenticator app when signing in.
-                </p>
-                <div className="flex space-x-3">
-                  <button
-                    onClick={() => setStep("setup")}
-                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition"
-                  >
-                    Reconfigure MFA
-                  </button>
-                  <button
-                    onClick={handleDisableMFA}
-                    disabled={loading}
-                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition disabled:opacity-50"
-                  >
-                    {loading ? "Disabling..." : "Disable MFA"}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  Two-factor authentication is not currently enabled. 
-                  Enable it to add an extra layer of security to your account.
-                </p>
+            <div className="space-y-4">
+              <p className="text-gray-600">
+                Two-factor authentication is required for your account. 
+                You'll need to enter a code from your authenticator app when signing in.
+              </p>
+              <div className="flex space-x-3">
                 <button
                   onClick={handleSetupAuthenticator}
                   disabled={setupLoading}
                   className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition disabled:opacity-50"
                 >
-                  {setupLoading ? "Setting up..." : "Enable MFA"}
+                  {setupLoading ? "Setting up..." : "Setup/Reconfigure MFA"}
                 </button>
               </div>
-            )}
+            </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">

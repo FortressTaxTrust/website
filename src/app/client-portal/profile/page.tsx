@@ -108,9 +108,6 @@ export default function UserProfile() {
     }
   };
 
-  const handleChangePassword = () => {
-    router.push("/client-portal/change-password");
-  };
 
   const handleManageMFA = () => {
     router.push("/client-portal/mfa-management");
@@ -173,18 +170,6 @@ export default function UserProfile() {
                     </div>
                   </div>
 
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={formData.email || ""}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                    />
-                  </div>
 
                   <div>
                     <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-1">
@@ -264,14 +249,6 @@ export default function UserProfile() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Security Settings</h3>
               
               <div className="space-y-4">
-                <button
-                  onClick={handleChangePassword}
-                  className="w-full px-4 py-2 bg-secondary text-white rounded-md hover:bg-secondary/90 transition text-left"
-                >
-                  <div className="font-medium">Change Password</div>
-                  <div className="text-sm opacity-90">Update your account password</div>
-                </button>
-
                 <button
                   onClick={handleManageMFA}
                   className="w-full px-4 py-2 bg-secondary text-white rounded-md hover:bg-secondary/90 transition text-left"
