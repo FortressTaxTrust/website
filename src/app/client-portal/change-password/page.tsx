@@ -22,6 +22,15 @@ export default function ChangePassword() {
     special: false
   });
 
+  // Check if user is authenticated
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      router.push("/client-portal");
+      return;
+    }
+  }, [router]);
+
   // Check password requirements
   useEffect(() => {
     setPasswordRequirements({
@@ -36,6 +45,7 @@ export default function ChangePassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
 
     // Validate passwords match
     if (formData.newPassword !== formData.confirmPassword) {
@@ -52,26 +62,51 @@ export default function ChangePassword() {
     setLoading(true);
     
     try {
-      // Note: This would need a backend endpoint to change password
-      // For now, we'll just simulate success
-      setSuccess("Password changed successfully!");
-      setFormData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: ""
-      });
+      // Get username from stored user data or token
+      const idToken = localStorage.getItem("idToken");
+      let username = "";
       
-      // In a real implementation, you'd call:
-      // const res = await axios.post(
-      //   process.env.NEXT_PUBLIC_API_URL + "/auth/change-password",
-      //   {
-      //     currentPassword: formData.currentPassword,
-      //     newPassword: formData.newPassword
-      //   },
-      //   { headers: { "accesstoken": localStorage.getItem("accessToken") } }
-      // );
+      if (idToken) {
+        try {
+          const payload = JSON.parse(atob(idToken.split('.')[1]));
+          username = payload["cognito:username"] || payload.username || payload.email;
+        } catch (err) {
+          console.error("Error parsing token:", err);
+        }
+      }
+      
+      if (!username) {
+        setError("Unable to identify user. Please log in again.");
+        return;
+      }
+
+      console.log("Changing password for user:", username);
+
+      const res = await axios.post(
+        process.env.NEXT_PUBLIC_API_URL + "/auth/change-password",
+        {
+          username: username,
+          oldPassword: formData.currentPassword,
+          newPassword: formData.newPassword
+        },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      
+      console.log("Change password response:", res.data);
+      
+      if (res.data.status === "success") {
+        setSuccess("Password changed successfully!");
+        setFormData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: ""
+        });
+      } else {
+        setError(res.data.message || "Failed to change password");
+      }
       
     } catch (err: any) {
+      console.error("Change password error:", err.response?.data || err.message);
       setError(
         err.response?.data?.message ||
         err.response?.data?.error ||
