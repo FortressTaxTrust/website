@@ -62,32 +62,20 @@ export default function ChangePassword() {
     setLoading(true);
     
     try {
-      // Get username from stored user data or token
-      const idToken = localStorage.getItem("idToken");
-      let username = "";
-      
-      if (idToken) {
-        try {
-          const payload = JSON.parse(atob(idToken.split('.')[1]));
-          username = payload["cognito:username"] || payload.username || payload.email;
-        } catch (err) {
-          console.error("Error parsing token:", err);
-        }
-      }
-      
-      if (!username) {
-        setError("Unable to identify user. Please log in again.");
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        setError("Access token not found. Please log in again.");
         return;
       }
 
-      console.log("Changing password for user:", username);
+      console.log("Changing password with access token");
 
       const res = await axios.post(
         process.env.NEXT_PUBLIC_API_URL + "/auth/change-password",
         {
-          username: username,
-          oldPassword: formData.currentPassword,
-          newPassword: formData.newPassword
+          accessToken: accessToken,
+          previousPassword: formData.currentPassword,
+          proposedPassword: formData.newPassword
         },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -107,11 +95,35 @@ export default function ChangePassword() {
       
     } catch (err: any) {
       console.error("Change password error:", err.response?.data || err.message);
-      setError(
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Failed to change password"
-      );
+      
+      const errorMessage = err.response?.data?.message || err.response?.data?.error || "Failed to change password";
+      
+      // Handle specific error cases from backend
+      if (err.response?.status === 401) {
+        setError("Invalid access token or previous password. Please log in again.");
+        setTimeout(() => {
+          router.push("/client-portal");
+        }, 2000);
+      } else if (err.response?.status === 400) {
+        if (errorMessage.includes("does not meet requirements")) {
+          setError("New password does not meet security requirements. Please check the requirements below.");
+        } else if (errorMessage.includes("matches a previous password")) {
+          setError("New password must be different from your previous passwords.");
+        } else if (errorMessage.includes("Password reset is required")) {
+          setError("Password reset is required. Please use the forgot password feature.");
+        } else if (errorMessage.includes("Too many requests")) {
+          setError("Too many attempts. Please wait a moment and try again.");
+        } else {
+          setError(errorMessage);
+        }
+      } else if (err.response?.status === 404) {
+        setError("User not found. Please log in again.");
+        setTimeout(() => {
+          router.push("/client-portal");
+        }, 2000);
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
