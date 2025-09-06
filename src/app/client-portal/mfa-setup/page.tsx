@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Image from "next/image";
@@ -17,10 +17,12 @@ export default function MFASetup() {
   const [loading, setLoading] = useState(false);
   const [setupLoading, setSetupLoading] = useState(false);
   const [isSetupComplete, setIsSetupComplete] = useState(false);
+  const setupCalled = useRef(false);
 
   const setupAuthenticator = useCallback(async () => {
-    if (setupLoading || isSetupComplete) return; // Prevent multiple calls
+    if (setupLoading || isSetupComplete || setupCalled.current) return; // Prevent multiple calls
     
+    setupCalled.current = true;
     setSetupLoading(true);
     setError("");
     
@@ -82,11 +84,11 @@ export default function MFASetup() {
     setSession(storedSession);
     setUsername(storedUsername);
     
-    // Start MFA setup process only if not already completed
-    if (!isSetupComplete && !setupLoading) {
+    // Start MFA setup process only if not already completed and not currently loading
+    if (!isSetupComplete && !setupLoading && !qrCode && !setupCalled.current) {
       setupAuthenticator();
     }
-  }, [router, isSetupComplete, setupLoading, setupAuthenticator]);
+  }, [router]); // Remove dependencies that cause re-runs
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -259,6 +261,7 @@ export default function MFASetup() {
                   onClick={() => {
                     setError("");
                     setIsSetupComplete(false);
+                    setupCalled.current = false;
                     setupAuthenticator();
                   }}
                   className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition"
@@ -301,6 +304,7 @@ export default function MFASetup() {
                       onClick={() => {
                         setError("");
                         setIsSetupComplete(false);
+                        setupCalled.current = false;
                         setupAuthenticator();
                       }}
                       className="text-sm underline hover:no-underline"
