@@ -88,6 +88,7 @@ export default function NestedFolder({ params }: NestedFolderProps) {
           link:
             folderInfoData?.metadata?.attributes.permalink ||
             folderInfoData?.metadata?.attributes?.download_url,
+            storage : folderInfoData?.metadata?.attributes.storage_info,
         };
         console.log("current", current);
         setCurrentFolder(current);
@@ -99,6 +100,7 @@ export default function NestedFolder({ params }: NestedFolderProps) {
             name: f.attributes.name,
             type: f.attributes.type,
             link: f.attributes.permalink || f.attributes.download_url,
+            storage: f.attributes.storage_info,
           }))
         );
 
@@ -110,16 +112,25 @@ export default function NestedFolder({ params }: NestedFolderProps) {
           let cumulativePath: string[] = [];
           const breadcrumbPath: BreadcrumbItem[] = [
             { label: "Dashboard", href: "/client-portal/dashboard" },
-            {
-              label: "Workdrive",
-              href: `/client-portal/dashboard/${accountId}`,
-            },
           ];
 
           crumb
-            .filter(
-              (p: any) => p.res_type !== "team" && p.res_type !== "workspace"
-            ) // Skip team if you don't want it clickable
+            .filter((p: any, idx: number, arr: any[]) => {
+              if (p.res_type === "team" || p.res_type === "workspace")
+                return false;
+
+              const parent = arr.find(
+                (x: any) => x.resource_id === p.base_parent_id
+              );
+              if (
+                parent?.res_type === "workspace" &&
+                p.name?.toLowerCase() === "client workdrive folders"
+              ) {
+                return false;
+              }
+
+              return true;
+            })
             .forEach((p: any) => {
               cumulativePath.push(p.resource_id);
               breadcrumbPath.push({

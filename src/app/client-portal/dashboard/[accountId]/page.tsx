@@ -49,6 +49,12 @@ export default function AccountRoot({ params }: AccountRootProps) {
           setError("No folders found for this account.");
           setFolders([]);
         } else {
+          const firstFolder = data.accounts[0];
+          if (firstFolder?.workdriveFolderId) {
+            router.replace(
+              `/client-portal/dashboard/${accountId}/${firstFolder.workdriveFolderId}`
+            );
+          }
           setFolders(data.accounts);
         }
       } catch (err: any) {
@@ -73,54 +79,57 @@ export default function AccountRoot({ params }: AccountRootProps) {
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: "Dashboard", href: "/client-portal/dashboard" },
-    { label: `Workdrive`, href: `/client-portal/dashboard/${accountId}` },
   ];
 
   return (
-    <div className="p-4">
-      <Breadcrumb items={breadcrumbItems} />
-
-      {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
-          {Array.from({ length: 6 }).map((_, idx) => (
-            <div
-              key={idx}
-              className="animate-pulse flex flex-col items-start p-4 bg-white rounded-lg shadow hover:shadow-md cursor-pointer"
-            >
-              {/* Folder Icon */}
-              <div className="w-12 h-12 bg-yellow-300 rounded flex items-center justify-center mb-3">
-                <svg
-                  className="w-6 h-6 text-yellow-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M2 6a2 2 0 012-2h4l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                </svg>
+    <div className="min-h-screen flex flex-col bg-gray-50 px-4 sm:px-10 py-6">
+      <Breadcrumb items={[]} />
+      <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+        <h2 className="text-xl font-semibold text-gray-900">
+        </h2>
+        <input
+          type="text"
+          placeholder="Search folder or a file..."
+          className="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-primary focus:outline-none"
+          disabled
+        />
+      </div>
+      {
+        loading ? (
+          <div className="grid grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="animate-pulse flex flex-col items-start p-4 bg-white rounded-lg shadow hover:shadow-md cursor-pointer"
+              >
+                <div className="w-12 h-12 bg-yellow-300 rounded flex items-center justify-center mb-3">
+                  <svg
+                    className="w-6 h-6 text-yellow-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M2 6a2 2 0 012-2h4l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                  </svg>
+                </div>
+                <div className="h-5 w-3/4 bg-gray-300 rounded mb-2"></div>
+                <div className="h-3 w-1/2 bg-gray-300 rounded"></div>
               </div>
-
-              {/* Folder Name Skeleton */}
-              <div className="h-5 w-3/4 bg-gray-300 rounded mb-2"></div>
-
-              {/* Optional Metadata Skeleton */}
-              <div className="h-3 w-1/2 bg-gray-300 rounded"></div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center h-[60vh]">
+            <div className="bg-red-100 border border-red-400 text-red-800 px-6 py-4 rounded-lg text-center text-lg font-semibold my-4 shadow-md">
+              {error}
             </div>
-          ))}
-        </div>
-      ) : error ? (
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="bg-red-100 border border-red-400 text-red-800 px-6 py-4 rounded-lg text-center text-lg font-semibold my-4 shadow-md">
-            {error}
           </div>
-        </div>
-      ) : folders.length === 0 ? (
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-6 py-4 rounded-lg text-center text-lg font-semibold shadow-md">
-            No files or folders found.
+        ) : folders.length === 0 ? (
+          <div className="flex items-center justify-center h-[60vh]">
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-6 py-4 rounded-lg text-center text-lg font-semibold shadow-md">
+              No files or folders found.
+            </div>
           </div>
-        </div>
-      ) : (
-        <FolderView data={folders.map(folder => ({ ...folder, type: "folder" }))} onFolderClick={handleFolderClick} />
-      )
+        ) : null
+        // <FolderView data={folders.map(folder => ({ ...folder, type: "folder" }))} onFolderClick={handleFolderClick} />
       }
     </div>
   );

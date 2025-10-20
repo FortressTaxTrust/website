@@ -6,6 +6,12 @@ export interface FolderItem {
   name?: string;
   type?: "folder" | "file";
   link?: string;
+  storage?: {
+    size?: string;
+    size_in_bytes?: number;
+    files_count?: number;
+    folders_count?: number;
+  };
   accountId?: string;
   workdriveFolderId?: string;
   workdriveFolderLink?: string;
@@ -88,18 +94,25 @@ export default function FolderView({ data, onFolderClick }: FolderViewProps) {
         </div>
       )}
 
-      {/* Grid View */}
+      {/* Folder/File Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
-        {data.map((item, index) => (
-          <div
-            key={item.id || index}
-            className="relative flex flex-col items-start p-3 sm:p-4 bg-white rounded-lg shadow hover:shadow-md transition cursor-pointer"
-            onClick={(e) =>
-              item.type === "folder"
-                ? onFolderClick(item)
-                : handlePreview(item.id, e)
-            }
-          >
+        {data.map((item, index) => {
+          const filesCount = item.storage?.files_count ?? 0;
+          const foldersCount = item.storage?.folders_count ?? 0;
+          const sizeInBytes = item.storage?.size_in_bytes ?? 0;
+          const hasContent = sizeInBytes > 0;
+          const borderColor = hasContent ? "border-green-500" : "border-red-500";
+
+          return (
+            <div
+              key={item.id || index}
+              className={`relative bg-white rounded-lg flex-col items-start p-3 sm:p-4 shadow hover:shadow-lg transition cursor-pointer border-l-4 ${borderColor} flex flex-col`}
+              onClick={(e) =>
+                item.type === "folder"
+                  ? onFolderClick(item)
+                  : handlePreview(item.id, e)
+              }
+            >
             {/* Action buttons */}
             {/* Top-right action buttons for files */}
             {/* {item.workdriveFolderLink && (
@@ -140,7 +153,7 @@ export default function FolderView({ data, onFolderClick }: FolderViewProps) {
               {item.type === "folder" ? (
                 <div className="w-full h-full bg-yellow-300 rounded flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-yellow-500"
+                    className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-yellow-600"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -150,7 +163,7 @@ export default function FolderView({ data, onFolderClick }: FolderViewProps) {
               ) : (
                 <div className="w-full h-full bg-blue-300 rounded flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-blue-500"
+                    className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-blue-600"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -160,19 +173,25 @@ export default function FolderView({ data, onFolderClick }: FolderViewProps) {
               )}
             </div>
 
-            {/* Name */}
+              {/* Folder/File Name */}
             <p className="font-bold text-gray-900 mb-0.5 sm:mb-1 truncate w-full text-xs sm:text-sm md:text-base">
               {item.name || "Workdrive"}
             </p>
 
-            {/* Type/Info */}
-            {item.type && (
-              <p className="text-[10px] sm:text-xs md:text-sm text-gray-500">
-                {item.type === "folder" ? "Folder" : "File"}
+            {/* Type & Info */}
+            {item.type === "folder" ? (
+              <p className="text-[10px] sm:text-xs text-gray-600 mt-1">
+                {foldersCount} folders • {filesCount} files •{" "}
+                {item.storage?.size || "0 byte"}
+              </p>
+            ) : (
+              <p className="text-[10px] sm:text-xs text-gray-600 mt-1">
+                File • {item.storage?.size || "Unknown size"}
               </p>
             )}
           </div>
-        ))}
+        ); 
+        })}
       </div>
 
       {/* Iframe Preview Modal */}

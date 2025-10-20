@@ -70,7 +70,7 @@ export default function ClientPortalLayout({ children }: ClientPortalLayoutProps
       {/* Top Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-4 sm:px-10 py-6 bg-primary text-white">
         <h1 className="text-2xl font-semibold mb-2 sm:mb-0">
-          {welcomeName ? `Welcome, ${welcomeName}!` : "Welcome!"}
+       {welcomeName ? `Welcome, ${welcomeName.charAt(0).toUpperCase() + welcomeName.slice(1)}!` : "Welcome!"}
         </h1>
         <div className="flex space-x-3">
           <button
