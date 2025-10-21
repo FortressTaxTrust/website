@@ -217,6 +217,12 @@ export default function ForgotPassword() {
                   placeholder="Confirm new password"
                 />
               </div>
+              {confirmPassword &&
+                  newPassword !== confirmPassword && (
+                    <p className="text-red-600 text-sm mt-1">
+                      Passwords do not match
+                    </p>
+                )}
             </div>
 
             {/* Password Requirements */}

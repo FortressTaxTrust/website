@@ -200,6 +200,12 @@ export default function Signup() {
                   placeholder="Confirm your password"
                 />
               </div>
+              {formData.confirmPassword &&
+                  formData.password !== formData.confirmPassword && (
+                    <p className="text-red-600 text-sm mt-1">
+                      Passwords do not match
+                    </p>
+                )}
             </div>
 
             {/* Password Requirements */}

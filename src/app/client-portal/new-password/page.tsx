@@ -153,6 +153,12 @@ export default function NewPassword() {
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                 placeholder="Confirm new password"
               />
+              {formData.confirmPassword &&
+                  formData.newPassword !== formData.confirmPassword && (
+                    <p className="text-red-600 text-sm mt-1">
+                      Passwords do not match
+                    </p>
+                )}
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
