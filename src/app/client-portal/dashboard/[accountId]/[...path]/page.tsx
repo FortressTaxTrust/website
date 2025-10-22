@@ -104,33 +104,19 @@ export default function NestedFolder({ params }: NestedFolderProps) {
           }))
         );
 
-        const crumb = data.breadcrumbData?.[0]?.attributes?.parent_ids || [];
+        const crumb = data?.breadcrumbData?.[0]?.attributes?.parent_ids || [];
 
+
+        let cumulativePath: string[] = [];
+        const breadcrumbPath: BreadcrumbItem[] = [
+          { label: "Dashboard", href: "/client-portal/dashboard" },
+        ];
         if (Array.isArray(crumb) && crumb.length > 0) {
           console.log("crumb", crumb);
-
-          let cumulativePath: string[] = [];
-          const breadcrumbPath: BreadcrumbItem[] = [
-            { label: "Dashboard", href: "/client-portal/dashboard" },
-          ];
-
-          crumb
-            .filter((p: any, idx: number, arr: any[]) => {
-              if (p.res_type === "team" || p.res_type === "workspace")
-                return false;
-
-              const parent = arr.find(
-                (x: any) => x.resource_id === p.base_parent_id
-              );
-              if (
-                parent?.res_type === "workspace" &&
-                p.name?.toLowerCase() === "client workdrive folders"
-              ) {
-                return false;
-              }
-
-              return true;
-            })
+             crumb
+            .filter(
+              (p: any) => p.res_type !== "team" && p.res_type !== "workspace"
+            ) // Skip team if you don't want it clickable
             .forEach((p: any) => {
               cumulativePath.push(p.resource_id);
               breadcrumbPath.push({
@@ -140,14 +126,11 @@ export default function NestedFolder({ params }: NestedFolderProps) {
                 )}`,
               });
             });
-
-          // Add current folder at the end (non-clickable)
-
-          breadcrumbPath.push({ label: current?.name || "Current Folder" });
+        }
+        breadcrumbPath.push({ label: current?.name || "Current Folder" });
 
           console.log("breadcrumbPath", breadcrumbPath);
           setFolderNames(breadcrumbPath);
-        }
       } catch (err: any) {
         console.error("Error fetching folder:", err);
         setError(
