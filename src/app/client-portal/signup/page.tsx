@@ -92,7 +92,7 @@ export default function Signup() {
       const res = await axios.post(
         process.env.NEXT_PUBLIC_API_URL + "/auth/confirm-signup",
         {
-          username: formData.username,
+          username: formData.email,
           code: code
         },
         { headers: { "Content-Type": "application/json" } }

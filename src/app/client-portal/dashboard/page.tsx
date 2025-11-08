@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Breadcrumb, { BreadcrumbItem } from "../../../components/Breadcrumb";
 import UploadModal from "@/components/UploadModal";
 import { UploadCloud } from "lucide-react";
+import CompleteSignupDialog from "@/components/CompleteSignupDialog";
 function parseJWT(token: string) {
   try {
     const base64Url = token.split(".")[1];
@@ -36,6 +37,7 @@ export default function ClientPortalDashboard() {
   const [userData, setUserData] = useState<{ cognitoUserId?: string }>({});
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [token, setToken] = useState<string | null>(null);
+  const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
 
   const handleNavigateAccount = (accountName: string, accountId: string) => {
     router.push(`/client-portal/dashboard/${accountId}`);
@@ -110,7 +112,7 @@ export default function ClientPortalDashboard() {
     }
 
   fetchContact(storedToken);
-}, [router]);
+}, []);
 
   useEffect(() => {
     if (token && contact && userData?.cognitoUserId) {
@@ -131,6 +133,7 @@ export default function ClientPortalDashboard() {
       if (!res.ok) throw new Error("Failed to fetch contact info");
 
       const data = await res.json();
+      if(data.contactData === null) setIsSignupDialogOpen(true)
       setContact(data.contactData || data.data?.[0] || null);
       setUserData(data.userInfo || {});
     } catch (err) {
@@ -182,6 +185,12 @@ export default function ClientPortalDashboard() {
         {/* Left side: Title */}
         <h2 className="text-xl font-semibold text-gray-900">Linked Accounts</h2>
 
+        {isSignupDialogOpen && (
+          <CompleteSignupDialog
+            isOpen={isSignupDialogOpen}
+            onClose={() => setIsSignupDialogOpen(false)}
+          />
+        )}
         {/* Right side: Search + Upload */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
