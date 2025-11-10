@@ -389,7 +389,7 @@ const Step2GiveDetails: React.FC<Props> = ({
             <div>
               <div className="flex items-center gap-2 mb-2">
                 {renderLabel("Connected Contacts")}
-                {formData.accountType === "Partnership" && (
+                {/* {formData.accountType === "Partnership" && (
                   <div className="relative inline-block group">
                     <span className="text-gray-400 cursor-pointer font-bold">
                       ?
@@ -399,7 +399,7 @@ const Step2GiveDetails: React.FC<Props> = ({
                       associated with this account.
                     </div>
                   </div>
-                )}
+                )} */}
               </div>
               <div className="flex gap-2 items-center mb-2 flex-wrap">
                 {formData.connectedContacts.map((c) => (
@@ -451,6 +451,7 @@ const Step2GiveDetails: React.FC<Props> = ({
                     name={field.name}
                     value={formData[field.name] || ""}
                     onChange={handleChange}
+                    placeholder={"Notes or Special Instructions"}
                     rows={3}
                     className={`w-full border rounded-md px-3 py-2 ${
                       errors[field.name] ? "border-red-500" : "border-gray-300"

@@ -90,10 +90,14 @@ export default function ClientPortalDashboard() {
     }
   };
   useEffect(() => {
-    if (typeof window === "undefined") return; 
+    if (typeof window === "undefined") return;
 
-    const idToken = typeof window !== "undefined" ? localStorage.getItem("idToken") : null;
-    const storedToken = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+    const idToken =
+      typeof window !== "undefined" ? localStorage.getItem("idToken") : null;
+    const storedToken =
+      typeof window !== "undefined"
+        ? localStorage.getItem("accessToken")
+        : null;
 
     if (!storedToken) {
       router.replace("/client-portal");
@@ -111,14 +115,23 @@ export default function ClientPortalDashboard() {
       });
     }
 
-  fetchContact(storedToken);
-}, []);
+    fetchContact(storedToken);
+  }, []);
 
   useEffect(() => {
     if (token && contact && userData?.cognitoUserId) {
       fetchLinkedAccounts(token, userData.cognitoUserId);
     }
   }, [contact, userData, token]);
+
+  useEffect(() => {
+    if (token && userData.cognitoUserId) {
+      if (isSignupDialogOpen === false) {
+        fetchContact(token);
+        fetchLinkedAccounts(token, userData.cognitoUserId);
+      }
+    }
+  }, [isSignupDialogOpen]);
 
   const fetchContact = async (accessToken: string) => {
     setLoading((prev) => ({ ...prev, contact: true }));
@@ -133,7 +146,7 @@ export default function ClientPortalDashboard() {
       if (!res.ok) throw new Error("Failed to fetch contact info");
 
       const data = await res.json();
-      if(data.contactData === null) setIsSignupDialogOpen(true)
+      if (data.contactData === null) setIsSignupDialogOpen(true);
       setContact(data.contactData || data.data?.[0] || null);
       setUserData(data.userInfo || {});
     } catch (err) {
@@ -143,6 +156,7 @@ export default function ClientPortalDashboard() {
       setLoading((prev) => ({ ...prev, contact: false }));
     }
   };
+  const isProspect = contact?.Contact_Type === "Prospect";
 
   const fetchLinkedAccounts = async (
     accessToken: string,
@@ -175,7 +189,6 @@ export default function ClientPortalDashboard() {
     { label: "Dashboard", href: "/client-portal/dashboard" },
   ];
 
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 px-4 sm:px-10 py-6">
       <Breadcrumb items={breadcrumbItems} />
@@ -189,19 +202,33 @@ export default function ClientPortalDashboard() {
           <CompleteSignupDialog
             isOpen={isSignupDialogOpen}
             onClose={() => setIsSignupDialogOpen(false)}
+            startStep={isProspect ? 3 : 1}
           />
         )}
+
         {/* Right side: Search + Upload */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button
-            onClick={() => setIsUploadOpen(true)}
-            className="py-2 px-4 text-sm font-inter font-medium text-white rounded-md bg-[#5A6863] 
-             hover:bg-[#535353] transition-colors disabled:opacity-50 flex items-center gap-2"
-            disabled={loading.accounts}
-          >
-            <UploadCloud className="w-4 h-4" />
-            Upload
-          </button>
+          <div className="relative group">
+            <button
+              onClick={() => !isProspect && setIsUploadOpen(true)}
+              className={`py-2 px-4 text-sm font-inter font-medium text-white rounded-md bg-[#5A6863] 
+                hover:bg-[#535353] transition-colors flex items-center gap-2
+                ${isProspect ? "opacity-60 cursor-not-allowed" : ""}`}
+              disabled={loading.accounts}
+            >
+              <UploadCloud className="w-4 h-4" />
+              Upload
+              {isProspect && (
+                <span className="ml-2 text-gray-300 text-sm">🔒</span>
+              )}
+            </button>
+
+            {isProspect && (
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Access restricted until admin approval
+              </span>
+            )}
+          </div>
 
           <input
             type="text"
@@ -245,22 +272,37 @@ export default function ClientPortalDashboard() {
           </div>
         ) : filteredAccounts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredAccounts.map((acc) => (
-              <div
-                key={acc.accountId}
-                onClick={() =>
-                  handleNavigateAccount(acc.accountName, acc.accountId)
-                }
-                className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition cursor-pointer border-l-4 border-primary flex flex-col"
-              >
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 truncate">
-                  {acc.accountName}
-                </h3>
-                <p className="text-sm text-gray-600 truncate">
-                  {acc.accountType}
-                </p>
-              </div>
-            ))}
+            {filteredAccounts.map((acc) => {
+              return (
+                <div key={acc.accountId} className="relative group">
+                  <div
+                    onClick={() =>
+                      !isProspect &&
+                      handleNavigateAccount(acc.accountName, acc.accountId)
+                    }
+                    className={`bg-white rounded-lg shadow p-6 hover:shadow-lg transition cursor-pointer border-l-4 border-primary flex flex-col ${
+                      isProspect ? "opacity-60 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 truncate flex items-center justify-between">
+                      {acc.accountName}
+                      {isProspect && (
+                        <span className="ml-2 text-gray-400 text-sm">🔒</span>
+                      )}
+                    </h3>
+                    <p className="text-sm text-gray-600 truncate">
+                      {acc.accountType}
+                    </p>
+                  </div>
+
+                  {isProspect && (
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mb-2 w-max bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                      Access restricted until admin approval
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="flex items-center justify-center h-[50vh]">
