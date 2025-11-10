@@ -107,9 +107,19 @@ const Step2GiveDetails: React.FC<Props> = ({
         });
         break;
       case 4:
-        if (!formData.accountType || formData.accountType === "-None-") {
+        if (!formData.accountType || formData.accountType == "-None-") {
           newErrors.accountType = "Account type is required";
         }
+        break;
+      case 5:
+        ["url2"].forEach((f) => {
+          const isValid =
+            /^(https?:\/\/)([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$/i.test(formData[f as keyof FormData].toString().trim());
+          console.log(isValid, f);
+          if (!isValid && formData[f as keyof FormData].toString().trim()) {
+            newErrors[f] = `${f} should bevalid URL`;
+          }
+        });
         break;
       case 6:
         if (!formData.description.trim())
@@ -166,10 +176,7 @@ const Step2GiveDetails: React.FC<Props> = ({
   ];
 
   const step5Fields: { name: keyof FormData; label: string }[] = [
-    { name: "openCorpPage", label: "OpenCorp Page" },
-    { name: "workDriveId", label: "Workdrive Folder ID (EXT)" },
     { name: "url2", label: "URL 2" },
-    { name: "workDriveLink", label: "Workdrive Link" },
   ];
 
   return (
@@ -344,8 +351,14 @@ const Step2GiveDetails: React.FC<Props> = ({
                     name={field.name}
                     value={String(formData[field.name] ?? "")}
                     onChange={handleChange}
+                    placeholder="Enter valid URL (https://...)"
                     className="border rounded-md px-3 py-2 w-full"
                   />
+                  {errors[field.name] && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors[field.name]}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
