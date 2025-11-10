@@ -51,6 +51,12 @@ const CompleteSignupDialog = ({ isOpen, onClose }: any) => {
     url2: "",
     workDriveLink: "",
     description: "",
+    state: "",
+    registeredAgent: "",
+    stateOfFormation: "",
+    stateFilingNumber: "",
+    website: "",
+    phone: "",
   });
 
   const [errors, setErrors] = useState<string[]>([]); // <-- Store errors here

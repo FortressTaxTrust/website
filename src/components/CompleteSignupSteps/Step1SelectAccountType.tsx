@@ -6,7 +6,7 @@ const accountTypes = [
   "Beneficial Trust",
   "Business Trust",
   "C-Corporation",
-  "Firm Account",
+  "FIRM ACCOUNT",
   "Individual",
   "Non-Profit",
   "Partnership",
@@ -37,6 +37,12 @@ interface FormDataStep1 {
   url2: string;
   workDriveLink: string;
   description: string;
+  state: string;
+  registeredAgent: string;
+  stateOfFormation: string;
+  stateFilingNumber: string;
+  website: string;
+  phone: string;
 }
 
 interface Step1Props {
@@ -70,7 +76,9 @@ const Step1SelectAccountType: React.FC<Step1Props> = ({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl font-semibold text-gray-800">Account Information</h3>
+      <h3 className="text-2xl font-semibold text-gray-800">
+        Account Information
+      </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* Account Name */}
@@ -119,7 +127,10 @@ const Step1SelectAccountType: React.FC<Step1Props> = ({
         <select
           value={formData.accountType}
           onChange={(e) =>
-            setFormData((s) => ({ ...s, accountType: e.target.value }))
+            setFormData(
+              (prev) =>
+                ({ ...prev, accountType: e.target.value } as FormDataStep1)
+            )
           }
           className={`w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-primary focus:outline-none ${
             errors.accountType ? "border-red-400" : "border-gray-300"
