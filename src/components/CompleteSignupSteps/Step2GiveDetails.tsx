@@ -38,44 +38,44 @@ const stepTitles: Record<string, string[]> = {
   "C-Corporation": [
     "Account Information",
     "Address Information",
-    "Account Portal Links",
+    "Joint Account",
     "Description",
   ],
   Individual: [
     "Account Information",
     "Address Information",
-    "Account Portal Links",
+    "Joint Account",
     "Description",
   ],
   Partnership: [
     "Account Information",
     "Address Information",
-    "Account Portal Links",
+    "Joint Account",
     "Description",
   ],
   "FIRM ACCOUNT": [
     "Account Information",
     "Address Information",
-    "Account Portal Links",
+    "Joint Account",
     "Description",
   ],
   "S-Corporation": [
     "Account Information",
     "Address Information",
-    "Account Portal Links",
+    "Joint Account",
     "Description",
   ],
   "Non-Profit": ["Account Information", "Account Portal Links"],
   "Beneficial Trust": [
     "Account Information",
     "Address Information",
-    "Account Portal Links",
+    "Joint Account",
     "Description",
   ],
   "Business Trust": [
     "Account Information",
     "Address Information",
-    "Account Portal Links",
+    "Joint Account",
     "Description",
   ],
 };
@@ -111,7 +111,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     2: step3Fields,
     3: [
       { name: "connectedContacts", label: "Connected Contacts" },
-      { name: "url2", label: "URL 2" },
+      // { name: "url2", label: "URL 2" },
     ],
     4: [{ name: "description", label: "Description", required: true }],
   },
@@ -130,7 +130,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     2: step3Fields,
     3: [
       { name: "connectedContacts", label: "Connected Contacts" },
-      { name: "url2", label: "URL 2" },
+      // { name: "url2", label: "URL 2" },
     ],
     4: [{ name: "description", label: "Description", required: true }],
   },
@@ -150,7 +150,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     2: step3Fields,
     3: [
       { name: "connectedContacts", label: "Connected Contacts" },
-      { name: "url2", label: "URL 2" },
+      // { name: "url2", label: "URL 2" },
     ],
     4: [{ name: "description", label: "Description", required: true }],
   },
@@ -167,7 +167,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     2: step3Fields,
     3: [
       { name: "connectedContacts", label: "Connected Contacts" },
-      { name: "url2", label: "URL 2" },
+      // { name: "url2", label: "URL 2" },
     ],
     4: [{ name: "description", label: "Description", required: true }],
   },
@@ -186,7 +186,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     ],
     3: [
       { name: "connectedContacts", label: "Connected Contacts" },
-      { name: "url2", label: "URL 2" },
+      // { name: "url2", label: "URL 2" },
     ],
     4: [{ name: "description", label: "Description", required: true }],
   },
@@ -206,7 +206,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     2: step3Fields,
     3: [
       { name: "connectedContacts", label: "Connected Contacts" },
-      { name: "url2", label: "URL 2" },
+      // { name: "url2", label: "URL 2" },
     ],
     4: [{ name: "description", label: "Description", required: true }],
   },
@@ -226,7 +226,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     2: step3Fields,
     3: [
       { name: "connectedContacts", label: "Connected Contacts" },
-      { name: "url2", label: "URL 2" },
+      // { name: "url2", label: "URL 2" },
     ],
     4: [{ name: "description", label: "Description", required: true }],
   },
@@ -237,7 +237,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     ],
     2: [
       { name: "connectedContacts", label: "Connected Contacts" },
-      { name: "url2", label: "URL 2" },
+      // { name: "url2", label: "URL 2" },
     ],
   },
 };
@@ -437,7 +437,7 @@ const Step2GiveDetails: React.FC<Props> = ({
                     className="form-checkbox h-4 w-4 text-primary"
                     onChange={(e) => setAddingSpouse(e.target.checked)}
                   />
-                  Add spouse / joint account
+                  Do you have a wife? (Joint Account)
                 </label>
 
                 {addingSpouse &&
@@ -464,7 +464,7 @@ const Step2GiveDetails: React.FC<Props> = ({
                       key={c.id}
                       className="flex items-center gap-2 mt-2 bg-gray-100 px-2 py-1 rounded text-sm"
                     >
-                      <span>{`${c.firstName ?? ""} ${c.lastName ?? ""}`}</span>
+                      <span>{`${c.firstName ?? ""} ${c.lastName ?? ""} (Spouse)`}</span>
                       <button
                         className="text-xs text-gray-500 hover:text-gray-700"
                         onClick={() => removeContact(c.id)}
@@ -488,7 +488,7 @@ const Step2GiveDetails: React.FC<Props> = ({
                     className="form-checkbox h-4 w-4 text-primary"
                     onChange={(e) => setAddingChildren(e.target.checked)}
                   />
-                  Add children / dependents
+                  Do you have children or dependents?
                 </label>
 
                 {addingChildren && (
