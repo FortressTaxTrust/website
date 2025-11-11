@@ -53,7 +53,12 @@ const stepTitles: Record<string, string[]> = {
     "Account Portal Links",
     "Description",
   ],
-
+  "FIRM ACCOUNT": [
+    "Account Information",
+    "Address Information",
+    "Account Portal Links",
+    "Description",
+  ],
   "S-Corporation": [
     "Account Information",
     "Address Information",
@@ -342,10 +347,12 @@ const Step2GiveDetails: React.FC<Props> = ({
               <div key={index} className="flex-1 flex flex-col items-center">
                 <div
                   className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold
-              ${isCompleted ? "bg-green-500 text-white" : ""}
-              ${
-                isActive ? "bg-primary text-white" : "bg-gray-200 text-gray-500"
-              }`}
+                    ${isCompleted ? "bg-green-500 text-white" : ""}
+                    ${
+                      isActive
+                        ? "bg-primary text-white"
+                        : "bg-gray-200 text-gray-500"
+                    }`}
                 >
                   {index + 1}
                 </div>
@@ -355,7 +362,6 @@ const Step2GiveDetails: React.FC<Props> = ({
           })}
         </div>
 
-        {/* Progress bar */}
         <div className="relative w-full h-2 bg-gray-200 rounded-full">
           <div
             className="absolute top-0 left-0 h-2 bg-primary rounded-full transition-all duration-300"
@@ -365,119 +371,179 @@ const Step2GiveDetails: React.FC<Props> = ({
       </div>
 
       {/* Step fields */}
-      {/* Connected Contacts */}
-      <div className="space-y-4">
-        {/* Spouse */}
-        <div>
-          <label className="inline-flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={
-                !!formData.connectedContacts.find((c) => c.type === "Spouse")
-              }
-              disabled={
-                !!formData.connectedContacts.find((c) => c.type === "Spouse")
-              }
-              className="form-checkbox h-4 w-4 text-primary"
-              onChange={(e) => setAddingSpouse(e.target.checked)}
-            />
-            Add spouse / joint account
-          </label>
+      <div className="grid grid-cols-2 gap-4">
+        {fieldsForCurrentStep
+          .filter((f) => f.name !== "connectedContacts")
+          .map((field) => (
+            <div key={field.name}>
+              {renderLabel(field.label, field.required)}
+              {field.name === "description" ? (
+                <textarea
+                  name={field.name}
+                  value={formData[field.name] || ""}
+                  onChange={handleChange}
+                  placeholder="Notes or Special Instructions"
+                  rows={3}
+                  className={`w-full border rounded-md px-3 py-2 ${
+                    errors[field.name] ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+              ) : (
+                <input
+                  name={field.name}
+                  value={String(formData[field.name] ?? "")}
+                  onChange={handleChange}
+                  placeholder={field.label}
+                  className={`border rounded-md px-3 py-2 w-full ${
+                    errors[field.name] ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+              )}
+              {errors[field.name] && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors[field.name]}
+                </p>
+              )}
+            </div>
+          ))}
+      </div>
 
-          {/* Show spouse form if checkbox checked or addingSpouse true */}
-          {addingSpouse &&
-            !formData.connectedContacts.find((c) => c.type === "Spouse") && (
-              <ContactManager
-                existing={formData.connectedContacts}
-                selected={formData.connectedContacts.map((c) => c.id)}
-                onClose={() => setAddingSpouse(false)}
-                onCreate={(c) => addOrIgnoreContact({ ...c, type: "Spouse" })}
-                onSelect={(c) => addOrIgnoreContact({ ...c, type: "Spouse" })}
-              />
-            )}
+      {/* Contacts (Spouse/Dependent) */}
+      <div className="mt-6 space-y-4">
+        {formData.accountType &&
+          Object.entries(
+            accountTypeStepConfig[formData.accountType] || {}
+          ).some(
+            ([stepNum, fields]) =>
+              fields.some((f) => f.name === "connectedContacts") &&
+              Number(stepNum) === step
+          ) && (
+            <>
+              {/* Spouse */}
+              <div>
+                <label className="inline-flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={
+                      !!formData.connectedContacts.find(
+                        (c) => c.type === "Spouse"
+                      )
+                    }
+                    disabled={
+                      !!formData.connectedContacts.find(
+                        (c) => c.type === "Spouse"
+                      )
+                    }
+                    className="form-checkbox h-4 w-4 text-primary"
+                    onChange={(e) => setAddingSpouse(e.target.checked)}
+                  />
+                  Add spouse / joint account
+                </label>
 
-          {/* Display added spouse */}
-          {formData.connectedContacts
-            .filter((c) => c.type === "Spouse")
-            .map((c) => (
-              <div
-                key={c.id}
-                className="flex items-center gap-2 mt-2 bg-gray-100 px-2 py-1 rounded text-sm"
-              >
-                <span>{`${c.firstName ?? ""} ${c.lastName ?? ""}`}</span>
-                <button
-                  className="text-xs text-gray-500 hover:text-gray-700"
-                  onClick={() => removeContact(c.id)}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-        </div>
+                {addingSpouse &&
+                  !formData.connectedContacts.find(
+                    (c) => c.type === "Spouse"
+                  ) && (
+                    <ContactManager
+                      existing={formData.connectedContacts}
+                      selected={formData.connectedContacts.map((c) => c.id)}
+                      onClose={() => setAddingSpouse(false)}
+                      onCreate={(c) =>
+                        addOrIgnoreContact({ ...c, type: "Spouse" })
+                      }
+                      onSelect={(c) =>
+                        addOrIgnoreContact({ ...c, type: "Spouse" })
+                      }
+                    />
+                  )}
 
-        {/* Dependents */}
-        <div className="mt-4">
-          <label className="inline-flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={
-                !!formData.connectedContacts.find((c) => c.type === "Dependent")
-              }
-              className="form-checkbox h-4 w-4 text-primary"
-              onChange={(e) => setAddingChildren(e.target.checked)}
-            />
-            Add children / dependents
-          </label>
-
-          {/* Dependents form */}
-          {addingChildren && (
-            <ContactManager
-              existing={formData.connectedContacts}
-              selected={formData.connectedContacts.map((c) => c.id)}
-              onClose={() => setAddingChildren(false)}
-              onCreate={(c) => addOrIgnoreContact({ ...c, type: "Dependent" })}
-              onSelect={(c) => addOrIgnoreContact({ ...c, type: "Dependent" })}
-            />
-          )}
-
-          {/* Display added dependents */}
-          {/* Display added dependents */}
-          {formData.connectedContacts.filter((c) => c.type === "Dependent")
-            .length > 0 && (
-            <div className="flex flex-col gap-2 mt-2">
-              <div className="flex flex-wrap gap-2">
                 {formData.connectedContacts
-                  .filter((c) => c.type === "Dependent")
+                  .filter((c) => c.type === "Spouse")
                   .map((c) => (
                     <div
                       key={c.id}
-                      className="flex items-center bg-gray-100 px-2 py-1 rounded text-sm"
+                      className="flex items-center gap-2 mt-2 bg-gray-100 px-2 py-1 rounded text-sm"
                     >
-                      <span className="mr-2">{`${c.firstName ?? ""} ${
-                        c.lastName ?? ""
-                      }`}</span>
+                      <span>{`${c.firstName ?? ""} ${c.lastName ?? ""}`}</span>
                       <button
-                        onClick={() => removeContact(c.id)}
                         className="text-xs text-gray-500 hover:text-gray-700"
+                        onClick={() => removeContact(c.id)}
                       >
                         ×
                       </button>
                     </div>
                   ))}
               </div>
-              <button
-                type="button"
-                className="mt-2 px-2 py-1 w-32 border rounded text-sm hover:bg-gray-50"
-                onClick={() => setAddingChildren(true)}
-              >
-                + Add More
-              </button>
-            </div>
+
+              {/* Dependents */}
+              <div className="mt-4">
+                <label className="inline-flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={
+                      !!formData.connectedContacts.find(
+                        (c) => c.type === "Dependent"
+                      )
+                    }
+                    className="form-checkbox h-4 w-4 text-primary"
+                    onChange={(e) => setAddingChildren(e.target.checked)}
+                  />
+                  Add children / dependents
+                </label>
+
+                {addingChildren && (
+                  <ContactManager
+                    existing={formData.connectedContacts}
+                    selected={formData.connectedContacts.map((c) => c.id)}
+                    onClose={() => setAddingChildren(false)}
+                    onCreate={(c) =>
+                      addOrIgnoreContact({ ...c, type: "Dependent" })
+                    }
+                    onSelect={(c) =>
+                      addOrIgnoreContact({ ...c, type: "Dependent" })
+                    }
+                  />
+                )}
+
+                {formData.connectedContacts.filter(
+                  (c) => c.type === "Dependent"
+                ).length > 0 && (
+                  <div className="flex flex-col gap-2 mt-2">
+                    <div className="flex flex-wrap gap-2">
+                      {formData.connectedContacts
+                        .filter((c) => c.type === "Dependent")
+                        .map((c) => (
+                          <div
+                            key={c.id}
+                            className="flex items-center bg-gray-100 px-2 py-1 rounded text-sm"
+                          >
+                            <span className="mr-2">{`${c.firstName ?? ""} ${
+                              c.lastName ?? ""
+                            }`}</span>
+                            <button
+                              onClick={() => removeContact(c.id)}
+                              className="text-xs text-gray-500 hover:text-gray-700"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                    </div>
+                    <button
+                      type="button"
+                      className="mt-2 px-2 py-1 w-32 border rounded text-sm hover:bg-gray-50"
+                      onClick={() => setAddingChildren(true)}
+                    >
+                      + Add More
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
           )}
-        </div>
       </div>
 
-      {/* Navigation buttons */}
+      {/* Navigation */}
       <div className="flex justify-between mt-6">
         <button
           onClick={prevStep}
