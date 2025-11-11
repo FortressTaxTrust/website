@@ -162,8 +162,9 @@ const ContactManager: React.FC<ContactManagerProps> = ({
 
           <div className="flex gap-3 items-end">
             <div className="flex-1">
-              {renderLabel("Type")}
-              <select
+              <p>Contacts Added</p>
+              {/* {renderLabel("Type")} */}
+              {/* <select
                 value={form.type}
                 onChange={(e) =>
                   setForm((s) => ({ ...s, type: e.target.value }))
@@ -177,14 +178,14 @@ const ContactManager: React.FC<ContactManagerProps> = ({
                 <option>Attorney</option>
                 <option>CPA</option>
                 <option>Prospect</option>
-              </select>
-            </div>
+              </select> */}
+            </div> 
 
             <button
               onClick={handleCreate}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg h-fit"
             >
-              + Add
+              Save
             </button>
           </div>
         </div>

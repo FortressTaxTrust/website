@@ -36,29 +36,25 @@ export interface FormData {
 
 const stepTitles: Record<string, string[]> = {
   "C-Corporation": [
-    "Client Note",
     "Account Information",
     "Address Information",
     "Account Portal Links",
     "Description",
   ],
   Individual: [
-    "Client Note",
     "Account Information",
     "Address Information",
     "Account Portal Links",
     "Description",
   ],
   Partnership: [
-    "Client Note",
     "Account Information",
     "Address Information",
     "Account Portal Links",
     "Description",
   ],
 
-   'S-Corporation': [
-    "Client Note",
+  "S-Corporation": [
     "Account Information",
     "Address Information",
     "Account Portal Links",
@@ -66,14 +62,12 @@ const stepTitles: Record<string, string[]> = {
   ],
   "Non-Profit": ["Account Information", "Account Portal Links"],
   "Beneficial Trust": [
-    "Client Note",
     "Account Information",
     "Address Information",
     "Account Portal Links",
     "Description",
   ],
   "Business Trust": [
-    "Client Note",
     "Account Information",
     "Address Information",
     "Account Portal Links",
@@ -98,8 +92,7 @@ type FieldConfig = { name: keyof FormData; label: string; required?: boolean };
 type StepConfig = Record<number, FieldConfig[]>;
 const accountTypeStepConfig: Record<string, StepConfig> = {
   "Beneficial Trust": {
-    1: [{ name: "clientNote", label: "Client Note", required: true }],
-    2: [
+    1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "taxId", label: "Tax ID", required: true },
       { name: "clientId", label: "Client Id", required: true },
@@ -110,16 +103,15 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "phone1", label: "Phone #1" },
       // { name: "trusteeName", label: "Trustee Name" },
     ],
-    3: step3Fields,
-    4: [
+    2: step3Fields,
+    3: [
       { name: "connectedContacts", label: "Connected Contacts" },
       { name: "url2", label: "URL 2" },
     ],
-    5: [{ name: "description", label: "Description", required: true }],
+    4: [{ name: "description", label: "Description", required: true }],
   },
   "Business Trust": {
-    1: [{ name: "clientNote", label: "Client Note", required: true }],
-    2: [
+    1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "taxId", label: "Tax ID", required: true },
       { name: "clientId", label: "Client Id", required: true },
@@ -130,16 +122,15 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "phone1", label: "Phone #1" },
       // { name: "trusteeName", label: "Trustee Name" },
     ],
-    3: step3Fields,
-    4: [
+    2: step3Fields,
+    3: [
       { name: "connectedContacts", label: "Connected Contacts" },
       { name: "url2", label: "URL 2" },
     ],
-    5: [{ name: "description", label: "Description", required: true }],
+    4: [{ name: "description", label: "Description", required: true }],
   },
   "C-Corporation": {
-    1: [{ name: "clientNote", label: "Client Note", required: true }],
-    2: [
+    1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "state", label: "State", required: true },
       { name: "taxId", label: "Tax ID", required: true },
@@ -151,12 +142,12 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "stateFilingNumber", label: "State Filing Number(s)" },
       { name: "website", label: "Website" },
     ],
-    3: step3Fields,
-    4: [
+    2: step3Fields,
+    3: [
       { name: "connectedContacts", label: "Connected Contacts" },
       { name: "url2", label: "URL 2" },
     ],
-    5: [{ name: "description", label: "Description", required: true }],
+    4: [{ name: "description", label: "Description", required: true }],
   },
   "FIRM ACCOUNT": {
     1: [
@@ -176,28 +167,26 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     4: [{ name: "description", label: "Description", required: true }],
   },
   Individual: {
-    1: [{ name: "clientNote", label: "Client Note", required: true }],
-    2: [
+    1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "taxId", label: "Tax ID", required: true },
       { name: "clientId", label: "Client Id", required: true },
       { name: "phone1", label: "Phone #1" },
     ],
-    3: [
+    2: [
       { name: "billingStreet", label: "Billing Street", required: true },
       { name: "billingCity", label: "Billing City", required: true },
       { name: "billingState", label: "Billing State", required: true },
       { name: "billingCode", label: "Billing Code" },
     ],
-    4: [
+    3: [
       { name: "connectedContacts", label: "Connected Contacts" },
       { name: "url2", label: "URL 2" },
     ],
-    5: [{ name: "description", label: "Description", required: true }],
+    4: [{ name: "description", label: "Description", required: true }],
   },
   Partnership: {
-    1: [{ name: "clientNote", label: "Client Note", required: true }],
-    2: [
+    1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "state", label: "State", required: true },
       { name: "taxId", label: "Tax ID", required: true },
@@ -209,16 +198,15 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "stateFilingNumber", label: "State Filing Number(s)" },
       { name: "website", label: "Website" },
     ],
-    3: step3Fields,
-    4: [
+    2: step3Fields,
+    3: [
       { name: "connectedContacts", label: "Connected Contacts" },
       { name: "url2", label: "URL 2" },
     ],
-    5: [{ name: "description", label: "Description", required: true }],
+    4: [{ name: "description", label: "Description", required: true }],
   },
   "S-Corporation": {
-    1: [{ name: "clientNote", label: "Client Note", required: true }],
-    2: [
+    1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "state", label: "State", required: true },
       { name: "taxId", label: "Tax ID", required: true },
@@ -230,12 +218,12 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "stateFilingNumber", label: "State Filing Number(s)" },
       { name: "website", label: "Website" },
     ],
-    3: step3Fields,
-    4: [
+    2: step3Fields,
+    3: [
       { name: "connectedContacts", label: "Connected Contacts" },
       { name: "url2", label: "URL 2" },
     ],
-    5: [{ name: "description", label: "Description", required: true }],
+    4: [{ name: "description", label: "Description", required: true }],
   },
   "Non-Profit": {
     1: [
@@ -270,6 +258,8 @@ const Step2GiveDetails: React.FC<Props> = ({
   >([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const totalSteps = stepTitles[formData.accountType]?.length ?? 0;
+  const [addingSpouse, setAddingSpouse] = useState(false);
+  const [addingChildren, setAddingChildren] = useState(false);
 
   useEffect(() => {
     const accountType = formData.accountType?.trim();
@@ -344,7 +334,6 @@ const Step2GiveDetails: React.FC<Props> = ({
     <div className="relative">
       {/* Step header */}
       <div className="mb-6">
-        {/* Step numbers with titles */}
         <div className="flex justify-between items-center mb-3">
           {stepTitles[formData.accountType]?.map((title, index) => {
             const isActive = index + 1 === step;
@@ -356,8 +345,7 @@ const Step2GiveDetails: React.FC<Props> = ({
               ${isCompleted ? "bg-green-500 text-white" : ""}
               ${
                 isActive ? "bg-primary text-white" : "bg-gray-200 text-gray-500"
-              }
-            `}
+              }`}
                 >
                   {index + 1}
                 </div>
@@ -377,104 +365,115 @@ const Step2GiveDetails: React.FC<Props> = ({
       </div>
 
       {/* Step fields */}
-      <div className="space-y-6 overflow-y-auto max-h-[60vh] pr-2">
-        {formData.accountType &&
-          Object.entries(
-            accountTypeStepConfig[formData.accountType] || {}
-          ).some(
-            ([stepNum, fields]) =>
-              fields.some((f) => f.name === "connectedContacts") &&
-              Number(stepNum) === step
-          ) && (
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                {renderLabel("Connected Contacts")}
-                {/* {formData.accountType === "Partnership" && (
-                  <div className="relative inline-block group">
-                    <span className="text-gray-400 cursor-pointer font-bold">
-                      ?
-                    </span>
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none">
-                      Connected contacts allow you to link other individuals
-                      associated with this account.
-                    </div>
-                  </div>
-                )} */}
-              </div>
-              <div className="flex gap-2 items-center mb-2 flex-wrap">
-                {formData.connectedContacts.map((c) => (
-                  <div
-                    key={c.id}
-                    className="flex items-center bg-gray-100 px-2 py-1 rounded text-sm"
-                  >
-                    <span className="mr-2">{`${c.firstName ?? ""} ${
-                      c.lastName ?? ""
-                    }`}</span>
-                    <button
-                      onClick={() => removeContact(c.id)}
-                      className="text-xs text-gray-500 hover:text-gray-700"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+      {/* Connected Contacts */}
+      <div className="space-y-4">
+        {/* Spouse */}
+        <div>
+          <label className="inline-flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={
+                !!formData.connectedContacts.find((c) => c.type === "Spouse")
+              }
+              disabled={
+                !!formData.connectedContacts.find((c) => c.type === "Spouse")
+              }
+              className="form-checkbox h-4 w-4 text-primary"
+              onChange={(e) => setAddingSpouse(e.target.checked)}
+            />
+            Add spouse / joint account
+          </label>
+
+          {/* Show spouse form if checkbox checked or addingSpouse true */}
+          {addingSpouse &&
+            !formData.connectedContacts.find((c) => c.type === "Spouse") && (
+              <ContactManager
+                existing={formData.connectedContacts}
+                selected={formData.connectedContacts.map((c) => c.id)}
+                onClose={() => setAddingSpouse(false)}
+                onCreate={(c) => addOrIgnoreContact({ ...c, type: "Spouse" })}
+                onSelect={(c) => addOrIgnoreContact({ ...c, type: "Spouse" })}
+              />
+            )}
+
+          {/* Display added spouse */}
+          {formData.connectedContacts
+            .filter((c) => c.type === "Spouse")
+            .map((c) => (
+              <div
+                key={c.id}
+                className="flex items-center gap-2 mt-2 bg-gray-100 px-2 py-1 rounded text-sm"
+              >
+                <span>{`${c.firstName ?? ""} ${c.lastName ?? ""}`}</span>
                 <button
-                  type="button"
-                  onClick={() => setShowContactManager((s) => !s)}
-                  className="inline-flex items-center gap-2 px-3 py-1 border rounded text-sm hover:bg-gray-50"
+                  className="text-xs text-gray-500 hover:text-gray-700"
+                  onClick={() => removeContact(c.id)}
                 >
-                  + Add / Select
+                  ×
                 </button>
               </div>
-              {showContactManager && (
-                <div className="absolute z-50 mt-2 bg-white p-3 rounded shadow-lg w-[480px]">
-                  <ContactManager
-                    existing={formData.connectedContacts}
-                    selected={formData.connectedContacts.map((c) => c.id)}
-                    onClose={() => setShowContactManager(false)}
-                    onCreate={addOrIgnoreContact}
-                    onSelect={addOrIgnoreContact}
-                  />
-                </div>
-              )}
-            </div>
+            ))}
+        </div>
+
+        {/* Dependents */}
+        <div className="mt-4">
+          <label className="inline-flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={
+                !!formData.connectedContacts.find((c) => c.type === "Dependent")
+              }
+              className="form-checkbox h-4 w-4 text-primary"
+              onChange={(e) => setAddingChildren(e.target.checked)}
+            />
+            Add children / dependents
+          </label>
+
+          {/* Dependents form */}
+          {addingChildren && (
+            <ContactManager
+              existing={formData.connectedContacts}
+              selected={formData.connectedContacts.map((c) => c.id)}
+              onClose={() => setAddingChildren(false)}
+              onCreate={(c) => addOrIgnoreContact({ ...c, type: "Dependent" })}
+              onSelect={(c) => addOrIgnoreContact({ ...c, type: "Dependent" })}
+            />
           )}
 
-        <div className="grid grid-cols-2 gap-4">
-          {fieldsForCurrentStep
-            .filter((f) => f.name !== "connectedContacts")
-            .map((field) => (
-              <div key={field.name}>
-                {renderLabel(field.label, field.required)}
-                {field.name === "description" ? (
-                  <textarea
-                    name={field.name}
-                    value={formData[field.name] || ""}
-                    onChange={handleChange}
-                    placeholder={"Notes or Special Instructions"}
-                    rows={3}
-                    className={`w-full border rounded-md px-3 py-2 ${
-                      errors[field.name] ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                ) : (
-                  <input
-                    name={field.name}
-                    value={String(formData[field.name] ?? "")}
-                    onChange={handleChange}
-                    placeholder={field.label}
-                    className={`border rounded-md px-3 py-2 w-full ${
-                      errors[field.name] ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                )}
-                {errors[field.name] && (
-                  <p className="text-xs text-red-500 mt-1">
-                    {errors[field.name]}
-                  </p>
-                )}
+          {/* Display added dependents */}
+          {/* Display added dependents */}
+          {formData.connectedContacts.filter((c) => c.type === "Dependent")
+            .length > 0 && (
+            <div className="flex flex-col gap-2 mt-2">
+              <div className="flex flex-wrap gap-2">
+                {formData.connectedContacts
+                  .filter((c) => c.type === "Dependent")
+                  .map((c) => (
+                    <div
+                      key={c.id}
+                      className="flex items-center bg-gray-100 px-2 py-1 rounded text-sm"
+                    >
+                      <span className="mr-2">{`${c.firstName ?? ""} ${
+                        c.lastName ?? ""
+                      }`}</span>
+                      <button
+                        onClick={() => removeContact(c.id)}
+                        className="text-xs text-gray-500 hover:text-gray-700"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
               </div>
-            ))}
+              <button
+                type="button"
+                className="mt-2 px-2 py-1 w-32 border rounded text-sm hover:bg-gray-50"
+                onClick={() => setAddingChildren(true)}
+              >
+                + Add More
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -500,5 +499,4 @@ const Step2GiveDetails: React.FC<Props> = ({
     </div>
   );
 };
-
 export default Step2GiveDetails;
