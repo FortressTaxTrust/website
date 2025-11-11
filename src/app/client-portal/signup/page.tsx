@@ -9,10 +9,11 @@ export default function Signup() {
   const router = useRouter();
   const [step, setStep] = useState<"signup" | "confirm">("signup");
   const [formData, setFormData] = useState({
-    username: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
@@ -23,7 +24,7 @@ export default function Signup() {
     uppercase: false,
     lowercase: false,
     number: false,
-    special: false
+    special: false,
   });
 
   // Check password requirements
@@ -33,7 +34,7 @@ export default function Signup() {
       uppercase: /[A-Z]/.test(formData.password),
       lowercase: /[a-z]/.test(formData.password),
       number: /\d/.test(formData.password),
-      special: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password)
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password),
     });
   }, [formData.password]);
 
@@ -41,33 +42,34 @@ export default function Signup() {
     e.preventDefault();
     setError("");
 
-    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return;
     }
 
-    // Check if all requirements are met
     if (!Object.values(passwordRequirements).every(Boolean)) {
       setError("Please ensure your password meets all requirements");
       return;
     }
 
     setLoading(true);
-    
+
     try {
       const res = await axios.post(
         process.env.NEXT_PUBLIC_API_URL + "/auth/signup",
         {
-          username: formData.username,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
-          password: formData.password
+          password: formData.password,
         },
         { headers: { "Content-Type": "application/json" } }
       );
-      
+
       if (res.data.status === "success") {
-        setSuccess("Account created successfully! Please check your email for verification code.");
+        setSuccess(
+          "Account created successfully! Please check your email for verification code."
+        );
         setStep("confirm");
       } else {
         setError("Failed to create account");
@@ -75,8 +77,8 @@ export default function Signup() {
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Failed to create account"
+          err.response?.data?.error ||
+          "Failed to create account"
       );
     } finally {
       setLoading(false);
@@ -87,17 +89,17 @@ export default function Signup() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    
+
     try {
       const res = await axios.post(
         process.env.NEXT_PUBLIC_API_URL + "/auth/confirm-signup",
         {
           username: formData.email,
-          code: code
+          code: code,
         },
         { headers: { "Content-Type": "application/json" } }
       );
-      
+
       if (res.data.status === "success") {
         setSuccess("Account confirmed successfully! You can now log in.");
         setTimeout(() => {
@@ -109,8 +111,8 @@ export default function Signup() {
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Failed to confirm account"
+          err.response?.data?.error ||
+          "Failed to confirm account"
       );
     } finally {
       setLoading(false);
@@ -127,34 +129,64 @@ export default function Signup() {
             {step === "signup" ? "Create Account" : "Verify Email"}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            {step === "signup" 
+            {step === "signup"
               ? "Sign up for your Tax Fortress account"
-              : "Enter the verification code sent to your email"
-            }
+              : "Enter the verification code sent to your email"}
           </p>
         </div>
 
         {step === "signup" && (
           <form className="mt-8 space-y-6" onSubmit={handleSignup}>
             <div className="space-y-4">
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                  Username
-                </label>
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  required
-                  value={formData.username}
-                  onChange={(e) => setFormData({...formData, username: e.target.value})}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                  placeholder="Choose a username"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label
+                    htmlFor="firstName"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    required
+                    value={formData.firstName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, firstName: e.target.value })
+                    }
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="John"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="lastName"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    required
+                    value={formData.lastName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, lastName: e.target.value })
+                    }
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="Doe"
+                  />
+                </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Email
                 </label>
                 <input
@@ -163,14 +195,19 @@ export default function Signup() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                   placeholder="Enter your email"
                 />
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Password
                 </label>
                 <input
@@ -179,14 +216,19 @@ export default function Signup() {
                   type="password"
                   required
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                   placeholder="Create a password"
                 />
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Confirm Password
                 </label>
                 <input
@@ -195,43 +237,56 @@ export default function Signup() {
                   type="password"
                   required
                   value={formData.confirmPassword}
-                  onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                   placeholder="Confirm your password"
                 />
               </div>
+
               {formData.confirmPassword &&
-                  formData.password !== formData.confirmPassword && (
-                    <p className="text-red-600 text-sm mt-1">
-                      Passwords do not match
-                    </p>
+                formData.password !== formData.confirmPassword && (
+                  <p className="text-red-600 text-sm mt-1">
+                    Passwords do not match
+                  </p>
                 )}
             </div>
 
             {/* Password Requirements */}
             <div className="bg-gray-50 p-4 rounded-md">
-              <h4 className="font-semibold text-gray-900 mb-3">Password Requirements:</h4>
+              <h4 className="font-semibold text-gray-900 mb-3">
+                Password Requirements:
+              </h4>
               <div className="space-y-2 text-sm">
-                <div className={`flex items-center ${passwordRequirements.length ? 'text-green-600' : 'text-gray-500'}`}>
-                  <div className={`w-4 h-4 rounded-full mr-2 ${passwordRequirements.length ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  At least 8 characters
-                </div>
-                <div className={`flex items-center ${passwordRequirements.uppercase ? 'text-green-600' : 'text-gray-500'}`}>
-                  <div className={`w-4 h-4 rounded-full mr-2 ${passwordRequirements.uppercase ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  One uppercase letter
-                </div>
-                <div className={`flex items-center ${passwordRequirements.lowercase ? 'text-green-600' : 'text-gray-500'}`}>
-                  <div className={`w-4 h-4 rounded-full mr-2 ${passwordRequirements.lowercase ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  One lowercase letter
-                </div>
-                <div className={`flex items-center ${passwordRequirements.number ? 'text-green-600' : 'text-gray-500'}`}>
-                  <div className={`w-4 h-4 rounded-full mr-2 ${passwordRequirements.number ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  One number
-                </div>
-                <div className={`flex items-center ${passwordRequirements.special ? 'text-green-600' : 'text-gray-500'}`}>
-                  <div className={`w-4 h-4 rounded-full mr-2 ${passwordRequirements.special ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  One special character
-                </div>
+                {[
+                  { key: "length", text: "At least 8 characters" },
+                  { key: "uppercase", text: "One uppercase letter" },
+                  { key: "lowercase", text: "One lowercase letter" },
+                  { key: "number", text: "One number" },
+                  { key: "special", text: "One special character" },
+                ].map((req) => (
+                  <div
+                    key={req.key}
+                    className={`flex items-center ${
+                      passwordRequirements[req.key as keyof typeof passwordRequirements]
+                        ? "text-green-600"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full mr-2 ${
+                        passwordRequirements[req.key as keyof typeof passwordRequirements]
+                          ? "bg-green-500"
+                          : "bg-gray-300"
+                      }`}
+                    ></div>
+                    {req.text}
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -250,7 +305,7 @@ export default function Signup() {
             </button>
 
             <div className="text-center">
-              <Link 
+              <Link
                 href="/client-portal"
                 className="text-primary hover:text-primary/80 text-sm font-medium"
               >
@@ -263,7 +318,10 @@ export default function Signup() {
         {step === "confirm" && (
           <form className="mt-8 space-y-6" onSubmit={handleConfirm}>
             <div>
-              <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="code"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Verification Code
               </label>
               <input
