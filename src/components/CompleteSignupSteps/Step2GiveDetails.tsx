@@ -373,9 +373,7 @@ const Step2GiveDetails: React.FC<Props> = ({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl font-bold text-gray-800">
-        Step 2: Account Details
-      </h3>
+      <h3 className="text-2xl font-bold text-black">Step 2: Account Details</h3>
 
       {!isNewBusiness && (
         <div className="flex gap-2 flex-wrap">
@@ -389,8 +387,8 @@ const Step2GiveDetails: React.FC<Props> = ({
               }}
               className={`px-4 py-2 rounded-lg font-medium transition ${
                 selectedAccountIndex === idx
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                  ? "bg-primary text-white"
+                  : "bg-gray-light text-black hover:bg-gray-medium"
               }`}
             >
               {idx === 0
@@ -405,19 +403,18 @@ const Step2GiveDetails: React.FC<Props> = ({
         <div
           className={`p-4 border rounded-lg ${
             isIndividualAccount
-              ? "bg-blue-50 border-blue-200"
-              : "bg-gray-50 border-gray-200"
+              ? "bg-blue-50 border-gray-light"
+              : "bg-gray-light border-gray-medium"
           }`}
         >
-          {/* <p className="text-sm text-gray-600">Editing:</p> */}
-          <p className="text-lg font-semibold text-gray-800">{accountLabel}</p>
+          <p className="text-lg font-semibold text-black">{accountLabel}</p>
           <p className="text-sm text-gray-600 mt-1">
             Type: {currentFormData?.accountType}
           </p>
           {isIndividualAccount &&
             currentFormData?.connectedContacts &&
             currentFormData.connectedContacts.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-blue-200">
+              <div className="mt-3 pt-3 border-t border-gray-medium">
                 <p className="text-sm font-medium text-gray-700 mb-2">
                   Primary Contact:
                 </p>
@@ -445,6 +442,7 @@ const Step2GiveDetails: React.FC<Props> = ({
         </div>
       )}
 
+      {/* Step Progress */}
       {(!currentFormData?.accountType ||
         currentFormData?.accountType === "-None-") &&
       isNewBusiness ? (
@@ -460,7 +458,6 @@ const Step2GiveDetails: React.FC<Props> = ({
         currentFormData?.accountType !== "-None-" &&
         !isIndividualAccount ? (
         <>
-          {/* Step Progress */}
           <div className="flex justify-between items-center mb-6">
             {stepTitles[currentFormData.accountType]?.map((title, index) => {
               const isActive = index + 1 === step;
@@ -472,8 +469,8 @@ const Step2GiveDetails: React.FC<Props> = ({
                       isCompleted
                         ? "bg-green-500 text-white"
                         : isActive
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 text-gray-600"
+                        ? "bg-primary text-white"
+                        : "bg-gray-light text-black"
                     }`}
                   >
                     {index + 1}
@@ -487,9 +484,9 @@ const Step2GiveDetails: React.FC<Props> = ({
           </div>
 
           {/* Progress Bar */}
-          <div className="relative w-full h-2 bg-gray-200 rounded-full">
+          <div className="relative w-full h-2 bg-gray-medium rounded-full">
             <div
-              className="absolute h-2 bg-blue-600 rounded-full transition-all duration-300"
+              className="absolute h-2 bg-primary rounded-full transition-all duration-300"
               style={{ width: `${(step / totalSteps) * 100}%` }}
             />
           </div>
@@ -556,13 +553,13 @@ const Step2GiveDetails: React.FC<Props> = ({
       <div className="flex justify-between gap-3 mt-8">
         <button
           onClick={prevStep}
-          className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition"
+          className="px-4 py-2 border border-gray-medium rounded-lg hover:bg-gray-light font-medium transition"
         >
           {isNewBusiness ? "Cancel" : "Previous"}
         </button>
         <button
           onClick={nextStep}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition"
+          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-black font-medium transition"
         >
           {(step === totalSteps || isIndividualAccount) &&
           currentIndex === formDataArray.length - 1
