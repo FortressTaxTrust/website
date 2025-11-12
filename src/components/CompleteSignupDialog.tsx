@@ -218,7 +218,7 @@ const CompleteSignupDialog = ({
           <div className="space-y-6">
             {/* List of Connected Contacts */}
             <div className="border rounded-lg p-4">
-              <h3 className="font-semibold mb-2">Connected Accounts</h3>
+              <h3 className="font-semibold mb-2">Connected Contacts</h3>
               {formDataArray[0].connectedContacts.length === 0 && (
                 <p className="text-sm text-gray-500">
                   No connected accounts yet.
