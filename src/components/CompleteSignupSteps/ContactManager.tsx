@@ -37,7 +37,24 @@ const ContactManager: React.FC<ContactManagerProps> = ({
   selected = [],
 }) => {
   const [contacts, setContacts] = useState<Contact[]>(existing);
-  const [form, setForm] = useState<Contact>({});
+  const [form, setForm] = useState<Contact>({
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    secondaryEmail: "",
+    fax: "",
+    type: "",
+    tin: "",
+    importantNotes: "",
+    dateOfBirth: "",
+    phone: "",
+    billingStreet: "",
+    billingCity: "",
+    billingState: "",
+    billingCode: "",
+    billingZip: "",
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedIds, setSelectedIds] = useState<string[]>(selected);
 
@@ -63,31 +80,36 @@ const ContactManager: React.FC<ContactManagerProps> = ({
   };
 
   // Dynamically generate all fields from Contact interface
-  const contactFields: { name: keyof Contact; label: string; required?: boolean }[] =
-    [
-      { name: "firstName", label: "First Name", required: true },
-      { name: "lastName", label: "Last Name", required: true },
-      { name: "email", label: "Email" },
-      { name: "secondaryEmail", label: "Secondary Email" },
-      { name: "fax", label: "Fax" },
-      { name: "type", label: "Type" },
-      { name: "tin", label: "TIN" },
-      { name: "importantNotes", label: "Important Notes" },
-      { name: "dateOfBirth", label: "Date of Birth" },
-      { name: "phone", label: "Phone" },
-      { name: "billingStreet", label: "Mailing Street" },
-      { name: "billingCity", label: "Mailing City" },
-      { name: "billingState", label: "Mailing State" },
-      { name: "billingCode", label: "Mailing Code" },
-      { name: "billingZip", label: "Mailing Zip" },
-    ];
+  const contactFields: {
+    name: keyof Contact;
+    label: string;
+    required?: boolean;
+  }[] = [
+    { name: "firstName", label: "First Name", required: true },
+    { name: "lastName", label: "Last Name", required: true },
+    { name: "email", label: "Email" },
+    { name: "secondaryEmail", label: "Secondary Email" },
+    { name: "fax", label: "Fax" },
+    { name: "type", label: "Type" },
+    { name: "tin", label: "TIN" },
+    { name: "importantNotes", label: "Important Notes" },
+    { name: "dateOfBirth", label: "Date of Birth" },
+    { name: "phone", label: "Phone" },
+    { name: "billingStreet", label: "Mailing Street" },
+    { name: "billingCity", label: "Mailing City" },
+    { name: "billingState", label: "Mailing State" },
+    { name: "billingCode", label: "Mailing Code" },
+    { name: "billingZip", label: "Mailing Zip" },
+  ];
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h4 className="font-semibold text-gray-700 text-lg">Contact Manager</h4>
+          <h4 className="font-semibold text-gray-700 text-lg">
+            Contact Manager
+          </h4>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-700 text-xl font-bold"
@@ -115,7 +137,9 @@ const ContactManager: React.FC<ContactManagerProps> = ({
                   className="border rounded px-3 py-2 w-full"
                 />
                 {errors[field.name] && (
-                  <p className="text-xs text-red-500 mt-1">{errors[field.name]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors[field.name]}
+                  </p>
                 )}
               </div>
             ))}
@@ -156,7 +180,9 @@ const ContactManager: React.FC<ContactManagerProps> = ({
                   onClick={() => onSelect(c)}
                 >
                   <div>
-                    <div className="text-sm font-medium">{`${c.firstName || ""} ${c.lastName || ""}`}</div>
+                    <div className="text-sm font-medium">{`${
+                      c.firstName || ""
+                    } ${c.lastName || ""}`}</div>
                     <div className="text-xs text-gray-500">
                       {c.email || c.type}
                     </div>
