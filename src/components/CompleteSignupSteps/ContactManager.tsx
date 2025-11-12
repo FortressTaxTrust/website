@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 
 export type Contact = {
-  id: string;
+  id?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
-  phone?: string;
   type?: string;
+  taxId?: string;
+  phone1?: string;
+  billingStreet?: string;
+  billingCity?: string;
+  billingState?: string;
+  billingCode?: string;
 };
 
 interface ContactManagerProps {
@@ -27,12 +32,17 @@ const ContactManager: React.FC<ContactManagerProps> = ({
   selected = [],
 }) => {
   const [contacts, setContacts] = useState<Contact[]>(existing);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<Contact>({
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
     type: "",
+    taxId: "",
+    phone1: "",
+    billingStreet: "",
+    billingCity: "",
+    billingState: "",
+    billingCode: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedIds, setSelectedIds] = useState<string[]>(selected);
@@ -41,46 +51,46 @@ const ContactManager: React.FC<ContactManagerProps> = ({
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!form.firstName.trim()) newErrors.firstName = "First name is required";
-    if (!form.lastName.trim()) newErrors.lastName = "Last name is required";
-    if (!form.email || !/\S+@\S+\.\S+/.test(form.email))
-      newErrors.email = "Invalid email address";
-    if (form.phone && !/^\+?[0-9\s-]{7,15}$/.test(form.phone))
-      newErrors.phone = "Invalid phone number";
+    if (!form.lastName?.trim()) newErrors.lastName = "Last name is required";
+    if (!form.firstName?.trim()) newErrors.firstName = "First name is required";
     return newErrors;
   };
 
   const handleCreate = () => {
     const validationErrors = validateForm();
     setErrors(validationErrors);
-
     if (Object.keys(validationErrors).length > 0) return;
 
-    const contact: Contact = {
-      id: genId(),
-      firstName: form.firstName.trim(),
-      lastName: form.lastName.trim(),
-      email: form.email.trim(),
-      phone: form.phone.trim(),
-      type: form.type.trim() || "Client",
-    };
-
+    const contact: Contact = { ...form, id: genId() };
     setContacts((s) => [contact, ...s]);
     onCreate(contact);
-    setForm({ firstName: "", lastName: "", email: "", phone: "", type: "" });
+    setForm({
+      firstName: "",
+      lastName: "",
+      email: "",
+      type: "",
+      taxId: "",
+      phone1: "",
+      billingStreet: "",
+      billingCity: "",
+      billingState: "",
+      billingCode: "",
+    });
     setErrors({});
   };
 
-  const renderLabel = (label: string, required = false) => (
-    <label className="text-sm font-medium text-gray-700">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
-  );
+  const mainFields = [
+    { name: "taxId", label: "Tax ID" },
+    { name: "phone1", label: "Phone #1" },
+    { name: "billingStreet", label: "Mailing Street" },
+    { name: "billingCity", label: "Mailing City" },
+    { name: "billingState", label: "Mailing State" },
+    { name: "billingCode", label: "Mailing Code" },
+  ];
 
   return (
-    // Overlay + Centering
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h4 className="font-semibold text-gray-700 text-lg">
@@ -94,81 +104,17 @@ const ContactManager: React.FC<ContactManagerProps> = ({
           </button>
         </div>
 
-        {/* Create Contact Form */}
+        {/* Form */}
         <div className="space-y-4 mb-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              {renderLabel("First name", true)}
-              <input
-                placeholder="Enter first name"
-                value={form.firstName}
-                onChange={(e) =>
-                  setForm((s) => ({ ...s, firstName: e.target.value }))
-                }
-                className="border rounded px-3 py-2 w-full"
-              />
-              {errors.firstName && (
-                <p className="text-xs text-red-500 mt-1">{errors.firstName}</p>
-              )}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Last Name */}
 
-            <div>
-              {renderLabel("Last name", true)}
-              <input
-                placeholder="Enter last name"
-                value={form.lastName}
-                onChange={(e) =>
-                  setForm((s) => ({ ...s, lastName: e.target.value }))
-                }
-                className="border rounded px-3 py-2 w-full"
-              />
-              {errors.lastName && (
-                <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              {renderLabel("Email", true)}
-              <input
-                placeholder="Enter email"
-                value={form.email}
-                onChange={(e) =>
-                  setForm((s) => ({ ...s, email: e.target.value }))
-                }
-                className="border rounded px-3 py-2 w-full"
-              />
-              {errors.email && (
-                <p className="text-xs text-red-500 mt-1">{errors.email}</p>
-              )}
-            </div>
-
-            <div>
-              {renderLabel("Phone")}
-              <input
-                placeholder="Enter phone number"
-                value={form.phone}
-                onChange={(e) =>
-                  setForm((s) => ({ ...s, phone: e.target.value }))
-                }
-                className="border rounded px-3 py-2 w-full"
-              />
-              {errors.phone && (
-                <p className="text-xs text-red-500 mt-1">{errors.phone}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex gap-3 items-end">
-            <div className="flex-1">
-              <p>Contacts Added</p>
-              {/* {renderLabel("Type")} */}
-              {/* <select
+            {/* Contact Type */}
+            {/* <div>
+              <label className="text-sm font-medium text-gray-700">Type <span className="text-red-500">*</span></label>
+              <select
                 value={form.type}
-                onChange={(e) =>
-                  setForm((s) => ({ ...s, type: e.target.value }))
-                }
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
                 className="border rounded px-3 py-2 w-full"
               >
                 <option value="">-None-</option>
@@ -178,12 +124,79 @@ const ContactManager: React.FC<ContactManagerProps> = ({
                 <option>Attorney</option>
                 <option>CPA</option>
                 <option>Prospect</option>
-              </select> */}
-            </div> 
+              </select>
+              {errors.type && <p className="text-xs text-red-500 mt-1">{errors.type}</p>}
+            </div> */}
 
+            {/* First Name */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                First Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                value={form.firstName}
+                onChange={(e) =>
+                  setForm({ ...form, firstName: e.target.value })
+                }
+                className="border rounded px-3 py-2 w-full"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Last Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                placeholder="Enter last name"
+                value={form.lastName}
+                onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                className="border rounded px-3 py-2 w-full"
+              />
+              {errors.lastName && (
+                <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Email</label>
+              <input
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="border rounded px-3 py-2 w-full"
+              />
+            </div>
+
+            {/* Main User Fields */}
+            {mainFields.map((field) => (
+              <div key={field.name}>
+                <label className="text-sm font-medium text-gray-700">
+                  {field.label}{" "}
+                  {field && <span className="text-red-500">*</span>}
+                </label>
+                <input
+                  type="text"
+                  value={(form as any)[field.name] || ""}
+                  onChange={(e) =>
+                    setForm({ ...form, [field.name]: e.target.value })
+                  }
+                  className="border rounded px-3 py-2 w-full"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-3 mt-4">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 border rounded hover:bg-gray-100"
+            >
+              Cancel
+            </button>
             <button
               onClick={handleCreate}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg h-fit"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
               Save
             </button>
@@ -196,7 +209,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
             <div className="text-sm text-gray-500">No contacts yet</div>
           ) : (
             contacts.map((c) => {
-              const isSelected = selectedIds.includes(c.id);
+              const isSelected = c.id ? selectedIds.includes(c.id) : false;
               return (
                 <div
                   key={c.id}
@@ -208,11 +221,11 @@ const ContactManager: React.FC<ContactManagerProps> = ({
                   onClick={() => onSelect(c)}
                 >
                   <div>
-                    <div className="text-sm font-medium">
-                      {`${c.firstName ? c.firstName + " " : ""}${c.lastName}`}
-                    </div>
+                    <div className="text-sm font-medium">{`${
+                      c.firstName || ""
+                    } ${c.lastName}`}</div>
                     <div className="text-xs text-gray-500">
-                      {c.email || c.phone || c.type}
+                      {c.email || c.type}
                     </div>
                   </div>
                   <div
