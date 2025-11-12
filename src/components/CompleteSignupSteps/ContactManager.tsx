@@ -5,13 +5,18 @@ export type Contact = {
   firstName?: string;
   lastName?: string;
   email?: string;
+  secondaryEmail?: string;
+  fax?: string;
   type?: string;
-  taxId?: string;
-  phone1?: string;
+  tin?: string;
+  importantNotes?: string;
+  dateOfBirth?: string;
+  phone?: string;
   billingStreet?: string;
   billingCity?: string;
   billingState?: string;
   billingCode?: string;
+  billingZip?: string;
 };
 
 interface ContactManagerProps {
@@ -32,18 +37,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
   selected = [],
 }) => {
   const [contacts, setContacts] = useState<Contact[]>(existing);
-  const [form, setForm] = useState<Contact>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    type: "",
-    taxId: "",
-    phone1: "",
-    billingStreet: "",
-    billingCity: "",
-    billingState: "",
-    billingCode: "",
-  });
+  const [form, setForm] = useState<Contact>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedIds, setSelectedIds] = useState<string[]>(selected);
 
@@ -53,7 +47,6 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     const newErrors: Record<string, string> = {};
     if (!form.firstName?.trim()) newErrors.firstName = "First name is required";
     if (!form.lastName?.trim()) newErrors.lastName = "Last name is required";
-
     return newErrors;
   };
 
@@ -65,38 +58,36 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     const contact: Contact = { ...form, id: genId() };
     setContacts((s) => [contact, ...s]);
     onCreate(contact);
-    setForm({
-      firstName: "",
-      lastName: "",
-      email: "",
-      type: "",
-      taxId: "",
-      phone1: "",
-      billingStreet: "",
-      billingCity: "",
-      billingState: "",
-      billingCode: "",
-    });
+    setForm({});
     setErrors({});
   };
 
-  const mainFields = [
-    { name: "taxId", label: "Tax ID" },
-    { name: "phone1", label: "Phone #1" },
-    { name: "billingStreet", label: "Mailing Street" },
-    { name: "billingCity", label: "Mailing City" },
-    { name: "billingState", label: "Mailing State" },
-    { name: "billingCode", label: "Mailing Code" },
-  ];
+  // Dynamically generate all fields from Contact interface
+  const contactFields: { name: keyof Contact; label: string; required?: boolean }[] =
+    [
+      { name: "firstName", label: "First Name", required: true },
+      { name: "lastName", label: "Last Name", required: true },
+      { name: "email", label: "Email" },
+      { name: "secondaryEmail", label: "Secondary Email" },
+      { name: "fax", label: "Fax" },
+      { name: "type", label: "Type" },
+      { name: "tin", label: "TIN" },
+      { name: "importantNotes", label: "Important Notes" },
+      { name: "dateOfBirth", label: "Date of Birth" },
+      { name: "phone", label: "Phone" },
+      { name: "billingStreet", label: "Mailing Street" },
+      { name: "billingCity", label: "Mailing City" },
+      { name: "billingState", label: "Mailing State" },
+      { name: "billingCode", label: "Mailing Code" },
+      { name: "billingZip", label: "Mailing Zip" },
+    ];
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h4 className="font-semibold text-gray-700 text-lg">
-            Contact Manager
-          </h4>
+          <h4 className="font-semibold text-gray-700 text-lg">Contact Manager</h4>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-700 text-xl font-bold"
@@ -108,64 +99,24 @@ const ContactManager: React.FC<ContactManagerProps> = ({
         {/* Form */}
         <div className="space-y-4 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    
-            {/* First Name */}
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                First Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                placeholder="Jhon"
-                value={form.firstName}
-                onChange={(e) =>
-                  setForm({ ...form, firstName: e.target.value })
-                }
-                className="border rounded px-3 py-2 w-full"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Last Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                placeholder="Doe"
-                value={form.lastName}
-                onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                className="border rounded px-3 py-2 w-full"
-              />
-              {errors.lastName && (
-                <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="text-sm font-medium text-gray-700">Email</label>
-              <input
-                value={form.email}
-                placeholder="fortresstax@gmail.com"
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="border rounded px-3 py-2 w-full"
-              />
-            </div>
-
-            {/* Main User Fields */}
-            {mainFields.map((field) => (
-              <div key={field.name}>
+            {contactFields.map((field) => (
+              <div key={field.name as string}>
                 <label className="text-sm font-medium text-gray-700">
                   {field.label}{" "}
-                  {field && <span className="text-red-500">*</span>}
+                  {field.required && <span className="text-red-500">*</span>}
                 </label>
                 <input
-                  type="text"
-                  placeholder={`${field.label.toLowerCase()}`}
-                  value={(form as any)[field.name] || ""}
+                  type={field.name === "dateOfBirth" ? "date" : "text"}
+                  placeholder={`Enter ${field.label}`}
+                  value={(form[field.name] as string) || ""}
                   onChange={(e) =>
                     setForm({ ...form, [field.name]: e.target.value })
                   }
                   className="border rounded px-3 py-2 w-full"
                 />
+                {errors[field.name] && (
+                  <p className="text-xs text-red-500 mt-1">{errors[field.name]}</p>
+                )}
               </div>
             ))}
           </div>
@@ -205,9 +156,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
                   onClick={() => onSelect(c)}
                 >
                   <div>
-                    <div className="text-sm font-medium">{`${
-                      c.firstName || ""
-                    } ${c.lastName}`}</div>
+                    <div className="text-sm font-medium">{`${c.firstName || ""} ${c.lastName || ""}`}</div>
                     <div className="text-xs text-gray-500">
                       {c.email || c.type}
                     </div>

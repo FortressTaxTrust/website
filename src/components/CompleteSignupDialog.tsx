@@ -97,6 +97,7 @@ const CompleteSignupDialog = ({
   const [successMessage, setSuccessMessage] = useState("");
   const [addingSpouse, setAddingSpouse] = useState(false);
   const [addingChildren, setAddingChildren] = useState(false);
+  const [checkedChild, setCheckedChild] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [addingBusinessIndex, setAddingBusinessIndex] = useState<number | null>(
     null
@@ -129,13 +130,18 @@ const CompleteSignupDialog = ({
               firstName: firstName,
               lastName: lastName,
               email: payload?.email || "",
-              phone1: "",
               type: "own",
-              taxId: "",
+              secondaryEmail: "",
+              fax: "",
+              tin: "",
+              importantNotes: "",
+              dateOfBirth: "",
+              phone: "",
               billingStreet: "",
               billingCity: "",
               billingState: "",
               billingCode: "",
+              billingZip: "",
             },
           ],
         };
@@ -270,12 +276,17 @@ const CompleteSignupDialog = ({
                       required: true,
                       disabled: true,
                     },
-                    { name: "taxId", label: "Tax ID" },
-                    { name: "phone1", label: "Phone #1" },
+                    { name: "secondaryEmail", label: "Secondary Email" },
+                    { name: "fax", label: "Fax" },
+                    { name: "tin", label: "TIN" },
+                    { name: "importantNotes", label: "Important Notes" },
+                    { name: "dateOfBirth", label: "Date of Birth" },
+                    { name: "phone", label: "Phone" },
                     { name: "billingStreet", label: "Mailing Street" },
                     { name: "billingCity", label: "Mailing City" },
                     { name: "billingState", label: "Mailing State" },
                     { name: "billingCode", label: "Mailing Code" },
+                    { name: "billingZip", label: "Mailing Zip" },
                   ].map((field) => {
                     const mainContact =
                       formDataArray[0].connectedContacts?.[0] || {};
@@ -286,7 +297,7 @@ const CompleteSignupDialog = ({
                           {field.required && "*"}
                         </label>
                         <input
-                          type="text"
+                          type={field.name === "dateOfBirth" ? "date" : "text"}
                           disabled={field.disabled}
                           value={(mainContact as any)[field.name] || ""}
                           placeholder={`Enter ${field.label.toLowerCase()}`}
@@ -358,9 +369,21 @@ const CompleteSignupDialog = ({
                 <label className="inline-flex items-center gap-2 mb-2">
                   <input
                     type="checkbox"
-                    checked={addingChildren}
+                    checked={
+                      formDataArray[0].connectedContacts.find(
+                        (c) => c.type === "Dependent"
+                      )
+                        ? true
+                        : checkedChild
+                    }
                     className="form-checkbox h-4 w-4"
-                    onChange={(e) => setAddingChildren(e.target.checked)}
+                    onChange={(e) =>
+                      formDataArray[0].connectedContacts.find(
+                        (c) => c.type === "Dependent"
+                      )
+                        ? true
+                        : setCheckedChild(e.target.checked)
+                    }
                   />
                   <span className="font-medium">Do you have dependents?</span>
                 </label>
@@ -378,6 +401,17 @@ const CompleteSignupDialog = ({
                       addOrIgnoreContact({ ...c, type: "Dependent" })
                     }
                   />
+                )}
+              </div>
+              <div>
+                {checkedChild && (
+                  <button
+                    type="button"
+                    className="mt-2 px-2 py-1 w-32 border rounded text-sm hover:bg-gray-50"
+                    onClick={() => setAddingChildren(true)}
+                  >
+                    + Add
+                  </button>
                 )}
               </div>
             </div>

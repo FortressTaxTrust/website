@@ -256,7 +256,7 @@ const Step2GiveDetails: React.FC<Props> = ({
   const totalSteps = stepTitles[currentFormData?.accountType]?.length ?? 0;
   const accountLabel =
     currentIndex === 0
-      ? "Individual Account (Read-only)"
+      ? "Individual Account"
       : `Business Account ${currentIndex}`;
   const isIndividualAccount = currentIndex === 0;
   const isNewBusiness = addingBusinessIndex !== undefined;
@@ -409,7 +409,7 @@ const Step2GiveDetails: React.FC<Props> = ({
               : "bg-gray-50 border-gray-200"
           }`}
         >
-          <p className="text-sm text-gray-600">Editing:</p>
+          {/* <p className="text-sm text-gray-600">Editing:</p> */}
           <p className="text-lg font-semibold text-gray-800">{accountLabel}</p>
           <p className="text-sm text-gray-600 mt-1">
             Type: {currentFormData?.accountType}
@@ -423,22 +423,21 @@ const Step2GiveDetails: React.FC<Props> = ({
                 </p>
                 <div className="text-sm text-gray-700">
                   {currentFormData.connectedContacts[0] && (
-                    <>
-                      <p>
-                        <strong>Name:</strong>{" "}
-                        {currentFormData.connectedContacts[0].firstName}{" "}
-                        {currentFormData.connectedContacts[0].lastName}
-                      </p>
-                      <p>
-                        <strong>Email:</strong>{" "}
-                        {currentFormData.connectedContacts[0].email}
-                      </p>
-                      <p>
-                        <strong>Phone:</strong>{" "}
-                        {currentFormData.connectedContacts[0].phone ||
-                          "Not provided"}
-                      </p>
-                    </>
+                    <div className="space-y-2">
+                      {Object.entries(currentFormData.connectedContacts[0])
+                        .filter(([key]) => key !== "id" && key !== "type") // skip id and type
+                        .map(([key, value]) => (
+                          <p key={key}>
+                            <strong>
+                              {key
+                                .replace(/([A-Z])/g, " $1")
+                                .replace(/^./, (str) => str.toUpperCase())}
+                              :
+                            </strong>{" "}
+                            {String(value) || "N/A"}
+                          </p>
+                        ))}
+                    </div>
                   )}
                 </div>
               </div>
