@@ -51,8 +51,9 @@ const ContactManager: React.FC<ContactManagerProps> = ({
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!form.lastName?.trim()) newErrors.lastName = "Last name is required";
     if (!form.firstName?.trim()) newErrors.firstName = "First name is required";
+    if (!form.lastName?.trim()) newErrors.lastName = "Last name is required";
+
     return newErrors;
   };
 
@@ -107,33 +108,14 @@ const ContactManager: React.FC<ContactManagerProps> = ({
         {/* Form */}
         <div className="space-y-4 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Last Name */}
-
-            {/* Contact Type */}
-            {/* <div>
-              <label className="text-sm font-medium text-gray-700">Type <span className="text-red-500">*</span></label>
-              <select
-                value={form.type}
-                onChange={(e) => setForm({ ...form, type: e.target.value })}
-                className="border rounded px-3 py-2 w-full"
-              >
-                <option value="">-None-</option>
-                <option>Client</option>
-                <option>Firm Contact</option>
-                <option>Client Connected</option>
-                <option>Attorney</option>
-                <option>CPA</option>
-                <option>Prospect</option>
-              </select>
-              {errors.type && <p className="text-xs text-red-500 mt-1">{errors.type}</p>}
-            </div> */}
-
+    
             {/* First Name */}
             <div>
               <label className="text-sm font-medium text-gray-700">
                 First Name <span className="text-red-500">*</span>
               </label>
               <input
+                placeholder="Jhon"
                 value={form.firstName}
                 onChange={(e) =>
                   setForm({ ...form, firstName: e.target.value })
@@ -147,7 +129,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
                 Last Name <span className="text-red-500">*</span>
               </label>
               <input
-                placeholder="Enter last name"
+                placeholder="Doe"
                 value={form.lastName}
                 onChange={(e) => setForm({ ...form, lastName: e.target.value })}
                 className="border rounded px-3 py-2 w-full"
@@ -162,6 +144,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
               <label className="text-sm font-medium text-gray-700">Email</label>
               <input
                 value={form.email}
+                placeholder="fortresstax@gmail.com"
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="border rounded px-3 py-2 w-full"
               />
@@ -176,6 +159,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
                 </label>
                 <input
                   type="text"
+                  placeholder={`${field.label.toLowerCase()}`}
                   value={(form as any)[field.name] || ""}
                   onChange={(e) =>
                     setForm({ ...form, [field.name]: e.target.value })

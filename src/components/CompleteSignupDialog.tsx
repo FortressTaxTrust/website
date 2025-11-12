@@ -125,7 +125,7 @@ const CompleteSignupDialog = ({
           accountName: `${firstName}'s Individual Account`,
           connectedContacts: [
             {
-              id: genId(),
+              id: "1",
               firstName: firstName,
               lastName: lastName,
               email: payload?.email || "",
@@ -151,6 +151,7 @@ const CompleteSignupDialog = ({
     }
   }, [successMessage]);
 
+  console.log("form data", formDataArray);
   const addOrIgnoreContact = (contact: Contact) => {
     setFormDataArray((prev) => {
       const updated = [...prev];
@@ -250,22 +251,24 @@ const CompleteSignupDialog = ({
               <div className="border rounded-lg p-4">
                 <h3 className="font-semibold mb-2">Contact Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Main user fields */}
                   {[
                     {
                       name: "firstName",
                       label: "First Name",
                       required: true,
+                      disabled: true,
                     },
                     {
                       name: "lastName",
                       label: "Last Name",
                       required: true,
+                      disabled: true,
                     },
                     {
                       name: "email",
                       label: "Email",
                       required: true,
+                      disabled: true,
                     },
                     { name: "taxId", label: "Tax ID" },
                     { name: "phone1", label: "Phone #1" },
@@ -273,26 +276,39 @@ const CompleteSignupDialog = ({
                     { name: "billingCity", label: "Mailing City" },
                     { name: "billingState", label: "Mailing State" },
                     { name: "billingCode", label: "Mailing Code" },
-                  ].map((field) => (
-                    <div key={field.name} className="flex flex-col">
-                      <label className="text-sm font-medium mb-1">
-                        {field.label}
-                        {field.required && "*"}
-                      </label>
-                      <input
-                        type="text"
-                        value={(formDataArray[0] as any)[field.name] || ""}
-                        onChange={(e) =>
-                          setFormDataArray((prev) => {
-                            const updated = [...prev];
-                            (updated[0] as any)[field.name] = e.target.value;
-                            return updated;
-                          })
-                        }
-                        className="border rounded-lg px-3 py-2 text-sm"
-                      />
-                    </div>
-                  ))}
+                  ].map((field) => {
+                    const mainContact =
+                      formDataArray[0].connectedContacts?.[0] || {};
+                    return (
+                      <div key={field.name} className="flex flex-col">
+                        <label className="text-sm font-medium mb-1">
+                          {field.label}
+                          {field.required && "*"}
+                        </label>
+                        <input
+                          type="text"
+                          disabled={field.disabled}
+                          value={(mainContact as any)[field.name] || ""}
+                          placeholder={`Enter ${field.label.toLowerCase()}`}
+                          onChange={(e) => {
+                            if (field.disabled) return;
+                            setFormDataArray((prev) => {
+                              const updated = [...prev];
+                              (updated[0].connectedContacts[0] as any)[
+                                field.name
+                              ] = e.target.value;
+                              return updated;
+                            });
+                          }}
+                          className={`border rounded-lg px-3 py-2 text-sm ${
+                            field.disabled
+                              ? "bg-gray-100 cursor-not-allowed"
+                              : ""
+                          }`}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               {/* Spouse Section */}
