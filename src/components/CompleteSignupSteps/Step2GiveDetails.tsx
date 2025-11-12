@@ -306,8 +306,11 @@ const Step2GiveDetails: React.FC<Props> = ({
 
   const validateAllAccounts = (): boolean => {
     const newErrors: Record<string, string> = {};
-    formDataArray.forEach((account, idx) => {
+    formDataArray?.forEach((account, idx) => {
       const accountType = account.accountType?.trim();
+      if(accountType == 'Individual'){
+        return;
+      }
       if (!accountType || accountType === "-None-") {
         newErrors[`accountType_${idx}`] = "Account type is required";
         return;
@@ -331,26 +334,32 @@ const Step2GiveDetails: React.FC<Props> = ({
   };
 
   const nextStep = () => {
-    if (!validateStep()) return; // current step validation
+    // Validate only the current step
+    if (!validateStep()) return;
 
-    const isLastAccount = currentIndex === formDataArray.length - 1;
     const isLastStepForCurrentAccount = step === totalSteps;
+    const isLastAccount = currentIndex === (formDataArray?.length ?? 0) - 1;
 
-    if (
-      (isIndividualAccount || (isLastAccount && isLastStepForCurrentAccount)) &&
-      validateAllAccounts()
-    ) {
-      onFinish();
-      return;
-    }
-
-    if (step < totalSteps) {
+    if (isLastStepForCurrentAccount) {
+      if (!isLastAccount) {
+        // Move to next account
+        setSelectedAccountIndex((i) => i + 1);
+        setStep(1);
+        setErrors({});
+      }
+    } else {
+      // Move to next step
       setStep((s) => s + 1);
       setErrors({});
-    } else if (currentIndex < formDataArray.length - 1) {
-      setSelectedAccountIndex((i) => i + 1);
-      setStep(1);
-      setErrors({});
+    }
+  };
+
+  const handleFinish = () => {
+    if (validateAllAccounts()) {
+      console.log("✅ All accounts validated. Finishing...");
+      onFinish();
+    } else {
+      console.warn("❌ Validation failed. Fix errors before finishing.");
     }
   };
 
@@ -359,11 +368,11 @@ const Step2GiveDetails: React.FC<Props> = ({
       setStep((s) => s - 1);
     } else if (currentIndex > 0) {
       setSelectedAccountIndex((i) => i - 1);
-      const prevAccountType = formDataArray[currentIndex - 1].accountType;
+      const prevAccountType = formDataArray?.[currentIndex - 1]?.accountType;
       const prevTotalSteps = stepTitles[prevAccountType]?.length ?? 0;
       setStep(prevTotalSteps);
     } else {
-      if (isNewBusiness && currentIndex === formDataArray.length - 1) {
+      if (isNewBusiness && currentIndex === (formDataArray?.length ?? 0) - 1) {
         console.log("[v0] Removing unsaved business at index", currentIndex);
         // The parent component handles this via onBack
       }
@@ -377,7 +386,7 @@ const Step2GiveDetails: React.FC<Props> = ({
 
       {!isNewBusiness && (
         <div className="flex gap-2 flex-wrap">
-          {formDataArray.map((account, idx) => (
+          {formDataArray?.map((account, idx) => (
             <button
               key={idx}
               onClick={() => {
@@ -557,15 +566,33 @@ const Step2GiveDetails: React.FC<Props> = ({
         >
           {isNewBusiness ? "Cancel" : "Previous"}
         </button>
-        <button
-          onClick={nextStep}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-black font-medium transition"
-        >
-          {(step === totalSteps || isIndividualAccount) &&
-          currentIndex === formDataArray.length - 1
-            ? "Finish"
-            : "Next"}
-        </button>
+
+        <div className="flex gap-2">
+          {/* Show Finish only when last account and last step OR individual */}
+          {(isIndividualAccount ||
+            (currentIndex === (formDataArray?.length ?? 0) - 1 &&
+              step === totalSteps)) && (
+            <button
+              onClick={handleFinish}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition"
+            >
+              Finish
+            </button>
+          )}
+
+          {/* Always show Next unless we're on final step of last account */}
+          {!(
+            isIndividualAccount ||
+            (currentIndex === formDataArray.length - 1 && step === totalSteps)
+          ) && (
+            <button
+              onClick={nextStep}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-black font-medium transition"
+            >
+              Next
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -123,7 +123,7 @@ const CompleteSignupDialog = ({
         updated[0] = {
           ...updated[0],
           accountType: "Individual",
-          accountName: `${firstName}'s Individual Account`,
+          accountName: `${firstName} ${lastName}`,
           connectedContacts: [
             {
               id: "1",
@@ -142,6 +142,7 @@ const CompleteSignupDialog = ({
               billingState: "",
               billingCode: "",
               billingZip: "",
+              billingCountry: "",
             },
           ],
         };
@@ -157,7 +158,145 @@ const CompleteSignupDialog = ({
     }
   }, [successMessage]);
 
-  console.log("form data", formDataArray);
+  // --- Validation ---
+  const validateForm = (): string[] => {
+    const newErrors: string[] = [];
+
+    formDataArray.forEach((business, bizIndex) => {
+      // Required business fields
+      const requiredFields: (keyof FormDataStep1)[] = [
+        "accountName",
+        "accountType",
+      ];
+      requiredFields.forEach((field) => {
+        if (!business[field]?.toString().trim()) {
+          newErrors.push(`${field} is required`);
+        }
+      });
+
+      // Connected contacts validation
+      business.connectedContacts.forEach((contact, idx) => {
+        const contactRequired: (keyof Contact)[] = [
+          "firstName",
+          "lastName",
+          "email",
+        ];
+        contactRequired.forEach((field) => {
+          if (!contact[field]?.toString().trim()) {
+            newErrors.push(
+              `${field} is required`
+            );
+          }
+        });
+
+        // Email validation
+        (["email", "secondaryEmail"] as (keyof Contact)[]).forEach((field) => {
+          const raw = (contact[field] ?? "") as string | undefined;
+          const value = (raw || "").trim();
+          if (value && !/^\S+@\S+\.\S+$/.test(value)) {
+            newErrors.push(
+              `${field} is invalid`
+            );
+          }
+        });
+
+        // Phone validation
+        if (contact.phone && !/^\+?\d{7,15}$/.test(contact.phone)) {
+          newErrors.push(
+            `phone is invalid`
+          );
+        }
+
+        // Date validation
+        if (contact.dateOfBirth && isNaN(Date.parse(contact.dateOfBirth))) {
+          newErrors.push(
+            `Date of Birth is invalid`
+          );
+        }
+      });
+    });
+
+    return newErrors;
+  };
+
+  // Update errors live
+  useEffect(() => {
+    setErrors(validateForm());
+  }, [formDataArray]);
+
+  const handleAccountCreation = async () => {
+    try {
+      setErrors([]);
+      setSuccessMessage("");
+
+      const newErrors = validateForm();
+      if (newErrors.length) {
+        setErrors(newErrors);
+        return;
+      }
+
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("accessToken")
+          : null;
+      if (!token) throw new Error("Missing access token");
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/zoho/create/multiple-account`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ accountData: formDataArray, userData: user }),
+        }
+      );
+
+      const response = await res.json();
+
+      if (response.errors?.length) {
+        const flattenErrors = (errObj: any): string[] => {
+          const messages: string[] = [];
+          if (Array.isArray(errObj)) {
+            errObj.forEach((e) => messages.push(...flattenErrors(e)));
+          } else if (typeof errObj === "object" && errObj !== null) {
+            if (errObj.message) messages.push(errObj.message);
+            Object.values(errObj).forEach((v) =>
+              messages.push(...flattenErrors(v))
+            );
+          }
+          return messages;
+        };
+
+        const allErrorMessages = flattenErrors(response.errors);
+        setErrors(
+          allErrorMessages.length
+            ? allErrorMessages
+            : ["Failed to create account."]
+        );
+        return;
+      }
+
+      setSuccessMessage("Account and contacts created successfully!");
+    } catch (err) {
+      console.error(err);
+      setErrors(["Error creating account. Please try again."]);
+    }
+  };
+
+  // Navigation
+  const goNextStep = () => {
+    const errs = validateForm();
+    if (errs.length) {
+      setErrors(errs);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    setCurrentStep((prev) => prev + 1);
+  };
+  const goPrevStep = () => setCurrentStep((prev) => (prev > 0 ? prev - 1 : 0));
+
   const addOrIgnoreContact = (contact: Contact) => {
     setFormDataArray((prev) => {
       const updated = [...prev];
@@ -185,19 +324,20 @@ const CompleteSignupDialog = ({
     });
   };
 
-  const goNextStep = () => setCurrentStep((prev) => prev + 1);
-  const goPrevStep = () => setCurrentStep((prev) => (prev > 0 ? prev - 1 : 0));
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl w-[100vw] max-w-[1100px] h-[95vh] overflow-y-auto p-10 shadow-2xl relative">
+        {/* Success message */}
         {successMessage && (
           <div className="absolute top-4 left-8 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-md shadow-md max-w-[400px]">
             {successMessage}
           </div>
         )}
+
+        {/* Error messages */}
         {errors.length > 0 && (
           <div className="absolute top-4 right-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md max-w-[300px]">
             {errors.map((err, i) => (
@@ -220,9 +360,10 @@ const CompleteSignupDialog = ({
           </button>
         </div>
 
+        {/* Step 0 */}
         {currentStep === 0 && (
           <div className="space-y-6">
-            {/* List of Connected Contacts */}
+            {/* Connected Contacts */}
             <div className="border rounded-lg p-4">
               <h3 className="font-semibold mb-2">Connected Contacts</h3>
               {formDataArray[0].connectedContacts.length === 0 && (
@@ -252,76 +393,81 @@ const CompleteSignupDialog = ({
               </ul>
             </div>
 
-            {/* Spouse / Dependents */}
-            <div className="space-y-4">
-              <div className="border rounded-lg p-4">
-                <h3 className="font-semibold mb-2">Contact Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    {
-                      name: "firstName",
-                      label: "First Name",
-                      required: true,
-                      disabled: true,
-                    },
-                    {
-                      name: "lastName",
-                      label: "Last Name",
-                      required: true,
-                      disabled: true,
-                    },
-                    {
-                      name: "email",
-                      label: "Email",
-                      required: true,
-                      disabled: true,
-                    },
-                    { name: "secondaryEmail", label: "Secondary Email" },
-                    { name: "fax", label: "Fax" },
-                    { name: "tin", label: "TIN" },
-                    { name: "importantNotes", label: "Important Notes" },
-                    { name: "dateOfBirth", label: "Date of Birth" },
-                    { name: "phone", label: "Phone" },
-                    { name: "billingStreet", label: "Mailing Street" },
-                    { name: "billingCity", label: "Mailing City" },
-                    { name: "billingState", label: "Mailing State" },
-                    { name: "billingCode", label: "Mailing Code" },
-                    { name: "billingZip", label: "Mailing Zip" },
-                  ].map((field) => {
-                    const mainContact =
-                      formDataArray[0].connectedContacts?.[0] || {};
-                    return (
-                      <div key={field.name} className="flex flex-col">
-                        <label className="text-sm font-medium mb-1">
-                          {field.label}
-                          {field.required && "*"}
-                        </label>
-                        <input
-                          type={field.name === "dateOfBirth" ? "date" : "text"}
-                          disabled={field.disabled}
-                          value={(mainContact as any)[field.name] || ""}
-                          placeholder={`Enter ${field.label.toLowerCase()}`}
-                          onChange={(e) => {
-                            if (field.disabled) return;
-                            setFormDataArray((prev) => {
-                              const updated = [...prev];
-                              (updated[0].connectedContacts[0] as any)[
-                                field.name
-                              ] = e.target.value;
-                              return updated;
-                            });
-                          }}
-                          className={`border rounded-lg px-3 py-2 text-sm ${
-                            field.disabled
-                              ? "bg-gray-100 cursor-not-allowed"
-                              : ""
-                          }`}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+            {/* Contact Details */}
+            <div className="border rounded-lg p-4">
+              <h3 className="font-semibold mb-2">Contact Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  {
+                    name: "firstName",
+                    label: "First Name",
+                    required: true,
+                    disabled: true,
+                  },
+                  {
+                    name: "lastName",
+                    label: "Last Name",
+                    required: true,
+                    disabled: true,
+                  },
+                  {
+                    name: "email",
+                    label: "Email",
+                    required: true,
+                    disabled: true,
+                  },
+                  { name: "secondaryEmail", label: "Secondary Email" },
+                  { name: "fax", label: "Fax" },
+                  { name: "tin", label: "TIN" },
+                  { name: "importantNotes", label: "Important Notes" },
+                  { name: "dateOfBirth", label: "Date of Birth" },
+                  { name: "phone", label: "Phone" },
+                  { name: "billingStreet", label: "Mailing Street" },
+                  { name: "billingCity", label: "Mailing City" },
+                  { name: "billingState", label: "Mailing State" },
+                  { name: "billingCode", label: "Mailing Code" },
+                  { name: "billingZip", label: "Mailing Zip" },
+                  { name: "billingCountry", label: "Mailing Country" },
+                ].map((field) => {
+                  const mainContact =
+                    formDataArray[0].connectedContacts?.[0] || {};
+                  return (
+                    <div key={field.name} className="flex flex-col">
+                      <label className="text-sm font-medium mb-1">
+                        {field.label}
+                        {field.required && "*"}
+                      </label>
+                      <input
+                        type={field.name === "dateOfBirth" ? "date" : "text"}
+                        disabled={field.disabled}
+                        value={(mainContact as any)[field.name] || ""}
+                        placeholder={`Enter ${field.label.toLowerCase()}`}
+                        onChange={(e) => {
+                          if (field.disabled) return;
+                          setFormDataArray((prev) => {
+                            const updated = [...prev];
+                            (updated[0].connectedContacts[0] as any)[
+                              field.name
+                            ] = e.target.value;
+                            return updated;
+                          });
+                        }}
+                        className={`border rounded-lg px-3 py-2 text-sm ${
+                          field.disabled ? "bg-gray-100 cursor-not-allowed" : ""
+                        } ${
+                          errors.find((err) => err.includes(field.name))
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                    </div>
+                  );
+                })}
               </div>
+            </div>
+
+            {/* Spouse and Dependents */}
+            <div className="space-y-4">
               {/* Spouse Section */}
               <div className="border rounded-lg p-4">
                 <label className="inline-flex items-center gap-2 mb-2">
@@ -446,6 +592,7 @@ const CompleteSignupDialog = ({
           </div>
         )}
 
+        {/* Step 1 */}
         {currentStep === 1 && (
           <Step1SelectAccountType
             formDataArray={formDataArray}
@@ -463,7 +610,7 @@ const CompleteSignupDialog = ({
             onBack={goPrevStep}
             addingBusinessIndex={addingBusinessIndex ?? undefined}
             onFinish={() => {
-              setSuccessMessage("✓ Profile setup complete!");
+              handleAccountCreation();
               console.log("Finished:", formDataArray);
             }}
           />

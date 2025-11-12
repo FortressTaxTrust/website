@@ -17,6 +17,7 @@ export type Contact = {
   billingState?: string;
   billingCode?: string;
   billingZip?: string;
+  billingCountry?: string;
 };
 
 interface ContactManagerProps {
@@ -52,23 +53,62 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     billingStreet: "",
     billingCity: "",
     billingState: "",
+    billingCountry: "",
     billingCode: "",
     billingZip: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedIds, setSelectedIds] = useState<string[]>(selected);
 
-  useEffect(() => setSelectedIds(selected), [selected]);
-
-  const validateForm = () => {
+  const validateContact = (form: Contact): Record<string, string> => {
     const newErrors: Record<string, string> = {};
-    if (!form.firstName?.trim()) newErrors.firstName = "First name is required";
-    if (!form.lastName?.trim()) newErrors.lastName = "Last name is required";
+
+    contactFields.forEach((field) => {
+      const value = (form[field.name] ?? "").toString().trim();
+      if (field.required && !value) {
+        newErrors[field.name] = `${field.label} is required`;
+        return;
+      }
+      if (!value) return;
+      switch (field.name) {
+        case "email":
+        case "secondaryEmail":
+          if (!/^\S+@\S+\.\S+$/.test(value)) {
+            newErrors[field.name] = `${field.label} is not a valid email`;
+          }
+          break;
+        case "phone":
+          if (!/^\+?\d{7,15}$/.test(value)) {
+            newErrors[
+              field.name
+            ] = `${field.label} must be a valid phone number`;
+          }
+          break;
+        case "dateOfBirth":
+          if (isNaN(Date.parse(value))) {
+            newErrors[field.name] = `${field.label} must be a valid date`;
+          }
+          break;
+        case "tin":
+          if (!/^\d{9,15}$/.test(value)) {
+            newErrors[field.name] = `${field.label} must be a valid TIN`;
+          }
+          break;
+        case "billingZip":
+          if (!/^\d{4,10}$/.test(value)) {
+            newErrors[field.name] = `${field.label} must be a valid ZIP code`;
+          }
+          break;
+        default:
+          break;
+      }
+    });
+
     return newErrors;
   };
 
   const handleCreate = () => {
-    const validationErrors = validateForm();
+    const validationErrors = validateContact(form);
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -100,6 +140,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     { name: "billingState", label: "Mailing State" },
     { name: "billingCode", label: "Mailing Code" },
     { name: "billingZip", label: "Mailing Zip" },
+    { name: "billingCountry", label: "Mailing Country" },
   ];
 
   return (
