@@ -1,9 +1,10 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 
 const accountTypes = [
+  "-None-",
   "Beneficial Trust",
   "Business Trust",
   "C-Corporation",
@@ -308,7 +309,7 @@ const Step2GiveDetails: React.FC<Props> = ({
     const newErrors: Record<string, string> = {};
     formDataArray?.forEach((account, idx) => {
       const accountType = account.accountType?.trim();
-      if(accountType == 'Individual'){
+      if (accountType == "Individual") {
         return;
       }
       if (!accountType || accountType === "-None-") {
@@ -354,12 +355,24 @@ const Step2GiveDetails: React.FC<Props> = ({
     }
   };
 
+  useEffect(() => {
+      if (errors.general) {
+        setErrors((prev) => {
+          const updated = { ...prev };
+          delete updated.general;
+          return updated;
+        });
+      }
+    }, [currentFormData, step]);
   const handleFinish = () => {
     if (validateAllAccounts()) {
       console.log("✅ All accounts validated. Finishing...");
       onFinish();
     } else {
-      console.warn("❌ Validation failed. Fix errors before finishing.");
+      setErrors((prev) => ({
+        ...prev,
+        general: "Please fill required fields before finishing!",
+      }));
     }
   };
 
@@ -382,6 +395,12 @@ const Step2GiveDetails: React.FC<Props> = ({
 
   return (
     <div className="space-y-6">
+      {/* show on right side */}
+      {errors.general && (
+      <div className="absolute top-4 right-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md max-w-[300px]">
+        {errors.general && <p className="text-red-600">{errors.general}</p>}
+      </div>
+      )}
       <h3 className="text-2xl font-bold text-black">Step 2: Account Details</h3>
 
       {!isNewBusiness && (
@@ -410,17 +429,13 @@ const Step2GiveDetails: React.FC<Props> = ({
 
       {!isNewBusiness && (
         <div
-          className={`p-4 border rounded-lg ${
-            isIndividualAccount
-              ? "bg-blue-50 border-gray-light"
-              : "bg-gray-light border-gray-medium"
-          }`}
+          className={`p-4 border rounded-lg ${"bg-gray-light border-gray-medium"}`}
         >
           <p className="text-lg font-semibold text-black">{accountLabel}</p>
           <p className="text-sm text-gray-600 mt-1">
             Type: {currentFormData?.accountType}
           </p>
-          {isIndividualAccount &&
+          {/* {isIndividualAccount &&
             currentFormData?.connectedContacts &&
             currentFormData.connectedContacts.length > 0 && (
               <div className="mt-3 pt-3 border-t border-gray-medium">
@@ -431,7 +446,7 @@ const Step2GiveDetails: React.FC<Props> = ({
                   {currentFormData.connectedContacts[0] && (
                     <div className="space-y-2">
                       {Object.entries(currentFormData.connectedContacts[0])
-                        .filter(([key]) => key !== "id" && key !== "type") // skip id and type
+                        .filter(([key]) => key !== "id" && key !== "type" ) // skip id and type
                         .map(([key, value]) => (
                           <p key={key}>
                             <strong>
@@ -447,7 +462,7 @@ const Step2GiveDetails: React.FC<Props> = ({
                   )}
                 </div>
               </div>
-            )}
+            )} */}
         </div>
       )}
 
@@ -464,8 +479,7 @@ const Step2GiveDetails: React.FC<Props> = ({
           </div>
         </div>
       ) : currentFormData?.accountType &&
-        currentFormData?.accountType !== "-None-" &&
-        !isIndividualAccount ? (
+        currentFormData?.accountType !== "-None-" ? (
         <>
           <div className="flex justify-between items-center mb-6">
             {stepTitles[currentFormData.accountType]?.map((title, index) => {
@@ -512,16 +526,20 @@ const Step2GiveDetails: React.FC<Props> = ({
                     onChange={handleChange}
                     rows={3}
                     placeholder="Enter description or notes"
-                    disabled={isIndividualAccount}
+                    // disabled={isIndividualAccount}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
                       errors[field.name]
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
-                    } ${
-                      isIndividualAccount
-                        ? "bg-gray-100 cursor-not-allowed"
-                        : ""
-                    }`}
+                    } 
+                    
+                    
+                    `}
+                    // ${
+                    //   isIndividualAccount
+                    //     ? "bg-gray-100 cursor-not-allowed"
+                    //     : ""
+                    // }
                   />
                 ) : (
                   <input
@@ -530,16 +548,17 @@ const Step2GiveDetails: React.FC<Props> = ({
                     value={String(currentFormData[field.name] ?? "")}
                     onChange={handleChange}
                     placeholder={field.label}
-                    disabled={isIndividualAccount}
+                    // disabled={isIndividualAccount}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
                       errors[field.name]
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
-                    } ${
-                      isIndividualAccount
-                        ? "bg-gray-100 cursor-not-allowed"
-                        : ""
                     }`}
+                    // ${
+                    //   isIndividualAccount
+                    //     ? "bg-gray-100 cursor-not-allowed"
+                    //     : ""
+                    // }`}
                   />
                 )}
                 {errors[field.name] && (
@@ -553,11 +572,11 @@ const Step2GiveDetails: React.FC<Props> = ({
 
           {/* Navigation */}
         </>
-      ) : !isIndividualAccount ? (
+      ) : (
         <div className="flex items-center justify-center py-16">
           <p className="text-gray-600">Please select a valid account type.</p>
         </div>
-      ) : null}
+      )}
 
       <div className="flex justify-between gap-3 mt-8">
         <button
@@ -569,21 +588,19 @@ const Step2GiveDetails: React.FC<Props> = ({
 
         <div className="flex gap-2">
           {/* Show Finish only when last account and last step OR individual */}
-          {(isIndividualAccount ||
-            (currentIndex === (formDataArray?.length ?? 0) - 1 &&
-              step === totalSteps)) && (
-            <button
-              onClick={handleFinish}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition"
-            >
-              Finish
-            </button>
-          )}
+          {currentIndex === (formDataArray?.length ?? 0) - 1 &&
+            step === totalSteps && (
+              <button
+                onClick={handleFinish}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition"
+              >
+                Finish
+              </button>
+            )}
 
           {/* Always show Next unless we're on final step of last account */}
           {!(
-            isIndividualAccount ||
-            (currentIndex === formDataArray.length - 1 && step === totalSteps)
+            currentIndex === formDataArray.length - 1 && step === totalSteps
           ) && (
             <button
               onClick={nextStep}

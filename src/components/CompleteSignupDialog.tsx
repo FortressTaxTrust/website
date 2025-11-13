@@ -340,11 +340,14 @@ const CompleteSignupDialog = ({
         {/* Error messages */}
         {errors.length > 0 && (
           <div className="absolute top-4 right-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md max-w-[300px]">
-            {errors.map((err, i) => (
+             <div key={errors[0]} className="text-sm">
+                {errors[0]}
+              </div>
+            {/* {errors.map((err, i) => (
               <div key={i} className="text-sm">
                 {err}
               </div>
-            ))}
+            ))} */}
           </div>
         )}
 

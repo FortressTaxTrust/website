@@ -4,6 +4,7 @@ import type React from "react";
 import { useState } from "react";
 
 const accountTypes = [
+  "-None-",
   "Beneficial Trust",
   "Business Trust",
   "C-Corporation",
@@ -70,7 +71,7 @@ const defaultBusiness: FormDataStep1 = {
   billingState: "",
   billingCountry: "",
   billingCode: "",
-  accountType: "Business Trust",
+  accountType: "-None-",
   connectedContacts: [],
   openCorpPage: "",
   workDriveId: "",
