@@ -27,7 +27,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
     {
       key: "driverLicense",
       label: "Driver’s License (Taxpayer & Spouse)",
-      color: "text-blue-500",
+      color: "text-gray-500",
     },
     {
       key: "priorYearReturns",
@@ -130,7 +130,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
             value={selectedAccount?.id || ""}
             onChange={(e) => handleAccountSelect(e.target.value)}
             disabled={accounts.length === 0}
-            className="appearance-none border border-gray-300 rounded-lg px-3 py-2 w-full bg-white text-gray-700 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 pr-8"
+            className="appearance-none border border-gray-300 rounded-lg px-3 py-2 w-full bg-white text-gray-700 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 pr-8"
           >
             <option value="">-- Select an Account --</option>
             {accounts.map((account) => (
@@ -204,7 +204,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
                   onChange={(e) => handleFileChange(e, input.key)}
                 />
                 {input.file ? (
-                  <span className="text-xs text-blue-600 truncate">
+                  <span className="text-xs text-gray-600 truncate">
                     📄 {input.file.name}
                   </span>
                 ) : (
@@ -218,7 +218,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
 
           <button
             onClick={handleUploadFiles}
-            className="mt-5 self-center bg-blue-600 text-white font-medium px-5 py-2.5 rounded-lg shadow hover:bg-blue-700 transition text-sm"
+            className="mt-5 self-center bg-gray-600 text-white font-medium px-5 py-2.5 rounded-lg shadow hover:bg-gray-700 transition text-sm"
           >
             <Upload className="inline-block mr-2 h-4 w-4" />
             Upload Files for {selectedAccount.name}
