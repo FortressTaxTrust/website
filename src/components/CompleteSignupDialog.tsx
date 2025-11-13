@@ -127,6 +127,7 @@ const CompleteSignupDialog = ({
           ...updated[0],
           accountType: "Individual",
           accountName: `${firstName} ${lastName}`,
+
           connectedContacts: [
             {
               id: "1",
@@ -136,7 +137,7 @@ const CompleteSignupDialog = ({
               type: "own",
               secondaryEmail: "",
               fax: "",
-              tin: "",
+              ssn: "",
               importantNotes: "",
               dateOfBirth: "",
               phone: "",
@@ -186,9 +187,7 @@ const CompleteSignupDialog = ({
         ];
         contactRequired.forEach((field) => {
           if (!contact[field]?.toString().trim()) {
-            newErrors.push(
-              `${field} is required`
-            );
+            newErrors.push(`${field} is required`);
           }
         });
 
@@ -197,24 +196,18 @@ const CompleteSignupDialog = ({
           const raw = (contact[field] ?? "") as string | undefined;
           const value = (raw || "").trim();
           if (value && !/^\S+@\S+\.\S+$/.test(value)) {
-            newErrors.push(
-              `${field} is invalid`
-            );
+            newErrors.push(`${field} is invalid`);
           }
         });
 
         // Phone validation
         if (contact.phone && !/^\+?\d{7,15}$/.test(contact.phone)) {
-          newErrors.push(
-            `phone is invalid`
-          );
+          newErrors.push(`phone is invalid`);
         }
 
         // Date validation
         if (contact.dateOfBirth && isNaN(Date.parse(contact.dateOfBirth))) {
-          newErrors.push(
-            `Date of Birth is invalid`
-          );
+          newErrors.push(`Date of Birth is invalid`);
         }
       });
     });
@@ -224,6 +217,7 @@ const CompleteSignupDialog = ({
 
   // Update errors live
   useEffect(() => {
+    console.log("formDataArray", formDataArray);
     setErrors(validateForm());
   }, [formDataArray]);
 
@@ -287,7 +281,6 @@ const CompleteSignupDialog = ({
       console.log("Created accounts:", response.data.accounts);
       console.log("Created contacts:", response.data.contacts);
       setCurrentStep(3);
-     
     } catch (err) {
       console.error(err);
       setErrors(["Error creating account. Please try again."]);
@@ -333,7 +326,6 @@ const CompleteSignupDialog = ({
     });
   };
 
-
   if (!isOpen) return null;
 
   return (
@@ -349,9 +341,9 @@ const CompleteSignupDialog = ({
         {/* Error messages */}
         {errors.length > 0 && (
           <div className="absolute top-4 right-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md max-w-[300px]">
-             <div key={errors[0]} className="text-sm">
-                {errors[0]}
-              </div>
+            <div key={errors[0]} className="text-sm">
+              {errors[0]}
+            </div>
             {/* {errors.map((err, i) => (
               <div key={i} className="text-sm">
                 {err}
@@ -429,15 +421,15 @@ const CompleteSignupDialog = ({
                     disabled: true,
                   },
                   { name: "secondaryEmail", label: "Secondary Email" },
-                  { name: "fax", label: "Fax" },
-                  { name: "tin", label: "TIN" },
+                  // { name: "fax", label: "Fax" },
+                  { name: "ssn", label: "SSN" },
                   { name: "importantNotes", label: "Important Notes" },
                   { name: "dateOfBirth", label: "Date of Birth" },
                   { name: "phone", label: "Phone" },
                   { name: "billingStreet", label: "Mailing Street" },
                   { name: "billingCity", label: "Mailing City" },
                   { name: "billingState", label: "Mailing State" },
-                  { name: "billingCode", label: "Mailing Code" },
+                  // { name: "billingCode", label: "Mailing Code" },
                   { name: "billingZip", label: "Mailing Zip" },
                   { name: "billingCountry", label: "Mailing Country" },
                 ].map((field) => {
@@ -456,11 +448,29 @@ const CompleteSignupDialog = ({
                         placeholder={`Enter ${field.label.toLowerCase()}`}
                         onChange={(e) => {
                           if (field.disabled) return;
+                          const value = e.target.value;
                           setFormDataArray((prev) => {
                             const updated = [...prev];
-                            (updated[0].connectedContacts[0] as any)[
-                              field.name
-                            ] = e.target.value;
+                            const mainAccount = { ...updated[0] };
+                            const contact = {
+                              ...mainAccount.connectedContacts[0],
+                            };
+                            (mainAccount as any)[field.name] = value;
+                            (contact as any)[field.name] = value;
+                            if (field.name.toLowerCase() === "ssn") {
+                              mainAccount.taxId = value;
+                              contact.ssn = value;
+                            }
+                            if (field.name.toLowerCase() === "phone") {
+                              mainAccount.phone1 = value;
+                              contact.phone = value;
+                            }
+                            if (field.name.toLowerCase() === "billingzip") {
+                              mainAccount.billingCode = value;
+                              contact.billingZip = value;
+                            }
+                            mainAccount.connectedContacts[0] = contact;
+                            updated[0] = mainAccount;
                             return updated;
                           });
                         }}
@@ -628,12 +638,9 @@ const CompleteSignupDialog = ({
           />
         )}
 
-        { currentStep === 3 && (
-           <UploadDocumentsStep
-            onClose={onClose}
-            accounts= {accounts}
-          />
-        ) }
+        {currentStep === 3 && (
+          <UploadDocumentsStep onClose={onClose} accounts={accounts} />
+        )}
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ export type Contact = {
   secondaryEmail?: string;
   fax?: string;
   type?: string;
-  tin?: string;
+  ssn?: string;
   importantNotes?: string;
   dateOfBirth?: string;
   phone?: string;
@@ -46,7 +46,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     secondaryEmail: "",
     fax: "",
     type: "",
-    tin: "",
+    ssn: "",
     importantNotes: "",
     dateOfBirth: "",
     phone: "",
@@ -89,9 +89,9 @@ const ContactManager: React.FC<ContactManagerProps> = ({
             newErrors[field.name] = `${field.label} must be a valid date`;
           }
           break;
-        case "tin":
+        case "ssn":
           if (!/^\d{9,15}$/.test(value)) {
-            newErrors[field.name] = `${field.label} must be a valid TIN`;
+            newErrors[field.name] = `${field.label} must be a valid SSN`;
           }
           break;
         case "billingZip":
@@ -130,15 +130,14 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     { name: "email", label: "Email" },
     { name: "secondaryEmail", label: "Secondary Email" },
     { name: "fax", label: "Fax" },
-    { name: "type", label: "Type" },
-    { name: "tin", label: "TIN" },
+    { name: "ssn", label: "SSN" },
     { name: "importantNotes", label: "Important Notes" },
     { name: "dateOfBirth", label: "Date of Birth" },
     { name: "phone", label: "Phone" },
     { name: "billingStreet", label: "Mailing Street" },
     { name: "billingCity", label: "Mailing City" },
     { name: "billingState", label: "Mailing State" },
-    { name: "billingCode", label: "Mailing Code" },
+    // { name: "billingCode", label: "Mailing Code" },
     { name: "billingZip", label: "Mailing Zip" },
     { name: "billingCountry", label: "Mailing Country" },
   ];

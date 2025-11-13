@@ -1,7 +1,9 @@
 "use client";
 
+import { FileUp } from "lucide-react";
+
 import type React from "react";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 
 const accountTypes = [
   "-None-",
@@ -82,50 +84,50 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
     1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "taxId", label: "Tax ID", required: true },
-      { name: "clientId", label: "Client ID", required: true },
+      // { name: "clientId", label: "Client ID", required: true },
       { name: "trustee", label: "Trustee" },
-      { name: "complianceOfficer", label: "Compliance Officer" },
-      { name: "dateCreated", label: "Date Created" },
-      { name: "fax", label: "Fax" },
-      { name: "phone1", label: "Phone #1" },
+      { name: "complianceOfficer", label: "Compliance Overseer" },
+      // { name: "dateCreated", label: "Date Created" },
+      // { name: "fax", label: "Fax" },
+      // { name: "phone1", label: "Phone #1" },
     ],
     2: [
-      { name: "billingStreet", label: "Billing Street", required: true },
-      { name: "billingCity", label: "Billing City", required: true },
-      { name: "billingState", label: "Billing State", required: true },
-      { name: "billingCountry", label: "Billing Country", required: true },
-      { name: "billingCode", label: "Billing Code" },
+      { name: "billingStreet", label: "Company Street", required: true },
+      { name: "billingCity", label: "Company City", required: true },
+      { name: "billingState", label: "Company State", required: true },
+      { name: "billingCountry", label: "Company Country", required: true },
+      { name: "billingCode", label: "Company Code" },
     ],
-    3: [{ name: "description", label: "Description", required: true }],
+    3: [{ name: "description", label: "Description" }],
   },
   // ... existing code for other types ...
   "Business Trust": {
     1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "taxId", label: "Tax ID", required: true },
-      { name: "clientId", label: "Client ID", required: true },
+      // { name: "clientId", label: "Client ID", required: true },
       { name: "trustee", label: "Trustee" },
-      { name: "complianceOfficer", label: "Compliance Officer" },
-      { name: "dateCreated", label: "Date Created" },
-      { name: "fax", label: "Fax" },
-      { name: "phone1", label: "Phone #1" },
+      { name: "complianceOfficer", label: "Compliance Overseer" },
+      // { name: "dateCreated", label: "Date Created" },
+      // { name: "fax", label: "Fax" },
+      // { name: "phone1", label: "Phone #1" },
     ],
     2: [
-      { name: "billingStreet", label: "Billing Street", required: true },
-      { name: "billingCity", label: "Billing City", required: true },
-      { name: "billingState", label: "Billing State", required: true },
-      { name: "billingCountry", label: "Billing Country", required: true },
-      { name: "billingCode", label: "Billing Code" },
+      { name: "billingStreet", label: "Company Street", required: true },
+      { name: "billingCity", label: "Company City", required: true },
+      { name: "billingState", label: "Company State", required: true },
+      { name: "billingCountry", label: "Company Country", required: true },
+      { name: "billingCode", label: "Company Code" },
     ],
-    3: [{ name: "description", label: "Description", required: true }],
+    3: [{ name: "description", label: "Description" }],
   },
   "C-Corporation": {
     1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "state", label: "State", required: true },
       { name: "taxId", label: "Tax ID", required: true },
-      { name: "clientId", label: "Client ID", required: true },
-      { name: "dateCreated", label: "Date Created" },
+      // { name: "clientId", label: "Client ID", required: true },
+      // { name: "dateCreated", label: "Date Created" },
       { name: "registeredAgent", label: "Registered Agent" },
       { name: "stateOfFormation", label: "State Of Formation" },
       { name: "phone1", label: "Phone #1" },
@@ -133,28 +135,28 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "website", label: "Website" },
     ],
     2: [
-      { name: "billingStreet", label: "Billing Street", required: true },
-      { name: "billingCity", label: "Billing City", required: true },
-      { name: "billingState", label: "Billing State", required: true },
-      { name: "billingCountry", label: "Billing Country", required: true },
-      { name: "billingCode", label: "Billing Code" },
+      { name: "billingStreet", label: "Company Street", required: true },
+      { name: "billingCity", label: "Company City", required: true },
+      { name: "billingState", label: "Company State", required: true },
+      { name: "billingCountry", label: "Company Country", required: true },
+      { name: "billingCode", label: "Company Code" },
     ],
-    3: [{ name: "description", label: "Description", required: true }],
+    3: [{ name: "description", label: "Description" }],
   },
   Individual: {
     1: [
       { name: "accountName", label: "Account Name", required: true },
-      { name: "taxId", label: "Tax ID", required: true },
-      { name: "clientId", label: "Client ID", required: true },
+      { name: "taxId", label: "SSN", required: true },
+      // { name: "clientId", label: "Client ID", required: true },
       { name: "phone1", label: "Phone #1" },
     ],
     2: [
-      { name: "billingStreet", label: "Billing Street", required: true },
-      { name: "billingCity", label: "Billing City", required: true },
-      { name: "billingState", label: "Billing State", required: true },
-      { name: "billingCode", label: "Billing Code" },
+      { name: "billingStreet", label: "Mailing Street", required: true },
+      { name: "billingCity", label: "Mailing City", required: true },
+      { name: "billingState", label: "Mailing State", required: true },
+      { name: "billingCode", label: "Mailing Code" },
     ],
-    3: [{ name: "description", label: "Description", required: true }],
+    3: [{ name: "description", label: "Description" }],
   },
   "Non-Profit": {
     1: [
@@ -165,7 +167,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
   "FIRM ACCOUNT": {
     1: [
       { name: "accountName", label: "Account Name", required: true },
-      { name: "clientId", label: "Client ID", required: true },
+      // { name: "clientId", label: "Client ID", required: true },
       { name: "dateCreated", label: "Date Created" },
       { name: "complianceOfficer", label: "Compliance Officer" },
       { name: "registeredAgent", label: "Registered Agent" },
@@ -173,20 +175,20 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "phone1", label: "Phone #1" },
     ],
     2: [
-      { name: "billingStreet", label: "Billing Street", required: true },
-      { name: "billingCity", label: "Billing City", required: true },
-      { name: "billingState", label: "Billing State", required: true },
-      { name: "billingCountry", label: "Billing Country", required: true },
-      { name: "billingCode", label: "Billing Code" },
+      { name: "billingStreet", label: "Company Street", required: true },
+      { name: "billingCity", label: "Company City", required: true },
+      { name: "billingState", label: "Company State", required: true },
+      { name: "billingCountry", label: "Company Country", required: true },
+      { name: "billingCode", label: "Company Code" },
     ],
-    3: [{ name: "description", label: "Description", required: true }],
+    3: [{ name: "description", label: "Description" }],
   },
   Partnership: {
     1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "state", label: "State", required: true },
       { name: "taxId", label: "Tax ID", required: true },
-      { name: "clientId", label: "Client ID", required: true },
+      // { name: "clientId", label: "Client ID", required: true },
       { name: "dateCreated", label: "Date Created" },
       { name: "registeredAgent", label: "Registered Agent" },
       { name: "stateOfFormation", label: "State Of Formation" },
@@ -195,20 +197,20 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "website", label: "Website" },
     ],
     2: [
-      { name: "billingStreet", label: "Billing Street", required: true },
-      { name: "billingCity", label: "Billing City", required: true },
-      { name: "billingState", label: "Billing State", required: true },
-      { name: "billingCountry", label: "Billing Country", required: true },
-      { name: "billingCode", label: "Billing Code" },
+      { name: "billingStreet", label: "Company Street", required: true },
+      { name: "billingCity", label: "Company City", required: true },
+      { name: "billingState", label: "Company State", required: true },
+      { name: "billingCountry", label: "Company Country", required: true },
+      { name: "billingCode", label: "Company Code" },
     ],
-    3: [{ name: "description", label: "Description", required: true }],
+    3: [{ name: "description", label: "Description" }],
   },
   "S-Corporation": {
     1: [
       { name: "accountName", label: "Account Name", required: true },
       { name: "state", label: "State", required: true },
       { name: "taxId", label: "Tax ID", required: true },
-      { name: "clientId", label: "Client ID", required: true },
+      // { name: "clientId", label: "Client ID", required: true },
       { name: "dateCreated", label: "Date Created" },
       { name: "registeredAgent", label: "Registered Agent" },
       { name: "stateOfFormation", label: "State Of Formation" },
@@ -217,13 +219,13 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "website", label: "Website" },
     ],
     2: [
-      { name: "billingStreet", label: "Billing Street", required: true },
-      { name: "billingCity", label: "Billing City", required: true },
-      { name: "billingState", label: "Billing State", required: true },
-      { name: "billingCountry", label: "Billing Country", required: true },
-      { name: "billingCode", label: "Billing Code" },
+      { name: "billingStreet", label: "Company Street", required: true },
+      { name: "billingCity", label: "Company City", required: true },
+      { name: "billingState", label: "Company State", required: true },
+      { name: "billingCountry", label: "Company Country", required: true },
+      { name: "billingCode", label: "Company Code" },
     ],
-    3: [{ name: "description", label: "Description", required: true }],
+    3: [{ name: "description", label: "Description" }],
   },
 };
 
@@ -356,14 +358,14 @@ const Step2GiveDetails: React.FC<Props> = ({
   };
 
   useEffect(() => {
-      if (errors.general) {
-        setErrors((prev) => {
-          const updated = { ...prev };
-          delete updated.general;
-          return updated;
-        });
-      }
-    }, [currentFormData, step]);
+    if (errors.general) {
+      setErrors((prev) => {
+        const updated = { ...prev };
+        delete updated.general;
+        return updated;
+      });
+    }
+  }, [currentFormData, step]);
   const handleFinish = () => {
     if (validateAllAccounts()) {
       console.log("✅ All accounts validated. Finishing...");
@@ -397,9 +399,9 @@ const Step2GiveDetails: React.FC<Props> = ({
     <div className="space-y-6">
       {/* show on right side */}
       {errors.general && (
-      <div className="absolute top-4 right-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md max-w-[300px]">
-        {errors.general && <p className="text-red-600">{errors.general}</p>}
-      </div>
+        <div className="absolute top-4 right-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md max-w-[300px]">
+          {errors.general && <p className="text-red-600">{errors.general}</p>}
+        </div>
       )}
       <h3 className="text-2xl font-bold text-black">Step 2: Account Details</h3>
 
@@ -429,28 +431,39 @@ const Step2GiveDetails: React.FC<Props> = ({
 
       {!isNewBusiness && (
         <div
-          className={`p-4 border rounded-lg ${"bg-gray-light border-gray-medium"}`}
+          className={`p-4 border rounded-lg ${
+            isIndividualAccount
+              ? "bg-blue-50 border-gray-light"
+              : "bg-gray-light border-gray-medium"
+          }`}
         >
           <p className="text-lg font-semibold text-black">{accountLabel}</p>
           <p className="text-sm text-gray-600 mt-1">
             Type: {currentFormData?.accountType}
           </p>
-          {/* {isIndividualAccount &&
+          {isIndividualAccount &&
             currentFormData?.connectedContacts &&
             currentFormData.connectedContacts.length > 0 && (
               <div className="mt-3 pt-3 border-t border-gray-medium">
                 <p className="text-sm font-medium text-gray-700 mb-2">
-                  Primary Contact:
+                  Account Details:
                 </p>
                 <div className="text-sm text-gray-700">
                   {currentFormData.connectedContacts[0] && (
                     <div className="space-y-2">
                       {Object.entries(currentFormData.connectedContacts[0])
-                        .filter(([key]) => key !== "id" && key !== "type" ) // skip id and type
+                        .filter(
+                          ([key]) =>
+                            key !== "id" &&
+                            key !== "type" &&
+                            key.toLowerCase() !== "fax" &&
+                            key !== "billingCode"
+                        )
                         .map(([key, value]) => (
                           <p key={key}>
                             <strong>
                               {key
+                                .replace(/billing/g, "Mailing")
                                 .replace(/([A-Z])/g, " $1")
                                 .replace(/^./, (str) => str.toUpperCase())}
                               :
@@ -462,7 +475,7 @@ const Step2GiveDetails: React.FC<Props> = ({
                   )}
                 </div>
               </div>
-            )} */}
+            )}
         </div>
       )}
 
@@ -479,7 +492,8 @@ const Step2GiveDetails: React.FC<Props> = ({
           </div>
         </div>
       ) : currentFormData?.accountType &&
-        currentFormData?.accountType !== "-None-" ? (
+        currentFormData?.accountType !== "-None-" &&
+        !isIndividualAccount ? (
         <>
           <div className="flex justify-between items-center mb-6">
             {stepTitles[currentFormData.accountType]?.map((title, index) => {
@@ -505,7 +519,6 @@ const Step2GiveDetails: React.FC<Props> = ({
               );
             })}
           </div>
-
           {/* Progress Bar */}
           <div className="relative w-full h-2 bg-gray-medium rounded-full">
             <div
@@ -513,12 +526,14 @@ const Step2GiveDetails: React.FC<Props> = ({
               style={{ width: `${(step / totalSteps) * 100}%` }}
             />
           </div>
-
           {/* Form Fields */}
           <div className="grid grid-cols-2 gap-4 mt-6">
             {fieldsForCurrentStep.map((field) => (
               <div key={field.name}>
-                {renderLabel(field.label, field.required)}
+                {renderLabel(
+                  field.label.replace(/Billing/g, "Mailing"),
+                  field.required
+                )}
                 {field.name === "description" ? (
                   <textarea
                     name={field.name}
@@ -526,20 +541,16 @@ const Step2GiveDetails: React.FC<Props> = ({
                     onChange={handleChange}
                     rows={3}
                     placeholder="Enter description or notes"
-                    // disabled={isIndividualAccount}
+                    disabled={isIndividualAccount}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
                       errors[field.name]
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
-                    } 
-                    
-                    
-                    `}
-                    // ${
-                    //   isIndividualAccount
-                    //     ? "bg-gray-100 cursor-not-allowed"
-                    //     : ""
-                    // }
+                    } ${
+                      isIndividualAccount
+                        ? "bg-gray-100 cursor-not-allowed"
+                        : ""
+                    }`}
                   />
                 ) : (
                   <input
@@ -547,18 +558,17 @@ const Step2GiveDetails: React.FC<Props> = ({
                     name={field.name}
                     value={String(currentFormData[field.name] ?? "")}
                     onChange={handleChange}
-                    placeholder={field.label}
-                    // disabled={isIndividualAccount}
+                    placeholder={field.label.replace(/Billing/g, "Mailing")}
+                    disabled={isIndividualAccount}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
                       errors[field.name]
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
+                    } ${
+                      isIndividualAccount
+                        ? "bg-gray-100 cursor-not-allowed"
+                        : ""
                     }`}
-                    // ${
-                    //   isIndividualAccount
-                    //     ? "bg-gray-100 cursor-not-allowed"
-                    //     : ""
-                    // }`}
                   />
                 )}
                 {errors[field.name] && (
@@ -568,15 +578,65 @@ const Step2GiveDetails: React.FC<Props> = ({
                 )}
               </div>
             ))}
-          </div>
+            {currentFormData.accountType &&
+              stepTitles[currentFormData.accountType]?.[step - 1] ===
+                "Address Information" && (
+                <div className="flex justify-start mt-6">
+                  <div className="relative group inline-block">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const individualAccountData =
+                          formDataArray?.[0]?.connectedContacts?.[0] || null;
 
+                        if (!individualAccountData) return;
+
+                        const mailingFields: (keyof FormData)[] = [
+                          "billingStreet",
+                          "billingCity",
+                          "billingState",
+                          "billingCode",
+                          "billingCountry",
+                        ];
+
+                        setFormDataArray((prev) => {
+                          const updated = [...prev];
+                          const current = { ...updated[currentIndex] };
+
+                          mailingFields.forEach((key) => {
+                            if (key === "billingCode") {
+                              const zip =
+                                "billingZip" as keyof typeof individualAccountData;
+                              current[key] = individualAccountData[zip] || "";
+                            } else {
+                              current[key] = individualAccountData[key] || "";
+                            }
+                          });
+
+                          updated[currentIndex] = current;
+                          return updated;
+                        });
+                      }}
+                      className="flex items-center gap-4 text-sm bg-gray-600 text-white px-2 py-[10px] rounded-md hover:bg-blue-700 transition"
+                    >
+                      <FileUp className="w-4 h-4" />
+                    </button>
+
+                    {/* Tooltip */}
+                    <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Copy address info from the individual account
+                    </span>
+                  </div>
+                </div>
+              )}
+          </div>
           {/* Navigation */}
         </>
-      ) : (
+      ) : !isIndividualAccount ? (
         <div className="flex items-center justify-center py-16">
           <p className="text-gray-600">Please select a valid account type.</p>
         </div>
-      )}
+      ) : null}
 
       <div className="flex justify-between gap-3 mt-8">
         <button
@@ -588,19 +648,21 @@ const Step2GiveDetails: React.FC<Props> = ({
 
         <div className="flex gap-2">
           {/* Show Finish only when last account and last step OR individual */}
-          {currentIndex === (formDataArray?.length ?? 0) - 1 &&
-            step === totalSteps && (
-              <button
-                onClick={handleFinish}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition"
-              >
-                Finish
-              </button>
-            )}
+          {(isIndividualAccount ||
+            (currentIndex === (formDataArray?.length ?? 0) - 1 &&
+              step === totalSteps)) && (
+            <button
+              onClick={handleFinish}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition"
+            >
+              Finish
+            </button>
+          )}
 
           {/* Always show Next unless we're on final step of last account */}
           {!(
-            currentIndex === formDataArray.length - 1 && step === totalSteps
+            isIndividualAccount ||
+            (currentIndex === formDataArray.length - 1 && step === totalSteps)
           ) && (
             <button
               onClick={nextStep}
