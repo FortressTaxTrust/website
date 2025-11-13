@@ -160,7 +160,11 @@ const CompleteSignupDialog = ({
       const timer = setTimeout(() => setSuccessMessage(""), 3000);
       return () => clearTimeout(timer);
     }
-  }, [successMessage]);
+    if (errors) {
+      const timer = setTimeout(() => setErrors([]), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage , errors]);
 
   // --- Validation ---
   const validateForm = (): string[] => {
@@ -252,7 +256,12 @@ const CompleteSignupDialog = ({
 
       const response = await res.json();
 
-      if (response.errors?.length) {
+      if (response.error || response.errors?.length) {
+        console.log("response" , response)
+        if(response?.error) {
+          setErrors([response.error]);
+          return
+        }
         const flattenErrors = (errObj: any): string[] => {
           const messages: string[] = [];
           if (Array.isArray(errObj)) {
@@ -273,14 +282,14 @@ const CompleteSignupDialog = ({
             : ["Failed to create account."]
         );
         return;
+      } else {
+        setSuccessMessage("Account and contacts created successfully!");
+
+        setAccounts(response.data.accounts || []);
+        console.log("Created accounts:", response.data.accounts);
+        console.log("Created contacts:", response.data.contacts);
+        setCurrentStep(3);
       }
-
-      setSuccessMessage("Account and contacts created successfully!");
-
-      setAccounts(response.data.accounts || []);
-      console.log("Created accounts:", response.data.accounts);
-      console.log("Created contacts:", response.data.contacts);
-      setCurrentStep(3);
     } catch (err) {
       console.error(err);
       setErrors(["Error creating account. Please try again."]);
