@@ -164,7 +164,7 @@ const CompleteSignupDialog = ({
       const timer = setTimeout(() => setErrors([]), 10000);
       return () => clearTimeout(timer);
     }
-  }, [successMessage , errors]);
+  }, [successMessage, errors]);
 
   // --- Validation ---
   const validateForm = (): string[] => {
@@ -257,34 +257,46 @@ const CompleteSignupDialog = ({
       const response = await res.json();
 
       if (response.error || response.errors?.length) {
-        console.log("response" , response)
-        if(response?.error) {
+        console.log("response", response);
+
+        if (response?.error) {
           setErrors([response.error]);
-          return
+          return;
         }
+
         const flattenErrors = (errObj: any): string[] => {
           const messages: string[] = [];
+
           if (Array.isArray(errObj)) {
-            errObj.forEach((e) => messages.push(...flattenErrors(e)));
+            errObj.forEach((e) => {
+              if (typeof e === "string") {
+                messages.push(e);
+              } else if (e.message) {
+                messages.push(e.message);
+              } else {
+                messages.push(...flattenErrors(e));
+              }
+            });
           } else if (typeof errObj === "object" && errObj !== null) {
             if (errObj.message) messages.push(errObj.message);
-            Object.values(errObj).forEach((v) =>
-              messages.push(...flattenErrors(v))
-            );
+            Object.values(errObj).forEach((v) => {
+              messages.push(...flattenErrors(v));
+            });
           }
+
           return messages;
         };
 
         const allErrorMessages = flattenErrors(response.errors);
+        console.log(allErrorMessages);
+
         setErrors(
           allErrorMessages.length
             ? allErrorMessages
             : ["Failed to create account."]
         );
-        return;
       } else {
         setSuccessMessage("Account and contacts created successfully!");
-
         setAccounts(response.data.accounts || []);
         console.log("Created accounts:", response.data.accounts);
         console.log("Created contacts:", response.data.contacts);
@@ -350,14 +362,14 @@ const CompleteSignupDialog = ({
         {/* Error messages */}
         {errors.length > 0 && (
           <div className="absolute top-4 right-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md max-w-[300px]">
-            <div key={errors[0]} className="text-sm">
+            {/* <div key={errors[0]} className="text-sm">
               {errors[0]}
-            </div>
-            {/* {errors.map((err, i) => (
-              <div key={i} className="text-sm">
+            </div> */}
+            {Array.from(new Set(errors)).map((err, i) => (
+              <div key={i} className="text-sm w-full text-red-600">
                 {err}
               </div>
-            ))} */}
+            ))}
           </div>
         )}
 

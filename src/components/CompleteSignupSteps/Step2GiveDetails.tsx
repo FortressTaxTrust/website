@@ -379,6 +379,7 @@ const Step2GiveDetails: React.FC<Props> = ({
   };
 
   const prevStep = () => {
+    if(currentIndex === 0) onBack()
     if (step > 1) {
       setStep((s) => s - 1);
     } else if (currentIndex > 0) {

@@ -172,7 +172,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
             <ChevronDown className="absolute right-2 top-2.5 text-gray-500 h-4 w-4 pointer-events-none" />
           )}
         >
-          <MenuItem value="">-- Select an Account --</MenuItem>
+         {/*  <MenuItem value="">-- Select an Account --</MenuItem> */}
           {accounts.map((account) => (
             <MenuItem
               key={account.id}
