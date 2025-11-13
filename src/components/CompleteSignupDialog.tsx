@@ -7,6 +7,8 @@ import ContactManager, {
 import Step1SelectAccountType from "./CompleteSignupSteps/Step1SelectAccountType";
 import Step2GiveDetails from "./CompleteSignupSteps/Step2GiveDetails";
 import { parseJWT } from "../utils/parseTokenId";
+import { Upload } from "lucide-react";
+import UploadDocumentsStep from "./UploadDocumentsStep";
 
 interface User {
   email: string;
@@ -99,6 +101,7 @@ const CompleteSignupDialog = ({
   const [addingChildren, setAddingChildren] = useState(false);
   const [checkedChild, setCheckedChild] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [accounts, setAccounts] = useState<[]>([]);
   const [addingBusinessIndex, setAddingBusinessIndex] = useState<number | null>(
     null
   );
@@ -279,6 +282,10 @@ const CompleteSignupDialog = ({
       }
 
       setSuccessMessage("Account and contacts created successfully!");
+
+      setAccounts(response.data.accounts || []);
+      setCurrentStep(3);
+     
     } catch (err) {
       console.error(err);
       setErrors(["Error creating account. Please try again."]);
@@ -618,6 +625,13 @@ const CompleteSignupDialog = ({
             }}
           />
         )}
+
+        { currentStep === 3 && (
+           <UploadDocumentsStep
+            onClose={onClose}
+            accounts= {accounts}
+          />
+        ) }
       </div>
     </div>
   );
