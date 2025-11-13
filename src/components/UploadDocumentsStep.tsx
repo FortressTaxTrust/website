@@ -52,7 +52,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
   const [uploadedAccounts, setUploadedAccounts] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const resetMessages = () => {
     setError(null);
@@ -86,7 +86,15 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
       if (!selectedAccount)
         throw new Error("Please select an account before uploading files.");
 
-      setLoading(true)
+      const missingFiles = files.filter((f) => !f.file);
+      if (missingFiles.length > 0) {
+        throw new Error(
+          `Please select all required files. Missing: ${missingFiles
+            .map((f) => f.label)
+            .join(", ")}`
+        );
+      }
+      setLoading(true);
       const formData = new FormData();
       files.forEach(
         (item) =>
@@ -118,9 +126,9 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
       );
       setUploadedFiles(files.filter((f) => f.file).map((f) => f.file!.name));
       setUploadedAccounts((prev) => [...prev, selectedAccount.id]);
-      setLoading(false)
+      setLoading(false);
     } catch (err: any) {
-      setLoading(false)
+      setLoading(false);
       console.error(err);
       setError(err.message || "Error uploading files. Please try again.");
     }
