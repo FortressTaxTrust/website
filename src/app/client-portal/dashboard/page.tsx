@@ -202,7 +202,6 @@ export default function ClientPortalDashboard() {
           <CompleteSignupDialog
             isOpen={isSignupDialogOpen}
             onClose={() => setIsSignupDialogOpen(false)}
-            // startStep={isProspect ? 3 : 1}
           />
         )}
 

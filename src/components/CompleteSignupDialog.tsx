@@ -284,6 +284,8 @@ const CompleteSignupDialog = ({
       setSuccessMessage("Account and contacts created successfully!");
 
       setAccounts(response.data.accounts || []);
+      console.log("Created accounts:", response.data.accounts);
+      console.log("Created contacts:", response.data.contacts);
       setCurrentStep(3);
      
     } catch (err) {

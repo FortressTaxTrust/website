@@ -1,5 +1,13 @@
 import React, { useState } from "react";
 import { Upload, CheckCircle, ChevronDown, FileUp } from "lucide-react";
+import {
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  CircularProgress,
+} from "@mui/material";
 
 interface Account {
   id: string;
@@ -44,6 +52,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
   const [uploadedAccounts, setUploadedAccounts] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false)
 
   const resetMessages = () => {
     setError(null);
@@ -77,6 +86,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
       if (!selectedAccount)
         throw new Error("Please select an account before uploading files.");
 
+      setLoading(true)
       const formData = new FormData();
       files.forEach(
         (item) =>
@@ -108,7 +118,9 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
       );
       setUploadedFiles(files.filter((f) => f.file).map((f) => f.file!.name));
       setUploadedAccounts((prev) => [...prev, selectedAccount.id]);
+      setLoading(false)
     } catch (err: any) {
+      setLoading(false)
       console.error(err);
       setError(err.message || "Error uploading files. Please try again.");
     }
@@ -120,53 +132,88 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
         Upload Required Documents
       </h3>
 
-      {/* Account Dropdown */}
-      <div className="flex flex-col items-center gap-3">
-        <label className="text-gray-700 text-sm font-medium">
-          Select Account
-        </label>
-        <div className="relative w-full md:w-3/4">
-          <select
-            value={selectedAccount?.id || ""}
-            onChange={(e) => handleAccountSelect(e.target.value)}
-            disabled={accounts.length === 0}
-            className="appearance-none border border-gray-300 rounded-lg px-3 py-2 w-full bg-white text-gray-700 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 pr-8"
-          >
-            <option value="">-- Select an Account --</option>
-            {accounts.map((account) => (
-              <option
-                key={account.id}
-                value={account.id}
-                disabled={uploadedAccounts.includes(account.id)}
-              >
-                {account.name}{" "}
-                {uploadedAccounts.includes(account.id) ? "(Uploaded)" : ""}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-2 top-2.5 text-gray-500 h-4 w-4 pointer-events-none" />
-        </div>
-
-        {/* Compact uploaded status list */}
-        <div className="mt-2 w-full md:w-3/4 flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-          {accounts.map((acc) => (
-            <div
-              key={acc.id}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md border text-sm ${
-                uploadedAccounts.includes(acc.id)
-                  ? "bg-green-50 border-green-300 text-green-700"
-                  : "bg-gray-50 border-gray-200 text-gray-500"
-              }`}
+      <div className="flex flex-col items-center gap-3"></div>
+      <label className="text-gray-700 text-sm font-medium">
+        Select Account
+      </label>
+      <FormControl fullWidth size="small">
+        <Select
+          labelId="account-select-label"
+          value={selectedAccount?.id || ""}
+          onChange={(e) => handleAccountSelect(e.target.value)}
+          disabled={accounts.length === 0}
+          className="bg-white text-gray-700 text-sm"
+          sx={{
+            fontSize: "0.875rem",
+            borderRadius: "0.5rem",
+            backgroundColor: "#fff",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#d1d5db", // gray-300 border
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#d1d5db", // keep gray on hover
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#d1d5db", // prevent blue border on focus
+            },
+          }}
+          IconComponent={() => (
+            <ChevronDown className="absolute right-2 top-2.5 text-gray-500 h-4 w-4 pointer-events-none" />
+          )}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                "& .MuiMenuItem-root": {
+                  color: "gray.800",
+                },
+                "& .MuiMenuItem-root.Mui-selected": {
+                  backgroundColor: "#e5e5e5",
+                  color: "gray.900",
+                },
+                "& .MuiMenuItem-root.Mui-selected:hover": {
+                  backgroundColor: "#d4d4d4",
+                },
+                "& .MuiMenuItem-root:hover": {
+                  backgroundColor: "#f0f0f0",
+                },
+              },
+            },
+          }}
+        >
+          <MenuItem value="">-- Select an Account --</MenuItem>
+          {accounts.map((account) => (
+            <MenuItem
+              key={account.id}
+              value={account.id}
+              disabled={uploadedAccounts.includes(account.id)}
             >
-              <span className="truncate">{acc.name}</span>
-              {uploadedAccounts.includes(acc.id) && (
-                <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+              {account.name}{" "}
+              {uploadedAccounts.includes(account.id) && (
+                <CheckCircle className="mx-2 h-4 w-4 text-green-600 flex-shrink-0" />
               )}
-            </div>
+            </MenuItem>
           ))}
-        </div>
-      </div>
+        </Select>
+      </FormControl>
 
+      {/* Compact uploaded status list */}
+      <div className="mt-2 w-full md:w-3/4 flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+        {accounts.map((acc) => (
+          <div
+            key={acc.id}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-md border text-sm ${
+              uploadedAccounts.includes(acc.id)
+                ? "bg-green-50 border-green-300 text-green-700"
+                : "bg-gray-50 border-gray-200 text-gray-500"
+            }`}
+          >
+            <span className="truncate">{acc.name}</span>
+            {uploadedAccounts.includes(acc.id) && (
+              <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+            )}
+          </div>
+        ))}
+      </div>
       {selectedAccount && !uploadedAccounts.includes(selectedAccount.id) && (
         <>
           <p className="text-gray-600 text-center text-sm">
@@ -220,8 +267,17 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
             onClick={handleUploadFiles}
             className="mt-5 self-center bg-gray-600 text-white font-medium px-5 py-2.5 rounded-lg shadow hover:bg-gray-700 transition text-sm"
           >
-            <Upload className="inline-block mr-2 h-4 w-4" />
-            Upload Files for {selectedAccount.name}
+            {loading ? (
+              <>
+                <CircularProgress size={16} className="inline-block mr-2" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Upload className="inline-block mr-2 h-4 w-4" />
+                {`Upload Files for ${selectedAccount.name}`}
+              </>
+            )}
           </button>
         </>
       )}

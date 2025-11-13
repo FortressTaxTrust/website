@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 const accountTypes = [
   "-None-",
@@ -233,23 +234,43 @@ const Step1SelectAccountType: React.FC<Step1Props> = ({
                   <label className="block text-sm font-medium text-gray-dark mb-1">
                     Account Type
                   </label>
-                  <select
-                    value={b.accountType}
-                    onChange={(e) =>
-                      handleChangeBusinessType(idx, e.target.value)
-                    }
-                    className={`w-full border rounded-lg px-3 py-2 text-sm ${
-                      errors[`business-type-${idx}`]
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    {accountTypes.map((type) => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
+
+                  <FormControl fullWidth size="small">
+                    <Select
+                      value={b.accountType}
+                      onChange={(e) =>
+                        handleChangeBusinessType(idx, e.target.value)
+                      }
+                      displayEmpty
+                      sx={{
+                        fontSize: "0.875rem",
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#fff",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: errors[`business-type-${idx}`]
+                            ? "#f87171" 
+                            : "#d1d5db", 
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          borderColor: errors[`business-type-${idx}`]
+                            ? "#ef4444" 
+                            : "#9ca3af", 
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: errors[`business-type-${idx}`]
+                            ? "#dc2626" 
+                            : "#6b7280",
+                        },
+                      }}
+                    >
+                      {accountTypes.map((type) => (
+                        <MenuItem key={type} value={type}>
+                          {type}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
                   {errors[`business-type-${idx}`] && (
                     <p className="text-xs text-red-600 mt-1">
                       {errors[`business-type-${idx}`]}
