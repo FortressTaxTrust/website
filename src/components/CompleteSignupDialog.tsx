@@ -166,64 +166,48 @@ const CompleteSignupDialog = ({
     }
   }, [successMessage, errors]);
 
-  // --- Validation ---
   const validateForm = (): string[] => {
-    const newErrors: string[] = [];
+    const errors: string[] = [];
 
-    formDataArray.forEach((business, bizIndex) => {
+    formDataArray.forEach((business) => {
       // Required business fields
-      const requiredFields: (keyof FormDataStep1)[] = [
-        "accountName",
-        "accountType",
-      ];
-      requiredFields.forEach((field) => {
-        if (!business[field]?.toString().trim()) {
-          newErrors.push(`${field} is required`);
+      ["accountName", "accountType"].forEach((key) => {
+        const v = (business as any)[key];
+        if (!v || String(v).trim() === "") {
+          errors.push(`${key} is required`);
         }
       });
 
-      // Connected contacts validation
-      business.connectedContacts.forEach((contact, idx) => {
-        const contactRequired: (keyof Contact)[] = [
-          "firstName",
-          "lastName",
-          "email",
-        ];
-        contactRequired.forEach((field) => {
-          if (!contact[field]?.toString().trim()) {
-            newErrors.push(`${field} is required`);
+      // Contacts
+      business.connectedContacts.forEach((c) => {
+        // Required contact fields
+        ["firstName", "lastName", "email"].forEach((key) => {
+          const v = (c as any)[key];
+          if (!v || String(v).trim() === "") {
+            errors.push(`${key} is required`);
           }
         });
-
-        // Email validation
-        (["email", "secondaryEmail"] as (keyof Contact)[]).forEach((field) => {
-          const raw = (contact[field] ?? "") as string | undefined;
-          const value = (raw || "").trim();
-          if (value && !/^\S+@\S+\.\S+$/.test(value)) {
-            newErrors.push(`${field} is invalid`);
-          }
-        });
-
-        // Phone validation
-        if (contact.phone && !/^\+?\d{7,15}$/.test(contact.phone)) {
-          newErrors.push(`phone is invalid`);
+        if (c.email && !/^\S+@\S+\.\S+$/.test(c.email)) {
+          errors.push(`Email is invalid`);
         }
-
-        // Date validation
-        if (contact.dateOfBirth && isNaN(Date.parse(contact.dateOfBirth))) {
-          newErrors.push(`Date of Birth is invalid`);
+        if (c.secondaryEmail && !/^\S+@\S+\.\S+$/.test(c.secondaryEmail)) {
+          errors.push(`Secondary Email is invalid`);
+        }
+        if (c.phone && !/^\+?\d{7,15}$/.test(c.phone)) {
+          errors.push(`Phone is invalid`);
+        }
+        if (c.dateOfBirth && isNaN(Date.parse(c.dateOfBirth))) {
+          errors.push(`Date of Birth is invalid`);
+        }
+        const cleanSSN = (c.ssn || "").replace(/-/g, "");
+        if (cleanSSN && !/^\d{12}$/.test(cleanSSN)) {
+          errors.push("SSN must contain 9 to 12 digits");
         }
       });
     });
 
-    return newErrors;
+    return errors;
   };
-
-  // Update errors live
-  useEffect(() => {
-    console.log("formDataArray", formDataArray);
-    setErrors(validateForm());
-  }, [formDataArray]);
 
   const handleAccountCreation = async () => {
     try {
@@ -308,10 +292,9 @@ const CompleteSignupDialog = ({
     }
   };
 
-  // Navigation
   const goNextStep = () => {
     const errs = validateForm();
-    if (errs.length) {
+    if (errs.length > 0) {
       setErrors(errs);
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -362,9 +345,6 @@ const CompleteSignupDialog = ({
         {/* Error messages */}
         {errors.length > 0 && (
           <div className="absolute top-4 right-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-md shadow-md max-w-[300px]">
-            {/* <div key={errors[0]} className="text-sm">
-              {errors[0]}
-            </div> */}
             {Array.from(new Set(errors)).map((err, i) => (
               <div key={i} className="text-sm w-full text-red-600">
                 {err}
