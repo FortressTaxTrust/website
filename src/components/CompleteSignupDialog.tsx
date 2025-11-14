@@ -154,6 +154,9 @@ const CompleteSignupDialog = ({
       });
     }
   }, []);
+  useEffect(() => {
+    setErrors(validateForm());
+  }, [formDataArray]);
 
   useEffect(() => {
     if (successMessage) {
@@ -161,7 +164,7 @@ const CompleteSignupDialog = ({
       return () => clearTimeout(timer);
     }
     if (errors) {
-      const timer = setTimeout(() => setErrors([]), 10000);
+      const timer = setTimeout(() => setErrors([]), 3000);
       return () => clearTimeout(timer);
     }
   }, [successMessage, errors]);
