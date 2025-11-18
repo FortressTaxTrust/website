@@ -323,7 +323,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-8 md:gap-12">
             <div className="md:w-1/2">
               <Image
-                src="/images/Who we are pic.png"
+                src="/images/who we are.png"
                 alt="Who we are"
                 width={621}
                 height={600}

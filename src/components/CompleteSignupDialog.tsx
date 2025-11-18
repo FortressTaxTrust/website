@@ -202,9 +202,11 @@ const CompleteSignupDialog = ({
         if (c.dateOfBirth && isNaN(Date.parse(c.dateOfBirth))) {
           errors.push(`Date of Birth is invalid`);
         }
-        const cleanSSN = (c.ssn || "").replace(/-/g, "");
-        if (cleanSSN && !/^\d{12}$/.test(cleanSSN)) {
-          errors.push("SSN must contain 9 to 12 digits");
+        const cleanSSN = (c.ssn || "").trim();
+        if (cleanSSN) {
+          if (cleanSSN.length < 9 || cleanSSN.length > 12) {
+            errors.push("SSN must contain 9 to 12 digits");
+          }
         }
       });
     });
