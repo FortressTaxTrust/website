@@ -224,21 +224,22 @@ const uploadAndAnalyze = async () => {
         body: formData,
       }
     );
-
-    if (!res.ok) throw new Error("Failed to upload and analyze files.");
-
     const data = await res.json();
-    console.log("Analysis & upload result:", data);
-
-    // Show success message
-    setSuccessMessage("Files uploaded successfully!");
-    setFiles([]);
-    setSelectedRows({});
-    setAccount("");
-    setContext("");
-    setDocTypeByIndex({});
-    setFolderPathByIndex({});
-    setAnalysisByIndex({});
+    if (!res.ok){
+      console.log("res",res)
+      setError(data.message || "Failed to upload and analyse files");
+    } else {
+        console.log("Analysis & upload result:", data);
+       // Show success message
+        setSuccessMessage("Files uploaded successfully!");
+        setFiles([]);
+        setSelectedRows({});
+        setAccount("");
+        setContext("");
+        setDocTypeByIndex({});
+        setFolderPathByIndex({});
+        setAnalysisByIndex({});
+    }
   } catch (e) {
     console.error(e);
     setError("Failed to upload file.");
