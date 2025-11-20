@@ -69,7 +69,7 @@ export default function ServicesPage() {
       {/* Hero Section */}
       <div className="relative h-[300px] md:h-[400px] lg:h-[605px]">
         <Image
-          src="/services-hero.jpg"
+          src="/images/Gemini_Generated_Image_eayjxueayjxueayj.png"
           alt="Services hero"
           fill
           className="object-cover"

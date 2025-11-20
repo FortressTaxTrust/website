@@ -168,7 +168,7 @@ export default function Home() {
       <section className="w-full py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-inter font-semibold text-center mb-8 md:mb-12">Our team</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 md:gap-8">
             {/* Team Member 1 */}
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
               <div className="relative h-80 pt-4">
@@ -176,7 +176,7 @@ export default function Home() {
                   src="/images/Tyler Portrait.jpg"
                   alt="Tyler Ballein"
                   fill
-                  className="object-contain"
+                  className="object-cover object-center"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
@@ -196,7 +196,7 @@ export default function Home() {
                   src="/images/Kevin Portrait.jpg"
                   alt="Kevin MacKenzie"
                   fill
-                  className="object-contain"
+                  className="object-cover object-center"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
@@ -216,7 +216,7 @@ export default function Home() {
                   src="/images/Vance Portrait.jpg"
                   alt="Vance Wade"
                   fill
-                  className="object-contain"
+                  className="object-cover object-center"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
@@ -236,7 +236,7 @@ export default function Home() {
                   src="/images/Kathleen Portait.jpg"
                   alt="Kathleen Caffey"
                   fill
-                  className="object-contain"
+                  className="object-cover object-center"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
@@ -256,7 +256,7 @@ export default function Home() {
                   src="/images/Eileen Kosoy portrait.png"
                   alt="Eileen Kosoy"
                   fill
-                  className="object-contain"
+                  className="object-cover object-center"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
@@ -265,6 +265,26 @@ export default function Home() {
                 <p className="text-gray-600 mb-4">Executive Accounting Services Specialist</p>
                 <p className="text-sm text-gray-500">
                   Providing comprehensive accounting services with a focus on accuracy, compliance, and strategic financial insights for businesses of all sizes.
+                </p>
+              </div>
+            </div>
+            
+            {/* Team Member 6 */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-md">
+              <div className="relative h-80 pt-4">
+                <Image
+                  src="/images/Omer Portrait.png"
+                  alt="Omer Muhammad"
+                  fill
+                  className="object-cover object-center"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-1">Omer Muhammad</h3>
+                <p className="text-gray-600 mb-4">CTO / Partner</p>
+                <p className="text-sm text-gray-500">
+                  Leading technology strategy and digital innovation to enhance client services and operational efficiency.
                 </p>
               </div>
             </div>
@@ -323,7 +343,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-8 md:gap-12">
             <div className="md:w-1/2">
               <Image
-                src="/images/who we are.png"
+                src="/images/Who we are pic.png"
                 alt="Who we are"
                 width={621}
                 height={600}

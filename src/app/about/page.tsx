@@ -61,6 +61,11 @@ export default function AboutPage() {
       name: "Eileen Kosoy",
       title: "Executive Accounting Services Specialist",
       description: "Providing comprehensive accounting services with a focus on accuracy, compliance, and strategic financial insights for businesses of all sizes."
+    },
+    {
+      name: "Omer Muhammad",
+      title: "CTO / Partner",
+      description: "Leading technology strategy and digital innovation to enhance client services and operational efficiency."
     }
   ]
 
@@ -69,7 +74,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <div className="relative h-[300px] md:h-[400px] lg:h-[605px] w-full">
         <Image 
-          src="/services-hero.jpg" 
+          src="/images/Gemini_Generated_Image_cgi4f1cgi4f1cgi4.png" 
           alt="About Us Hero" 
           fill 
           className="object-cover"
@@ -125,11 +130,11 @@ export default function AboutPage() {
             </div>
             <div className="w-full md:w-1/2 order-1 md:order-2">
               <Image 
-                src="/placeholder.jpg" 
+                src="/images/Screenshot 2025-11-20 at 00-10-54 Gemini_Generated_Image_ud1iecud1iecud1i.png (PNG Image 1024 × 1024 pixels).png" 
                 alt="Our Purpose" 
-                width={530} 
-                height={436} 
-                className="rounded-xl md:rounded-2xl lg:rounded-3xl w-full h-auto"
+                width={800} 
+                height={400} 
+                className="rounded-xl md:rounded-2xl lg:rounded-3xl w-full h-auto object-cover object-center"
               />
             </div>
           </div>
@@ -142,11 +147,11 @@ export default function AboutPage() {
           <div className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl p-6 md:p-8 lg:p-12 flex flex-col md:flex-row gap-6 md:gap-8 items-center">
             <div className="w-full md:w-1/2">
               <Image 
-                src="/placeholder.jpg" 
+                src="/images/Screenshot 2025-11-20 at 00-20-35 Gemini_Generated_Image_nihszbnihszbnihs.png (PNG Image 1024 × 1024 pixels).png" 
                 alt="Our Mission" 
-                width={530} 
-                height={437} 
-                className="rounded-xl md:rounded-2xl lg:rounded-3xl w-full h-auto"
+                width={800} 
+                height={400} 
+                className="rounded-xl md:rounded-2xl lg:rounded-3xl w-full h-auto object-cover object-center"
               />
             </div>
             <div className="w-full md:w-1/2">
@@ -191,7 +196,7 @@ export default function AboutPage() {
       <section className="w-full bg-[#5A6863] py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold capitalize leading-tight md:leading-[60px] text-white text-center mb-6 md:mb-10">Meet our team</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 md:gap-8">
             {teamMembers.map((member, index) => (
               <div key={index} className="bg-white rounded-xl md:rounded-2xl overflow-hidden pb-6 md:pb-8">
                 <div className="h-[200px] md:h-[230px] relative overflow-hidden">
@@ -201,10 +206,11 @@ export default function AboutPage() {
                           index === 2 ? "/images/Vance Portrait.jpg" : 
                           index === 3 ? "/images/Kathleen Portait.jpg" : 
                           index === 4 ? "/images/Eileen Kosoy portrait.png" : 
+                          index === 5 ? "/images/Omer Portrait.png" : 
                           "/placeholder.jpg"} 
                     alt={member.name} 
                     fill 
-                    className="object-contain"
+                    className="object-cover object-center"
                   />
                 </div>
                 <div className="px-4 pt-4 md:pt-6">

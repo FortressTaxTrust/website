@@ -74,7 +74,7 @@ export default function TestimonialsPage() {
       {/* Hero Section */}
       <div className="relative h-[300px] md:h-[400px] lg:h-[605px]">
         <Image
-          src="/images/testimonials-hero.jpg"
+          src="/images/Gemini_Generated_Image_xvpfgzxvpfgzxvpf.png"
           alt="Testimonials Hero"
           fill
           style={{ objectFit: 'cover' }}
