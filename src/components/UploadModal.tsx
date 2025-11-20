@@ -231,7 +231,7 @@ const uploadAndAnalyze = async () => {
     } else {
         console.log("Analysis & upload result:", data);
        // Show success message
-        setSuccessMessage("Files uploaded successfully!");
+        setSuccessMessage("Files uploaded successfully! Your files will be available within 24hrs");
         setFiles([]);
         setSelectedRows({});
         setAccount("");
