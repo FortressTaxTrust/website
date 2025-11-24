@@ -76,158 +76,151 @@ const stepTitles: Record<string, string[]> = {
   ],
 };
 
-type FieldConfig = { name: keyof FormData; label: string; required?: boolean };
+type FieldConfig = { name: keyof FormData; label: string; required?: boolean , placeholder?:string , type?:string };
 type StepConfig = Record<number, FieldConfig[]>;
 
 const accountTypeStepConfig: Record<string, StepConfig> = {
   "Beneficial Trust": {
     1: [
-      { name: "accountName", label: "Account Name", required: true },
-      { name: "taxId", label: "Tax ID", required: true },
-      // { name: "clientId", label: "Client ID", required: true },
-      { name: "trustee", label: "Trustee" },
-      { name: "complianceOfficer", label: "Compliance Overseer" },
-      // { name: "dateCreated", label: "Date Created" },
-      // { name: "fax", label: "Fax" },
-      // { name: "phone1", label: "Phone #1" },
+      { name: "accountName", label: "Account Name", required: true, placeholder: "Example Beneficial Trust", type: "text" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "trustee", label: "Trustee", placeholder: "John Doe", type: "text" },
+      { name: "complianceOfficer", label: "Compliance Overseer", placeholder: "Jane Smith", type: "text" },
     ],
     2: [
-      { name: "billingStreet", label: "Company Street", required: true },
-      { name: "billingCity", label: "Company City", required: true },
-      { name: "billingState", label: "Company State", required: true },
-      { name: "billingCountry", label: "Company Country", required: true },
-      { name: "billingCode", label: "Company Code" },
+      { name: "billingStreet", label: "Company Street", required: true, placeholder: "1234 Main St", type: "text" },
+      { name: "billingCity", label: "Company City", required: true, placeholder: "New York", type: "text" },
+      { name: "billingState", label: "Company State", required: true, placeholder: "NY", type: "text" },
+      { name: "billingCode", label: "Company Zip Code", placeholder: "10001", type: "tel" },
+      { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description" }],
+    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
   },
-  // ... existing code for other types ...
+
   "Business Trust": {
     1: [
-      { name: "accountName", label: "Account Name", required: true },
-      { name: "taxId", label: "Tax ID", required: true },
-      // { name: "clientId", label: "Client ID", required: true },
-      { name: "trustee", label: "Trustee" },
-      { name: "complianceOfficer", label: "Compliance Overseer" },
-      // { name: "dateCreated", label: "Date Created" },
-      // { name: "fax", label: "Fax" },
-      // { name: "phone1", label: "Phone #1" },
+      { name: "accountName", label: "Account Name", required: true, placeholder: "Example Business Trust", type: "text" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "trustee", label: "Trustee", placeholder: "John Doe", type: "text" },
+      { name: "complianceOfficer", label: "Compliance Overseer", placeholder: "Jane Smith", type: "text" },
     ],
     2: [
-      { name: "billingStreet", label: "Company Street", required: true },
-      { name: "billingCity", label: "Company City", required: true },
-      { name: "billingState", label: "Company State", required: true },
-      { name: "billingCountry", label: "Company Country", required: true },
-      { name: "billingCode", label: "Company Code" },
+      { name: "billingStreet", label: "Company Street", required: true, placeholder: "1234 Main St", type: "text" },
+      { name: "billingCity", label: "Company City", required: true, placeholder: "Chicago", type: "text" },
+      { name: "billingState", label: "Company State", required: true, placeholder: "IL", type: "text" },
+      { name: "billingCode", label: "Company Zip Code", placeholder: "60007", type: "tel" },
+      { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description" }],
+    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
   },
+
   "C-Corporation": {
     1: [
-      { name: "accountName", label: "Account Name", required: true },
-      { name: "state", label: "State", required: true },
-      { name: "taxId", label: "Tax ID", required: true },
-      // { name: "clientId", label: "Client ID", required: true },
-      // { name: "dateCreated", label: "Date Created" },
-      { name: "registeredAgent", label: "Registered Agent" },
-      { name: "stateOfFormation", label: "State Of Formation" },
-      { name: "phone1", label: "Phone #1" },
-      { name: "stateFilingNumber", label: "State Filing Number(s)" },
-      { name: "website", label: "Website" },
+      { name: "accountName", label: "Account Name", required: true, placeholder: "ABC Corporation", type: "text" },
+      { name: "state", label: "State", required: true, placeholder: "CA", type: "text" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "registeredAgent", label: "Registered Agent", placeholder: "John Smith", type: "text" },
+      { name: "stateOfFormation", label: "State Of Formation", placeholder: "Delaware", type: "text" },
+      { name: "phone1", label: "Phone #1", placeholder: "(123) 456-7890", type: "tel" },
+      { name: "stateFilingNumber", label: "State Filing Number(s)", placeholder: "1234567", type: "text" },
+      { name: "website", label: "Website", placeholder: "https://example.com", type: "text" },
     ],
     2: [
-      { name: "billingStreet", label: "Company Street", required: true },
-      { name: "billingCity", label: "Company City", required: true },
-      { name: "billingState", label: "Company State", required: true },
-      { name: "billingCountry", label: "Company Country", required: true },
-      { name: "billingCode", label: "Company Code" },
+      { name: "billingStreet", label: "Company Street", required: true, placeholder: "123 Market St", type: "text" },
+      { name: "billingCity", label: "Company City", required: true, placeholder: "San Francisco", type: "text" },
+      { name: "billingState", label: "Company State", required: true, placeholder: "CA", type: "text" },
+      { name: "billingCode", label: "Company Zip Code", placeholder: "94103", type: "tel" },
+      { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description" }],
+    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
   },
+
   Individual: {
     1: [
-      { name: "accountName", label: "Account Name", required: true },
-      { name: "taxId", label: "SSN", required: true },
-      // { name: "clientId", label: "Client ID", required: true },
-      { name: "phone1", label: "Phone #1" },
+      { name: "accountName", label: "Account Name", required: true, placeholder: "John Doe", type: "text" },
+      { name: "taxId", label: "SSN", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "phone1", label: "Phone #1", placeholder: "(123) 456-7890", type: "tel" },
     ],
     2: [
-      { name: "billingStreet", label: "Mailing Street", required: true },
-      { name: "billingCity", label: "Mailing City", required: true },
-      { name: "billingState", label: "Mailing State", required: true },
-      { name: "billingCode", label: "Mailing Code" },
+      { name: "billingStreet", label: "Mailing Street", required: true, placeholder: "123 Main St", type: "text" },
+      { name: "billingCity", label: "Mailing City", required: true, placeholder: "Los Angeles", type: "text" },
+      { name: "billingState", label: "Mailing State", required: true, placeholder: "CA", type: "text" },
+      { name: "billingCode", label: "Mailing Code", placeholder: "90001", type: "tel" },
     ],
-    3: [{ name: "description", label: "Description" }],
+    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
   },
+
   "Non-Profit": {
     1: [
-      { name: "accountName", label: "Account Name", required: true },
-      { name: "phone1", label: "Phone #1" },
+      { name: "accountName", label: "Account Name", required: true, placeholder: "Non-Profit Org Name", type: "text" },
+      { name: "phone1", label: "Phone #1", placeholder: "(123) 456-7890", type: "tel" },
     ],
   },
+
   "FIRM ACCOUNT": {
     1: [
-      { name: "accountName", label: "Account Name", required: true },
-      // { name: "clientId", label: "Client ID", required: true },
-      { name: "dateCreated", label: "Date Created" },
-      { name: "complianceOfficer", label: "Compliance Officer" },
-      { name: "registeredAgent", label: "Registered Agent" },
-      { name: "phone", label: "Phone" },
-      { name: "phone1", label: "Phone #1" },
+      { name: "accountName", label: "Account Name", required: true, placeholder: "Firm Name", type: "text" },
+      { name: "dateCreated", label: "Date Created", placeholder: "2024-05-01", type: "date" },
+      { name: "complianceOfficer", label: "Compliance Officer", placeholder: "Jane Smith", type: "text" },
+      { name: "registeredAgent", label: "Registered Agent", placeholder: "John Doe", type: "text" },
+      { name: "phone", label: "Phone", placeholder: "(123) 456-7890", type: "tel" },
+      { name: "phone1", label: "Phone #1", placeholder: "(123) 456-7890", type: "tel" },
     ],
     2: [
-      { name: "billingStreet", label: "Company Street", required: true },
-      { name: "billingCity", label: "Company City", required: true },
-      { name: "billingState", label: "Company State", required: true },
-      { name: "billingCountry", label: "Company Country", required: true },
-      { name: "billingCode", label: "Company Code" },
+      { name: "billingStreet", label: "Company Street", required: true, placeholder: "500 Oak St", type: "text" },
+      { name: "billingCity", label: "Company City", required: true, placeholder: "Miami", type: "text" },
+      { name: "billingState", label: "Company State", required: true, placeholder: "FL", type: "text" },
+      { name: "billingCode", label: "Company Zip Code", placeholder: "33010", type: "tel" },
+      { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description" }],
+    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
   },
+
   Partnership: {
     1: [
-      { name: "accountName", label: "Account Name", required: true },
-      { name: "state", label: "State", required: true },
-      { name: "taxId", label: "Tax ID", required: true },
-      // { name: "clientId", label: "Client ID", required: true },
-      { name: "dateCreated", label: "Date Created" },
-      { name: "registeredAgent", label: "Registered Agent" },
-      { name: "stateOfFormation", label: "State Of Formation" },
-      { name: "phone1", label: "Phone #1" },
-      { name: "stateFilingNumber", label: "State Filing Number(s)" },
-      { name: "website", label: "Website" },
+      { name: "accountName", label: "Account Name", required: true, placeholder: "Partnership Name", type: "text" },
+      { name: "state", label: "State", required: true, placeholder: "TX", type: "text" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "dateCreated", label: "Date Created", placeholder: "2024-05-01", type: "date" },
+      { name: "registeredAgent", label: "Registered Agent", placeholder: "John Doe", type: "text" },
+      { name: "stateOfFormation", label: "State Of Formation", placeholder: "Texas", type: "text" },
+      { name: "phone1", label: "Phone #1", placeholder: "(123) 456-7890", type: "tel" },
+      { name: "stateFilingNumber", label: "State Filing Number(s)", placeholder: "1234567", type: "text" },
+      { name: "website", label: "Website", placeholder: "https://example.com", type: "text" },
     ],
     2: [
-      { name: "billingStreet", label: "Company Street", required: true },
-      { name: "billingCity", label: "Company City", required: true },
-      { name: "billingState", label: "Company State", required: true },
-      { name: "billingCountry", label: "Company Country", required: true },
-      { name: "billingCode", label: "Company Code" },
+      { name: "billingStreet", label: "Company Street", required: true, placeholder: "700 Main St", type: "text" },
+      { name: "billingCity", label: "Company City", required: true, placeholder: "Austin", type: "text" },
+      { name: "billingState", label: "Company State", required: true, placeholder: "TX", type: "text" },
+      { name: "billingCode", label: "Company Zip Code", placeholder: "73301", type: "tel" },
+      { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description" }],
+    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
   },
+
   "S-Corporation": {
     1: [
-      { name: "accountName", label: "Account Name", required: true },
-      { name: "state", label: "State", required: true },
-      { name: "taxId", label: "Tax ID", required: true },
-      // { name: "clientId", label: "Client ID", required: true },
-      { name: "dateCreated", label: "Date Created" },
-      { name: "registeredAgent", label: "Registered Agent" },
-      { name: "stateOfFormation", label: "State Of Formation" },
-      { name: "phone1", label: "Phone #1" },
-      { name: "stateFilingNumber", label: "State Filing Number(s)" },
-      { name: "website", label: "Website" },
+      { name: "accountName", label: "Account Name", required: true, placeholder: "S-Corp Name", type: "text" },
+      { name: "state", label: "State", required: true, placeholder: "CA", type: "text" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "dateCreated", label: "Date Created", placeholder: "2024-05-01", type: "date" },
+      { name: "registeredAgent", label: "Registered Agent", placeholder: "John Doe", type: "text" },
+      { name: "stateOfFormation", label: "State Of Formation", placeholder: "California", type: "text" },
+      { name: "phone1", label: "Phone #1", placeholder: "(123) 456-7890", type: "tel" },
+      { name: "stateFilingNumber", label: "State Filing Number(s)", placeholder: "1234567", type: "text" },
+      { name: "website", label: "Website", placeholder: "https://example.com", type: "text" },
     ],
     2: [
-      { name: "billingStreet", label: "Company Street", required: true },
-      { name: "billingCity", label: "Company City", required: true },
-      { name: "billingState", label: "Company State", required: true },
-      { name: "billingCountry", label: "Company Country", required: true },
-      { name: "billingCode", label: "Company Code" },
+      { name: "billingStreet", label: "Company Street", required: true, placeholder: "400 Elm St", type: "text" },
+      { name: "billingCity", label: "Company City", required: true, placeholder: "Sacramento", type: "text" },
+      { name: "billingState", label: "Company State", required: true, placeholder: "CA", type: "text" },
+      { name: "billingCode", label: "Company Zip Code", placeholder: "94203", type: "tel" },
+      { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description" }],
+    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
   },
 };
+
 
 interface Props {
   onBack: () => void;
@@ -235,6 +228,7 @@ interface Props {
   setFormDataArray: React.Dispatch<React.SetStateAction<FormData[]>>;
   onFinish: () => void;
   addingBusinessIndex?: number;
+  loader?:boolean
 }
 
 const Step2GiveDetails: React.FC<Props> = ({
@@ -243,6 +237,7 @@ const Step2GiveDetails: React.FC<Props> = ({
   setFormDataArray,
   onFinish,
   addingBusinessIndex,
+  loader,
 }) => {
   const [selectedAccountIndex, setSelectedAccountIndex] = useState(0);
   const [step, setStep] = useState(1);
@@ -257,10 +252,12 @@ const Step2GiveDetails: React.FC<Props> = ({
       : selectedAccountIndex;
   const currentFormData = formDataArray[currentIndex];
   const totalSteps = stepTitles[currentFormData?.accountType]?.length ?? 0;
+   const accountType = currentFormData?.accountType?.trim();
+
   const accountLabel =
     currentIndex === 0
       ? "Individual Account"
-      : `Business Account ${currentIndex}`;
+      : `${accountType} ${currentFormData?.accountName}`;
   const isIndividualAccount = currentIndex === 0;
   const isNewBusiness = addingBusinessIndex !== undefined;
 
@@ -276,26 +273,38 @@ const Step2GiveDetails: React.FC<Props> = ({
 
   const renderLabel = (label: string, required = false) => (
     <label className="text-sm font-medium text-gray-700 mb-1 block">
-      {label} {required && <span className="text-red-500">*</span>}
+      {label.toLowerCase().includes("company") ?  `${accountType}` + label.replace(/Company/gi, "") : label}{" "}
+      {required && <span className="text-red-500">*</span>}
     </label>
+
   );
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormDataArray((prev) => {
-      const updated = [...prev];
-      updated[currentIndex] = {
-        ...updated[currentIndex],
-        [name]: value,
-      };
-      return updated;
-    });
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
+const handleChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >
+) => {
+  const { name, value } = e.target;
+  let rawValue = value;
+
+  if (["ssn", "taxid"].includes(name.toLowerCase())) {
+    rawValue = value.replace(/\D/g, ""); 
+  } else if (["phone", "phone1",  "billingzip"].includes(name.toLowerCase())) {
+    rawValue = value.replace(/\D/g, ""); 
+  }
+
+  setFormDataArray((prev) => {
+    const updated = [...prev];
+    updated[currentIndex] = {
+      ...updated[currentIndex],
+      [name]: rawValue, // store raw value
+    };
+    return updated;
+  });
+
+  setErrors((prev) => ({ ...prev, [name]: "" }));
+};
+
 
   const validateStep = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -336,6 +345,32 @@ const Step2GiveDetails: React.FC<Props> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  const formatSSN = (value: string) => {
+    if (!value) return "";
+    console.log("value")
+    const digits = value.replace(/\D/g, "").slice(0, 12);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 5) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    if (digits.length <= 9) return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
+    return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5, 9)}`;
+  };
+  
+  const formatPhone = (value: string) => {
+    if (!value) return "";
+    let digits = value.replace(/\D/g, "");
+
+    // Limit digits
+    if (digits.length <= 10) {
+      digits = digits.slice(0, 10);
+      // US-style formatting
+      return digits.replace(/(\d{3})(\d{3})(\d{0,4})/, "($1) $2-$3").replace(/-$/, "");
+    } else {
+      digits = digits.slice(0, 15); // max 15 digits for international
+      const country = digits.slice(0, digits.length - 10);
+      const number = digits.slice(-10);
+      return `+${country} (${number.slice(0, 3)}) ${number.slice(3, 6)}-${number.slice(6, 10)}`;
+    }
+  };
   const nextStep = () => {
     // Validate only the current step
     if (!validateStep()) return;
@@ -424,7 +459,7 @@ const Step2GiveDetails: React.FC<Props> = ({
             >
               {idx === 0
                 ? "Individual"
-                : `${account.accountName} (${account.accountType})`}
+                : `${account.accountType} ${account.accountName}`}
             </button>
           ))}
         </div>
@@ -529,12 +564,13 @@ const Step2GiveDetails: React.FC<Props> = ({
           </div>
           {/* Form Fields */}
           <div className="grid grid-cols-2 gap-4 mt-6">
-            {fieldsForCurrentStep.map((field) => (
+          {fieldsForCurrentStep.map((field) => (
               <div key={field.name}>
                 {renderLabel(
                   field.label.replace(/Billing/g, "Mailing"),
                   field.required
                 )}
+
                 {field.name === "description" ? (
                   <textarea
                     name={field.name}
@@ -544,41 +580,38 @@ const Step2GiveDetails: React.FC<Props> = ({
                     placeholder="Enter description or notes"
                     disabled={isIndividualAccount}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
-                      errors[field.name]
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    } ${
-                      isIndividualAccount
-                        ? "bg-gray-100 cursor-not-allowed"
-                        : ""
-                    }`}
+                      errors[field.name] ? "border-red-500 bg-red-50" : "border-gray-300"
+                    } ${isIndividualAccount ? "bg-gray-100 cursor-not-allowed" : ""}`}
                   />
                 ) : (
                   <input
-                    type="text"
+                    type={field.type}
                     name={field.name}
-                    value={String(currentFormData[field.name] ?? "")}
+                    value={
+                      field.name.toLowerCase() === "taxid"
+                        ? formatSSN(currentFormData[field.name] as string)
+                        : field.name.toLowerCase() === "phone" ||
+                          field.name.toLowerCase() === "phone1"
+                        ? formatPhone(currentFormData[field.name] as string)
+                        : currentFormData[field.name] || ""
+                    }
                     onChange={handleChange}
-                    placeholder={field.label.replace(/Billing/g, "Mailing")}
+                    placeholder={
+                      field.placeholder
+                    }
                     disabled={isIndividualAccount}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
-                      errors[field.name]
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    } ${
-                      isIndividualAccount
-                        ? "bg-gray-100 cursor-not-allowed"
-                        : ""
-                    }`}
+                      errors[field.name] ? "border-red-500 bg-red-50" : "border-gray-300"
+                    } ${isIndividualAccount ? "bg-gray-100 cursor-not-allowed" : ""}`}
                   />
                 )}
+
                 {errors[field.name] && (
-                  <p className="text-xs text-red-600 mt-1">
-                    {errors[field.name]}
-                  </p>
+                  <p className="text-xs text-red-600 mt-1">{errors[field.name]}</p>
                 )}
               </div>
             ))}
+
             {currentFormData.accountType &&
               stepTitles[currentFormData.accountType]?.[step - 1] ===
                 "Address Information" && (
@@ -656,7 +689,7 @@ const Step2GiveDetails: React.FC<Props> = ({
               onClick={handleFinish}
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition"
             >
-              Finish
+             {loader ? "Submitting..." : "Finish"}
             </button>
           )}
 

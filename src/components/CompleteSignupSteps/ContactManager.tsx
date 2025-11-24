@@ -90,9 +90,12 @@ const ContactManager: React.FC<ContactManagerProps> = ({
           }
           break;
         case "ssn":
-          if (!/^\d{9,15}$/.test(value)) {
-            newErrors[field.name] = `${field.label} must be a valid SSN`;
-          }
+            const cleanSSN = (value || "").trim();
+            if (cleanSSN) {
+              if (cleanSSN.length < 9 || cleanSSN.length > 12) {
+               newErrors[field.name] = `SSN must contain 9 to 12 digits`;
+              }
+            }
           break;
         case "billingZip":
           if (!/^\d{4,10}$/.test(value)) {
@@ -117,6 +120,34 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     onCreate(contact);
     setForm({});
     setErrors({});
+    onClose()
+  };
+
+    const formatSSN = (value: string) => {
+    if (!value) return "";
+    const digits = value.replace(/\D/g, "").slice(0, 12);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 5) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    if (digits.length <= 9) return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
+    return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5, 9)}`;
+    
+  };
+  
+  const formatPhone = (value: string) => {
+    if (!value) return "";
+    let digits = value.replace(/\D/g, "");
+
+    // Limit digits
+    if (digits.length <= 10) {
+      digits = digits.slice(0, 10);
+      // US-style formatting
+      return digits.replace(/(\d{3})(\d{3})(\d{0,4})/, "($1) $2-$3").replace(/-$/, "");
+    } else {
+      digits = digits.slice(0, 15); // max 15 digits for international
+      const country = digits.slice(0, digits.length - 10);
+      const number = digits.slice(-10);
+      return `+${country} (${number.slice(0, 3)}) ${number.slice(3, 6)}-${number.slice(6, 10)}`;
+    }
   };
 
   // Dynamically generate all fields from Contact interface
@@ -124,22 +155,22 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     name: keyof Contact;
     label: string;
     required?: boolean;
+    placeholder?: string;
+    type?: "text" | "email" | "tel" | "date";
   }[] = [
-    { name: "firstName", label: "First Name", required: true },
-    { name: "lastName", label: "Last Name", required: true },
-    { name: "email", label: "Email" },
-    { name: "secondaryEmail", label: "Secondary Email" },
-    { name: "fax", label: "Fax" },
-    { name: "ssn", label: "SSN" },
-    { name: "importantNotes", label: "Important Notes" },
-    { name: "dateOfBirth", label: "Date of Birth" },
-    { name: "phone", label: "Phone" },
-    { name: "billingStreet", label: "Mailing Street" },
-    { name: "billingCity", label: "Mailing City" },
-    { name: "billingState", label: "Mailing State" },
-    // { name: "billingCode", label: "Mailing Code" },
-    { name: "billingZip", label: "Mailing Zip" },
-    { name: "billingCountry", label: "Mailing Country" },
+    { name: "firstName", label: "First Name", required: true, placeholder: "Jhon", type: "text" },
+    { name: "lastName", label: "Last Name", required: true, placeholder: "Doe", type: "text" },
+    { name: "email", label: "Email", required: true, placeholder: "example@gmail.com", type: "email" },
+    { name: "secondaryEmail", label: "Secondary Email", placeholder: "example@gmail.com", type: "email" },
+    { name: "ssn", label: "SSN",  required: true, placeholder: "123-45-6789", type: "tel" },
+    { name: "importantNotes", label: "Important Notes", placeholder: "notes", type: "text" },
+    { name: "dateOfBirth", label: "Date of Birth", placeholder: "Select your date of birth", type: "date" },
+    { name: "phone", label: "Phone", placeholder: "(123) 456-7890", type: "tel" },
+    { name: "billingStreet", label: "Mailing Street", placeholder: "1234 Main st", type: "text" },
+    { name: "billingCity", label: "Mailing City", placeholder: "New York", type: "text" },
+    { name: "billingState", label: "Mailing State", placeholder: "NY", type: "text" },
+    { name: "billingZip", label: "Mailing Zip", placeholder: "10001", type: "tel" },
+    { name: "billingCountry", label: "Mailing Country", placeholder: "USA", type: "text" }
   ];
 
   return (
@@ -167,13 +198,25 @@ const ContactManager: React.FC<ContactManagerProps> = ({
                   {field.label}{" "}
                   {field.required && <span className="text-red-500">*</span>}
                 </label>
-                <input
-                  type={field.name === "dateOfBirth" ? "date" : "text"}
-                  placeholder={`Enter ${field.label}`}
-                  value={(form[field.name] as string) || ""}
-                  onChange={(e) =>
-                    setForm({ ...form, [field.name]: e.target.value })
+              <input
+                  type={field.type || "text"}
+                  placeholder={field.placeholder || `Enter ${field.label}`}
+                  value={
+                    field.name.toLowerCase() === "ssn"
+                      ? formatSSN(form[field.name] as string)
+                      : field.name.toLowerCase() === "phone"
+                      ? formatPhone(form[field.name] as string)
+                      : (form[field.name] as string) || ""
                   }
+                  onChange={(e) => {
+                    let rawValue = e.target.value;
+
+                    if (field.name.toLowerCase() === "ssn" || field.name.toLowerCase() === "phone") {
+                      rawValue = rawValue.replace(/\D/g, "");
+                    }
+
+                    setForm({ ...form, [field.name]: rawValue });
+                  }}
                   className="border rounded px-3 py-2 w-full"
                 />
                 {errors[field.name] && (
@@ -207,7 +250,9 @@ const ContactManager: React.FC<ContactManagerProps> = ({
           {contacts.length === 0 ? (
             <div className="text-sm text-gray-500">No contacts yet</div>
           ) : (
-            contacts.map((c) => {
+            contacts
+            .filter((c) => c.type === "Dependent")
+            .map((c) => {
               const isSelected = c.id ? selectedIds.includes(c.id) : false;
               return (
                 <div

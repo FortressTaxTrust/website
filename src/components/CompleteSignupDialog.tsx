@@ -97,6 +97,7 @@ const CompleteSignupDialog = ({
   ]);
   const [errors, setErrors] = useState<string[]>([]);
   const [successMessage, setSuccessMessage] = useState("");
+  const [loader , setLoader] = useState(false);
   const [addingSpouse, setAddingSpouse] = useState(false);
   const [addingChildren, setAddingChildren] = useState(false);
   const [checkedChild, setCheckedChild] = useState<boolean>(false);
@@ -231,6 +232,8 @@ const CompleteSignupDialog = ({
           : null;
       if (!token) throw new Error("Missing access token");
 
+      setLoader(true)
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/zoho/create/multiple-account`,
         {
@@ -291,8 +294,11 @@ const CompleteSignupDialog = ({
         console.log("Created contacts:", response.data.contacts);
         setCurrentStep(3);
       }
+      setLoader(false)
+
     } catch (err) {
       console.error(err);
+       setLoader(false)
       setErrors(["Error creating account. Please try again."]);
     }
   };
@@ -306,7 +312,16 @@ const CompleteSignupDialog = ({
     }
     setCurrentStep((prev) => prev + 1);
   };
-  const goPrevStep = () => setCurrentStep((prev) => (prev > 0 ? prev - 1 : 0));
+  const goPrevStep = () => {
+    const errs = validateForm();
+    if (errs.length > 0) {
+      setErrors(errs);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    setCurrentStep((prev) => (prev > 0 ? prev - 1 : 0));
+
+  };
 
   const addOrIgnoreContact = (contact: Contact) => {
     setFormDataArray((prev) => {
@@ -435,20 +450,20 @@ const CompleteSignupDialog = ({
             <div className="border rounded-lg p-4">
               <h3 className="font-semibold mb-2">Contact Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[
-                  { name: "firstName", label: "First Name", required: true, disabled: true, placeholder: "Jhon" },
-                  { name: "lastName", label: "Last Name", required: true, disabled: true, placeholder: "Doe" },
-                  { name: "email", label: "Email", required: true, disabled: true, placeholder: "example@gmail.com" },
-                  { name: "secondaryEmail", label: "Secondary Email", placeholder: "example@gmail.com" },
-                  { name: "ssn", label: "SSN", placeholder: "123-45-6789" },
-                  { name: "importantNotes", label: "Important Notes", placeholder: "notes" },
-                  { name: "dateOfBirth", label: "Date of Birth", placeholder: "Select your date of birth" },
-                  { name: "phone", label: "Phone", placeholder: "(123) 456-7890" },
-                  { name: "billingStreet", label: "Mailing Street", placeholder: "1234 Main st" },
-                  { name: "billingCity", label: "Mailing City", placeholder: "New York" },
-                  { name: "billingState", label: "Mailing State", placeholder: "NY" },
-                  { name: "billingZip", label: "Mailing Zip", placeholder: "10001" },
-                  { name: "billingCountry", label: "Mailing Country", placeholder: "USA" },
+                {[
+                  { name: "firstName", label: "First Name", required: true, disabled: true, placeholder: "Jhon", type: "text" },
+                  { name: "lastName", label: "Last Name", required: true, disabled: true, placeholder: "Doe", type: "text" },
+                  { name: "email", label: "Email", required: true, disabled: true, placeholder: "example@gmail.com", type: "email" },
+                  { name: "secondaryEmail", label: "Secondary Email", placeholder: "example@gmail.com", type: "email" },
+                  { name: "ssn", label: "SSN",  required: true, placeholder: "123-45-6789", type: "tel" },
+                  { name: "importantNotes", label: "Important Notes", placeholder: "notes", type: "text" },
+                  { name: "dateOfBirth", label: "Date of Birth", placeholder: "Select your date of birth", type: "date" },
+                  { name: "phone", label: "Phone", placeholder: "(123) 456-7890", type: "tel" },
+                  { name: "billingStreet", label: "Mailing Street", placeholder: "1234 Main st", type: "text" },
+                  { name: "billingCity", label: "Mailing City", placeholder: "New York", type: "text" },
+                  { name: "billingState", label: "Mailing State", placeholder: "NY", type: "text" },
+                  { name: "billingZip", label: "Mailing Zip", placeholder: "10001", type: "tel" },
+                  { name: "billingCountry", label: "Mailing Country", placeholder: "USA", type: "text" }
                 ].map((field) => {
                   const mainContact = formDataArray[0].connectedContacts?.[0] || {};
                   return (
@@ -458,9 +473,9 @@ const CompleteSignupDialog = ({
                         {field.required && "*"}
                       </label>
                       <input
-                        type={field.name === "dateOfBirth" ? "date" : "text"}
+                        type={  field.type || "text"}
                         disabled={field.disabled}
-                          value={
+                        value={
                                   field.name.toLowerCase() === "ssn"
                                     ? formatSSN((mainContact as any)[field.name])
                                     : field.name.toLowerCase() === "phone"
@@ -478,11 +493,12 @@ const CompleteSignupDialog = ({
                             (mainAccount as any)[field.name] = value;
                             (contact as any)[field.name] = value;
                             if (field.name.toLowerCase() === "ssn") {
-                              mainAccount.taxId = value.replace(/\D/g, "");;
+                              mainAccount.taxId = value.replace(/\D/g, "");
                               contact.ssn = value.replace(/\D/g, "");;
                             }
                             if (field.name.toLowerCase() === "phone") {
                               mainAccount.phone1 = value.replace(/\D/g, "");
+                              mainAccount.phone = value.replace(/\D/g, "");
                               contact.phone = value.replace(/\D/g, "");
                             }
                             if (field.name.toLowerCase() === "billingzip") {
@@ -655,6 +671,7 @@ const CompleteSignupDialog = ({
               handleAccountCreation();
               console.log("Finished:", formDataArray);
             }}
+            loader= {loader}
           />
         )}
 

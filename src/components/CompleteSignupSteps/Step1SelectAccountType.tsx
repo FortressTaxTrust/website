@@ -188,7 +188,7 @@ const Step1SelectAccountType: React.FC<Step1Props> = ({
         </h4>
         {businessAccounts.length === 0 ? (
           <p className="text-sm text-gray-dark py-4">
-            No business accounts added yet
+           No businesses/Trusts added yet
           </p>
         ) : (
           <div className="space-y-3 mb-4">
@@ -200,7 +200,7 @@ const Step1SelectAccountType: React.FC<Step1Props> = ({
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-2">
                     <label className="block text-sm font-medium text-gray-dark mb-1">
-                      Account Name
+                      Business/Trust Name
                     </label>
                     <input
                       type="text"
@@ -287,7 +287,7 @@ const Step1SelectAccountType: React.FC<Step1Props> = ({
           onClick={handleAddBusiness}
           className="w-full px-4 py-2 border-2 border-dashed border-gray-light rounded-lg text-gray-dark hover:border-secondary hover:bg-gray-light font-medium transition"
         >
-          + Add Business Account
+          + Add Your Business/Trust
         </button>
       </div>
 
