@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { Upload, CheckCircle, ChevronDown, FileUp, X } from "lucide-react";
 import {
   Select,
@@ -42,13 +42,13 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
     },
     {
       key: "priorYearReturns",
-      label: "Prior Year Tax Returns (2023, 2022)",
+      label: "Prior Tax Returns",
       color: "text-green-500",
       files: [],
     },
     {
       key: "sourceDocs2024",
-      label: "Any Source Documents for 2024",
+      label: "Any source Documents",
       color: "text-purple-500",
       files: [],
     },
@@ -86,6 +86,11 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
       );
     }
   };
+  useEffect(() => {
+    if (accounts.length > 0 && !selectedAccount) {
+      handleAccountSelect(accounts[0].id);
+    }
+  }, [accounts, selectedAccount]);
 
   const handleRemoveFile = (key: string, fileIndex: number) => {
     setFiles((prev) =>
@@ -106,10 +111,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
       const missingFiles = files.filter((f) => !f.files || f.files.length === 0);
       if (missingFiles.length > 0) {
         throw new Error(
-          `Please select all required files. Missing: ${missingFiles
-            .map((f) => f.label)
-            .join(", ")}`
-        );
+          `Please upload all required files!`)
       }
       setLoading(true);
       const formData = new FormData();
@@ -242,7 +244,7 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
                     ))}
                   </div>
                 ) : (
-                  <span className="text-xs text-gray-400 italic mt-1">No file selected</span>
+                  <span className="text-xs text-gray-400 italic mt-1">No files uploaded</span>
                 )}
               </label>
             ))}
@@ -278,8 +280,19 @@ const UploadDocumentsStep: React.FC<UploadDocumentsStepProps> = ({
               <li key={idx}>{file}</li>
             ))}
           </ul>
+          
         </div>
       )}
+
+      {uploadedAccounts.length === accounts.length && (
+        <button
+          onClick={onClose}
+          className="mt-6 bg-gray-600 text-white px-5 py-2.5 rounded-lg shadow hover:bg-green-700 transition text-sm font-medium mx-auto"
+        >
+          Close
+        </button>
+      )}
+
     </div>
   );
 };
