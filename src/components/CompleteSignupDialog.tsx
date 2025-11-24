@@ -335,7 +335,35 @@ const CompleteSignupDialog = ({
     });
   };
 
+  console.log(formDataArray)
   if (!isOpen) return null;
+
+  const formatSSN = (value: string) => {
+    if (!value) return "";
+    const digits = value.replace(/\D/g, "").slice(0, 12);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 5) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    if (digits.length <= 9) return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
+    return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5, 9)}`;
+    
+  };
+  
+  const formatPhone = (value: string) => {
+    if (!value) return "";
+    let digits = value.replace(/\D/g, "");
+
+    // Limit digits
+    if (digits.length <= 10) {
+      digits = digits.slice(0, 10);
+      // US-style formatting
+      return digits.replace(/(\d{3})(\d{3})(\d{0,4})/, "($1) $2-$3").replace(/-$/, "");
+    } else {
+      digits = digits.slice(0, 15); // max 15 digits for international
+      const country = digits.slice(0, digits.length - 10);
+      const number = digits.slice(-10);
+      return `+${country} (${number.slice(0, 3)}) ${number.slice(3, 6)}-${number.slice(6, 10)}`;
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -407,40 +435,22 @@ const CompleteSignupDialog = ({
             <div className="border rounded-lg p-4">
               <h3 className="font-semibold mb-2">Contact Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  {
-                    name: "firstName",
-                    label: "First Name",
-                    required: true,
-                    disabled: true,
-                  },
-                  {
-                    name: "lastName",
-                    label: "Last Name",
-                    required: true,
-                    disabled: true,
-                  },
-                  {
-                    name: "email",
-                    label: "Email",
-                    required: true,
-                    disabled: true,
-                  },
-                  { name: "secondaryEmail", label: "Secondary Email" },
-                  // { name: "fax", label: "Fax" },
-                  { name: "ssn", label: "SSN" },
-                  { name: "importantNotes", label: "Important Notes" },
-                  { name: "dateOfBirth", label: "Date of Birth" },
-                  { name: "phone", label: "Phone" },
-                  { name: "billingStreet", label: "Mailing Street" },
-                  { name: "billingCity", label: "Mailing City" },
-                  { name: "billingState", label: "Mailing State" },
-                  // { name: "billingCode", label: "Mailing Code" },
-                  { name: "billingZip", label: "Mailing Zip" },
-                  { name: "billingCountry", label: "Mailing Country" },
+        {[
+                  { name: "firstName", label: "First Name", required: true, disabled: true, placeholder: "Jhon" },
+                  { name: "lastName", label: "Last Name", required: true, disabled: true, placeholder: "Doe" },
+                  { name: "email", label: "Email", required: true, disabled: true, placeholder: "example@gmail.com" },
+                  { name: "secondaryEmail", label: "Secondary Email", placeholder: "example@gmail.com" },
+                  { name: "ssn", label: "SSN", placeholder: "123-45-6789" },
+                  { name: "importantNotes", label: "Important Notes", placeholder: "notes" },
+                  { name: "dateOfBirth", label: "Date of Birth", placeholder: "Select your date of birth" },
+                  { name: "phone", label: "Phone", placeholder: "(123) 456-7890" },
+                  { name: "billingStreet", label: "Mailing Street", placeholder: "1234 Main st" },
+                  { name: "billingCity", label: "Mailing City", placeholder: "New York" },
+                  { name: "billingState", label: "Mailing State", placeholder: "NY" },
+                  { name: "billingZip", label: "Mailing Zip", placeholder: "10001" },
+                  { name: "billingCountry", label: "Mailing Country", placeholder: "USA" },
                 ].map((field) => {
-                  const mainContact =
-                    formDataArray[0].connectedContacts?.[0] || {};
+                  const mainContact = formDataArray[0].connectedContacts?.[0] || {};
                   return (
                     <div key={field.name} className="flex flex-col">
                       <label className="text-sm font-medium mb-1">
@@ -450,26 +460,30 @@ const CompleteSignupDialog = ({
                       <input
                         type={field.name === "dateOfBirth" ? "date" : "text"}
                         disabled={field.disabled}
-                        value={(mainContact as any)[field.name] || ""}
-                        placeholder={`Enter ${field.label.toLowerCase()}`}
+                          value={
+                                  field.name.toLowerCase() === "ssn"
+                                    ? formatSSN((mainContact as any)[field.name])
+                                    : field.name.toLowerCase() === "phone"
+                                    ? formatPhone((mainContact as any)[field.name])
+                                    : (mainContact as any)[field.name] || ""
+                                }
+                        placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
                         onChange={(e) => {
                           if (field.disabled) return;
-                          const value = e.target.value;
+                          let value = e.target.value;
                           setFormDataArray((prev) => {
                             const updated = [...prev];
                             const mainAccount = { ...updated[0] };
-                            const contact = {
-                              ...mainAccount.connectedContacts[0],
-                            };
+                            const contact = { ...mainAccount.connectedContacts[0] };
                             (mainAccount as any)[field.name] = value;
                             (contact as any)[field.name] = value;
                             if (field.name.toLowerCase() === "ssn") {
-                              mainAccount.taxId = value;
-                              contact.ssn = value;
+                              mainAccount.taxId = value.replace(/\D/g, "");;
+                              contact.ssn = value.replace(/\D/g, "");;
                             }
                             if (field.name.toLowerCase() === "phone") {
-                              mainAccount.phone1 = value;
-                              contact.phone = value;
+                              mainAccount.phone1 = value.replace(/\D/g, "");
+                              contact.phone = value.replace(/\D/g, "");
                             }
                             if (field.name.toLowerCase() === "billingzip") {
                               mainAccount.billingCode = value;
