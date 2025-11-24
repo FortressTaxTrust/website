@@ -53,26 +53,26 @@ const stepTitles: Record<string, string[]> = {
   "C-Corporation": [
     "Account Information",
     "Address Information",
-    "Description",
+    "Notes",
   ],
-  Individual: ["Account Information", "Address Information", "Description"],
-  Partnership: ["Account Information", "Address Information", "Description"],
-  "FIRM ACCOUNT": ["Account Information", "Address Information", "Description"],
+  Individual: ["Account Information", "Address Information", "Notes"],
+  Partnership: ["Account Information", "Address Information", "Notes"],
+  "FIRM ACCOUNT": ["Account Information", "Address Information", "Notes"],
   "S-Corporation": [
     "Account Information",
     "Address Information",
-    "Description",
+    "Notes",
   ],
   "Non-Profit": ["Account Information"],
   "Beneficial Trust": [
     "Account Information",
     "Address Information",
-    "Description",
+    "Notes",
   ],
   "Business Trust": [
     "Account Information",
     "Address Information",
-    "Description",
+    "Notes",
   ],
 };
 
@@ -83,7 +83,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
   "Beneficial Trust": {
     1: [
       { name: "accountName", label: "Account Name", required: true, placeholder: "Example Beneficial Trust", type: "text" },
-      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "12-3456789", type: "tel" },
       { name: "trustee", label: "Trustee", placeholder: "John Doe", type: "text" },
       { name: "complianceOfficer", label: "Compliance Overseer", placeholder: "Jane Smith", type: "text" },
     ],
@@ -94,13 +94,13 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "billingCode", label: "Company Zip Code", placeholder: "10001", type: "tel" },
       { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
+    3: [{ name: "description", label: "Are there any special considerations we should be aware of?", placeholder: "Write details or notes", type: "text" }],
   },
 
   "Business Trust": {
     1: [
       { name: "accountName", label: "Account Name", required: true, placeholder: "Example Business Trust", type: "text" },
-      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "12-3456789", type: "tel" },
       { name: "trustee", label: "Trustee", placeholder: "John Doe", type: "text" },
       { name: "complianceOfficer", label: "Compliance Overseer", placeholder: "Jane Smith", type: "text" },
     ],
@@ -111,14 +111,14 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "billingCode", label: "Company Zip Code", placeholder: "60007", type: "tel" },
       { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
+    3: [{ name: "description", label: "Are there any special considerations we should be aware of?", placeholder: "Write details or notes", type: "text" }],
   },
 
   "C-Corporation": {
     1: [
       { name: "accountName", label: "Account Name", required: true, placeholder: "ABC Corporation", type: "text" },
       { name: "state", label: "State", required: true, placeholder: "CA", type: "text" },
-      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "12-3456789", type: "tel" },
       { name: "registeredAgent", label: "Registered Agent", placeholder: "John Smith", type: "text" },
       { name: "stateOfFormation", label: "State Of Formation", placeholder: "Delaware", type: "text" },
       { name: "phone1", label: "Phone #1", placeholder: "(123) 456-7890", type: "tel" },
@@ -132,13 +132,13 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "billingCode", label: "Company Zip Code", placeholder: "94103", type: "tel" },
       { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
+    3: [{ name: "description", label: "Are there any special considerations we should be aware of?", placeholder: "Write details or notes", type: "text" }],
   },
 
   Individual: {
     1: [
       { name: "accountName", label: "Account Name", required: true, placeholder: "John Doe", type: "text" },
-      { name: "taxId", label: "SSN", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "taxId", label: "SSN", required: true, placeholder: "12-3456789", type: "tel" },
       { name: "phone1", label: "Phone #1", placeholder: "(123) 456-7890", type: "tel" },
     ],
     2: [
@@ -147,7 +147,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "billingState", label: "Mailing State", required: true, placeholder: "CA", type: "text" },
       { name: "billingCode", label: "Mailing Code", placeholder: "90001", type: "tel" },
     ],
-    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
+    3: [{ name: "description", label: "Are there any special considerations we should be aware of?", placeholder: "Write details or notes", type: "text" }],
   },
 
   "Non-Profit": {
@@ -173,14 +173,14 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "billingCode", label: "Company Zip Code", placeholder: "33010", type: "tel" },
       { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
+    3: [{ name: "description", label: "Are there any special considerations we should be aware of?", placeholder: "Write details or notes", type: "text" }],
   },
 
   Partnership: {
     1: [
       { name: "accountName", label: "Account Name", required: true, placeholder: "Partnership Name", type: "text" },
       { name: "state", label: "State", required: true, placeholder: "TX", type: "text" },
-      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "12-3456789", type: "tel" },
       { name: "dateCreated", label: "Date Created", placeholder: "2024-05-01", type: "date" },
       { name: "registeredAgent", label: "Registered Agent", placeholder: "John Doe", type: "text" },
       { name: "stateOfFormation", label: "State Of Formation", placeholder: "Texas", type: "text" },
@@ -195,14 +195,14 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "billingCode", label: "Company Zip Code", placeholder: "73301", type: "tel" },
       { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
+    3: [{ name: "description", label: "Are there any special considerations we should be aware of?", placeholder: "Write details or notes", type: "text" }],
   },
 
   "S-Corporation": {
     1: [
       { name: "accountName", label: "Account Name", required: true, placeholder: "S-Corp Name", type: "text" },
       { name: "state", label: "State", required: true, placeholder: "CA", type: "text" },
-      { name: "taxId", label: "Tax ID", required: true, placeholder: "123-45-6789", type: "tel" },
+      { name: "taxId", label: "Tax ID", required: true, placeholder: "12-3456789", type: "tel" },
       { name: "dateCreated", label: "Date Created", placeholder: "2024-05-01", type: "date" },
       { name: "registeredAgent", label: "Registered Agent", placeholder: "John Doe", type: "text" },
       { name: "stateOfFormation", label: "State Of Formation", placeholder: "California", type: "text" },
@@ -217,7 +217,7 @@ const accountTypeStepConfig: Record<string, StepConfig> = {
       { name: "billingCode", label: "Company Zip Code", placeholder: "94203", type: "tel" },
       { name: "billingCountry", label: "Company Country", required: true, placeholder: "USA", type: "text" },
     ],
-    3: [{ name: "description", label: "Description", placeholder: "Write details or notes", type: "text" }],
+    3: [{ name: "description", label: "Are there any special considerations we should be aware of?", placeholder: "Write details or notes", type: "text" }],
   },
 };
 
@@ -257,7 +257,7 @@ const Step2GiveDetails: React.FC<Props> = ({
   const accountLabel =
     currentIndex === 0
       ? "Individual Account"
-      : `${accountType} ${currentFormData?.accountName}`;
+      : `${currentFormData?.accountName} (${accountType})`;
   const isIndividualAccount = currentIndex === 0;
   const isNewBusiness = addingBusinessIndex !== undefined;
 
@@ -273,7 +273,8 @@ const Step2GiveDetails: React.FC<Props> = ({
 
   const renderLabel = (label: string, required = false) => (
     <label className="text-sm font-medium text-gray-700 mb-1 block">
-      {label.toLowerCase().includes("company") ?  `${accountType}` + label.replace(/Company/gi, "") : label}{" "}
+      {label.toLowerCase().includes("account") ?  `${accountType}` + label.replace(/account/gi, "") : label.toLowerCase().includes("company") ? `${accountType}` + label.replace(/Company/gi, "") : label}{" "}
+
       {required && <span className="text-red-500">*</span>}
     </label>
 
@@ -345,15 +346,15 @@ const handleChange = (
     return Object.keys(newErrors).length === 0;
   };
 
+  // this is taxid pattern
   const formatSSN = (value: string) => {
     if (!value) return "";
-    console.log("value")
-    const digits = value.replace(/\D/g, "").slice(0, 12);
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 5) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-    if (digits.length <= 9) return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
-    return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5, 9)}`;
+    const digits = value.replace(/\D/g, "").slice(0, 9);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 9) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    return digits;
   };
+
   
   const formatPhone = (value: string) => {
     if (!value) return "";
@@ -577,7 +578,7 @@ const handleChange = (
                     value={String(currentFormData[field.name] ?? "")}
                     onChange={handleChange}
                     rows={3}
-                    placeholder="Enter description or notes"
+                    placeholder={field.placeholder}
                     disabled={isIndividualAccount}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
                       errors[field.name] ? "border-red-500 bg-red-50" : "border-gray-300"
@@ -640,7 +641,7 @@ const handleChange = (
                           mailingFields.forEach((key) => {
                             if (key === "billingCode") {
                               const zip =
-                                "billingZip" as keyof typeof individualAccountData;
+                              "billingZip" as keyof typeof individualAccountData;
                               current[key] = individualAccountData[zip] || "";
                             } else {
                               current[key] = individualAccountData[key] || "";

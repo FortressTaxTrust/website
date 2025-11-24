@@ -402,7 +402,7 @@ const CompleteSignupDialog = ({
         )}
 
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-gray-800">
             Complete Your Profile
           </h2>
           <button
