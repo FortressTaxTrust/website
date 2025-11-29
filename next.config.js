@@ -8,6 +8,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'placehold.co',
       },
+      {
+        protocol: 'https',
+        hostname: 'fortresstaxandtrust.s3.us-east-1.amazonaws.com',
+      },
     ],
   },
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
@@ -41,14 +41,19 @@ export default function ProfessionalBlogEditor({
   initialHTML = '',
 }: Props) {
   const [title, setTitle] = useState(initialTitle)
+  const [coverImage, setCoverImage] = useState<string | null>(null)
+  // The initial content for the editor.
+  const initialContent = useMemo(() => initialHTML || '<p>Hello, start your blog here…</p>', [initialHTML]);
   const [description, setDescription] = useState(initialDescription)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [jsonContent, setJsonContent] = useState<any>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const coverImageInputRef = useRef<HTMLInputElement | null>(null)
+  const [token, setToken] = useState<string | null>(null);
 
 
-  const extensions = [ 
+  const extensions = useMemo(() => [ 
       StarterKit.configure({ heading: { levels: [1, 2, 3, 4, 5, 6] } }),
       Link.configure({ openOnClick: true }),
       TextStyle,
@@ -63,52 +68,82 @@ export default function ProfessionalBlogEditor({
       Underline,
       CodeBlock,
       Dropcursor
-    ];
+    ], []);
   // Main Editor
   const editor = useEditor({
     extensions,
-    content: initialHTML || '<p>Hello, start your blog here…</p>',
+    content: initialContent,
     onUpdate: ({ editor }) => setJsonContent(editor.getJSON()),
     immediatelyRender: false,
   })
 
   // Preview Editor (read-only)
   const previewEditor = useEditor({
-    editable: false,
     extensions,
-    content: initialHTML || '<p></p>',
+    editable: false,
+    content: jsonContent || initialContent,
     immediatelyRender: false,
-  })
-
-  // Sync preview with main editor
-useEffect(() => {
+  }, [jsonContent, extensions, initialContent])
   
-  if (!editor || !previewEditor) return;
-
-  const updatePreview = () => {
-    // Use JSON instead of HTML
-    previewEditor.commands.setContent(editor.getJSON());
-  };
-
-  editor.on('update', updatePreview);
-
-  return () => { editor.off('update', updatePreview) };
-}, [editor, previewEditor]);
-
 
   if (!editor) return <div>Loading editor…</div>
 
+  const uploadFile = async (file: File): Promise<string> => {
+
+    const getBase64 = (file: File): Promise<string> =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+      });
+
+    try {
+       const storedToken = localStorage.getItem('accessToken');
+ 
+      const base64Image = await getBase64(file);
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/casestudies/upload/base64`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${storedToken}`,
+        },
+        body: JSON.stringify({
+          image: base64Image,
+          filename: file.name,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || 'Image upload failed');
+      }
+      
+      const data = await res.json();
+      return data.url.url; // Accessing the nested URL from the new response structure
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message });
+      throw err; // Re-throw to stop further processing
+    }
+  };
+
   const triggerFilePicker = () => fileInputRef.current?.click()
 
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      editor.chain().focus().setImage({ src: String(reader.result) }).run()
-    }
-    reader.readAsDataURL(file)
-    e.currentTarget.value = ''
+    const imageUrl = await uploadFile(file);
+    if (imageUrl) editor.chain().focus().setImage({ src: imageUrl }).run();
+  }
+  
+  const triggerCoverImagePicker = () => coverImageInputRef.current?.click()
+
+  const handleCoverImageInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0]
+    if (!file) return
+    const imageUrl = await uploadFile(file);
+    if (imageUrl) setCoverImage(imageUrl);
   }
 
   const toggleLink = () => {
@@ -132,22 +167,22 @@ useEffect(() => {
     if (confirm('Clear editor content? This cannot be undone.')) editor.commands.clearContent()
   }
 
-  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
-
   const savePost = async () => {
     if (!title.trim() || !jsonContent) {
       setMessage({ type: 'error', text: 'Title and content cannot be empty.' })
       return
     }
+    const storedToken = localStorage.getItem('accessToken');
+ 
     setSaving(true)
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/casestudies/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${storedToken}`,
         },
-        body: JSON.stringify({ title, jsonData: jsonContent }),
+        body: JSON.stringify({ title, content : {cover_image : coverImage,description}, jsonData: jsonContent }),
       })
 
       if (!res.ok) {
@@ -228,6 +263,32 @@ useEffect(() => {
           onChange={(e) => setDescription(e.target.value)}
         />
 
+        {/* Cover Image Upload */}
+        <div className="flex items-center gap-4 my-2">
+          <button
+            onClick={triggerCoverImagePicker}
+            className="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-sm font-medium"
+          >
+            <FaImage className="inline mr-2" />
+            {coverImage ? 'Change Cover Image' : 'Add Cover Image'}
+          </button>
+          <input
+            ref={coverImageInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleCoverImageInput}
+            className="hidden"
+          />
+          {coverImage && (
+            <div className="flex items-center gap-3">
+              <img src={coverImage} alt="Cover preview" className="h-14 w-auto rounded-md object-cover" />
+              <button onClick={() => setCoverImage(null)} title="Remove Cover Image" className="text-red-500 hover:text-red-700">
+                <FaTrash />
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* Toolbar */}
         <div className="flex flex-wrap gap-2 items-center mb-4">
           <ToolbarButton active={editor.isActive('bold')} onClick={() => editor.chain().focus().toggleBold().run()} title="Bold">
@@ -239,11 +300,11 @@ useEffect(() => {
           <ToolbarButton active={editor.isActive('underline')} onClick={() => editor.chain().focus().toggleUnderline().run()} title="Underline">
             <FaUnderline />
           </ToolbarButton>
-          {[1, 2, 3, 4, 5, 6].map((lvl) => (
+          {((): (1 | 2 | 3 | 4 | 5 | 6)[] => [1, 2, 3, 4, 5, 6])().map((lvl) => (
             <ToolbarButton
               key={lvl}
-              active={editor.isActive('heading', { level: lvl as 1 | 2 | 3 })}
-              onClick={() => editor.chain().focus().toggleHeading({ level: lvl as 1 | 2 | 3 }).run()}
+              active={editor.isActive('heading', { level: lvl })}
+              onClick={() => editor.chain().focus().toggleHeading({ level: lvl }).run()}
               title={`H${lvl}`}
             >
               H{lvl}
@@ -328,8 +389,16 @@ useEffect(() => {
   )
 }
 
+interface ToolbarButtonProps {
+  children: React.ReactNode;
+  onClick: () => void;
+  title: string;
+  active?: boolean;
+}
+
+
 // Toolbar button component
-function ToolbarButton({ children, onClick, title, active = false }: any) {
+function ToolbarButton({ children, onClick, title, active = false }: ToolbarButtonProps) {
   return (
     <button
       onClick={onClick}

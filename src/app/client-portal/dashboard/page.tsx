@@ -32,7 +32,7 @@ export default function ClientPortalDashboard() {
   const [contact, setContact] = useState<any>(null);
   const [accounts, setAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState({ contact: true, accounts: true });
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [search, setSearch] = useState("");
   const [userData, setUserData] = useState<{ cognitoUserId?: string }>({});
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -60,6 +60,11 @@ export default function ClientPortalDashboard() {
   ) => {
     if (!files.length || !accountId) return;
 
+    // Clear previous notifications
+    setNotification(null);
+    // Close the modal and show loading state
+    setIsUploadOpen(false);
+
     try {
       setLoading((prev) => ({ ...prev, accounts: true }));
       const formData = new FormData();
@@ -81,10 +86,10 @@ export default function ClientPortalDashboard() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Upload failed");
 
-      alert("Files uploaded successfully!");
+      setNotification({ type: 'success', message: 'Uploaded successfully!' });
     } catch (err: any) {
       console.error(err);
-      alert(err.message || "Error uploading files");
+      setNotification({ type: 'error', message: err.message || 'Error uploading!' });
     } finally {
       setLoading((prev) => ({ ...prev, accounts: false }));
     }
@@ -247,13 +252,15 @@ export default function ClientPortalDashboard() {
       </div>
 
       {/* Error Message */}
-      {/* {errorMessage && (
+      {notification && (
         <div className="mb-4 flex justify-center">
-          <div className="bg-red-100 border border-red-400 text-red-800 px-6 py-4 rounded-lg text-center font-medium shadow-md">
-            {errorMessage}
+          <div className={`px-6 py-4 rounded-lg text-center font-medium shadow-md ${
+            notification.type === 'success' ? 'bg-green-100 border border-green-400 text-green-800' : 'bg-red-100 border border-red-400 text-red-800'
+          }`}>
+            {notification.message}
           </div>
         </div>
-      )} */}
+      )}
 
       {/* Account Cards / Loading / Empty */}
       <div className="flex-1">

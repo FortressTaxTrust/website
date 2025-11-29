@@ -1,46 +1,229 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from 'react';
 
-export default function TestimonialsPage() {
+
+interface CaseStudy {
+  id: string;
+  title: string;
+  category: string;
+  excerpt: string;
+  readTime: string;
+  date: string;
+  content: {
+    cover_image: string;
+    description: string;
+  } | null;
+  // Keep old fields for potential fallback if API is inconsistent
+  created_at: string;
+}
+
+export default function CaseStudies() {
+  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  const limit = 9; // items per page
+
+  useEffect(() => {
+    const fetchCaseStudies = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const storedToken = localStorage.getItem("accessToken");
+        const headers: HeadersInit = {};
+        if (storedToken) {
+          headers['Authorization'] = `Bearer ${storedToken}`;
+        }
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/casestudies?page=${page}&limit=${limit}`,
+          { headers }
+        );
+        if (!res.ok) throw new Error('Failed to fetch case studies');
+        const data = await res.json();
+        
+        console.log('Case studies response:', data);
+
+        setCaseStudies(data.caseStudies || []);
+        const totalCount = data.total || data.caseStudies?.length || 0;
+        setTotalPages(Math.ceil(totalCount / limit) || 1);
+      } catch (err: any) {
+        setError(err.message || 'Something went wrong');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCaseStudies();
+  }, [page]);
+
+  const goToPage = (p: number) => setPage(p);
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <Header />
-      {/* Coming Soon Section */}
-      <div className="container mx-auto px-4 md:px-8 py-6 md:py-8">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="mb-3 md:mb-4">
-            <svg className="w-12 h-12 md:w-16 md:h-16 mx-auto text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 md:mb-3">Coming Soon</h2>
-          <p className="text-base md:text-lg lg:text-xl text-gray-600 mb-4 md:mb-6">
-            We're currently collecting case studies from our satisfied clients. 
-            This page will showcase real stories and experiences from our customers 
-            who have benefited from our tax services.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-2 md:gap-3">
-            <Link 
-              href="/contact" 
-              className="w-full sm:w-auto px-5 md:px-6 py-2 md:py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm md:text-base font-medium"
-            >
-              Contact Us
-            </Link>
-            <Link 
-              href="/" 
-              className="w-full sm:w-auto px-5 md:px-6 py-2 md:py-2.5 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-sm md:text-base font-medium"
-            >
-              Return to Home
-            </Link>
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <div className="border-b">
+        <div className="container mx-auto px-4 md:px-8 py-12 md:py-16 lg:py-20">
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge variant="outline" className="mb-4 text-sm">Case Studies</Badge>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 md:mb-6">
+              Real Results for Real Businesses
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Explore how we've helped businesses and individuals navigate complex tax challenges and achieve meaningful financial outcomes.
+            </p>
           </div>
         </div>
       </div>
 
+      {/* Case Studies Grid */}
+      <div className="container mx-auto px-4 md:px-8 py-12 md:py-16">
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {Array.from({ length: limit }).map((_, index) => (
+              <div key={index} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
+                   <div className="p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Skeleton className="h-2 w-2 rounded-full animate-pulse" />
+                  </div>
+                  <Skeleton className="h-6 w-3/4 mb-3 animate-pulse" />
+                  <div className="space-y-2 mb-4">
+                    <Skeleton className="h-4 animate-pulse" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-4 w-20 animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500">{error}</div>
+        ) : caseStudies.length === 0 ? (
+          <div className="text-center text-muted-foreground">No case studies found.</div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              
+              {caseStudies.map((study) => (
+                <Link 
+                  key={study.id}
+                  href={`/case-studies/${study.id}`}
+                  className="group"
+                >
+                  <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg border-border">
+                    <div className="aspect-[16/9] overflow-hidden bg-muted">
+                      <img 
+                        src={study.content?.cover_image ? study.content?.cover_image :  "/images/placeholder.svg"}
+                        alt={study.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge className="text-xs text-white">
+                          {study.category || 'General'}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">•</span>
+                        <span className="text-xs text-muted-foreground">{study.readTime || '5 min read'}</span>
+                      </div>
+                      <h2 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                        {study.title}
+                      </h2>
+                      <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
+                        {study.content?.description}
+                      </p>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{new Date(study.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
+                        <span className="flex items-center gap-1 text-primary group-hover:gap-2 transition-all">
+                          Read more
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="16" 
+                            height="16" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            strokeWidth="2" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          >
+                            <path d="M5 12h14"/>
+                            <path d="m12 5 7 7-7 7"/>
+                          </svg>
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-12 flex-wrap">
+                <button
+                  onClick={() => goToPage(page - 1)}
+                  disabled={page === 1}
+                  className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => goToPage(p)}
+                    className={`px-3 py-1 rounded border ${
+                      p === page
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => goToPage(page + 1)}
+                  disabled={page === totalPages}
+                  className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* CTA Section */}
+      <div className="border-t bg-muted/30">
+        <div className="container mx-auto px-4 md:px-8 py-12 md:py-16">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Want Results Like These?
+            </h2>
+            <p className="text-base md:text-lg text-muted-foreground mb-6">
+              Let's discuss how our strategic tax planning can help your business thrive.
+            </p>
+            <Link 
+              href="/contact"
+              className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium text-white"
+            >
+              Schedule a Consultation
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
-} 
+}
