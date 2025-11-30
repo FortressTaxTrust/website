@@ -33,7 +33,7 @@ const ResubscribeDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange
           Your subscription has expired. Please resubscribe to continue accessing our premium case studies.
         </DialogDescription>
       </DialogHeader>
-      <Button asChild><Link href="/subscription/pricing">Resubscribe Now</Link></Button>
+      <Button asChild><Link href="/subscription">Resubscribe Now</Link></Button>
     </DialogContent>
   </Dialog>
 );
