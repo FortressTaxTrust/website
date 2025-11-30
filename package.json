@@ -14,6 +14,9 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@radix-ui/react-aspect-ratio": "^1.1.8",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
@@ -52,5 +55,10 @@
     "eslint": "^9.33.0",
     "eslint-config-next": "^15.5.0",
     "typescript": "^5.3.3"
-  }
+  },
+  "description": "A modern, responsive website for Tax Fortress, a professional tax and trust services company. Built with Next.js, React, and Tailwind CSS.",
+  "main": "next.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

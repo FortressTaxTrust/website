@@ -29,22 +29,12 @@ import {
   FaHeading,
 } from 'react-icons/fa'
 
-interface Props {
-  initialTitle?: string
-  initialDescription?: string
-  initialHTML?: string
-}
-
-export default function ProfessionalBlogEditor({
-  initialTitle = '',
-  initialDescription = '',
-  initialHTML = '',
-}: Props) {
-  const [title, setTitle] = useState(initialTitle)
+export default function AddCaseStudyPage() {
+  const [title, setTitle] = useState('')
   const [coverImage, setCoverImage] = useState<string | null>(null)
   // The initial content for the editor.
-  const initialContent = useMemo(() => initialHTML || '<p>Hello, start your blog here…</p>', [initialHTML]);
-  const [description, setDescription] = useState(initialDescription)
+  const initialContent = useMemo(() => '<p>Hello, start your blog here…</p>', []);
+  const [description, setDescription] = useState('')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [jsonContent, setJsonContent] = useState<any>(null)
@@ -81,7 +71,7 @@ export default function ProfessionalBlogEditor({
   const previewEditor = useEditor({
     extensions,
     editable: false,
-    content: jsonContent || initialContent,
+    content: jsonContent || initialContent, // Use initialContent as fallback
     immediatelyRender: false,
   }, [jsonContent, extensions, initialContent])
   
