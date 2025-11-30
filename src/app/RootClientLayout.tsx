@@ -9,14 +9,14 @@ import { Providers } from './providers'
 export default function RootClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
-  // Hide footer for any path starting with /admin
-  const showFooter = !pathname.startsWith('/admin')
+  // Determine if we should show the main header and footer
+  const showMainLayout = !pathname.startsWith('/admin')
 
   return (
     <Providers>
-        {showFooter && <Header />}
-        {showFooter ? (<main className="flex-grow pt-20">{children}</main>) : (<main>{children}</main>)}
-        {showFooter && <Footer />}
+        {showMainLayout && <Header />}
+        {showMainLayout ? (<main className="flex-grow pt-20">{children}</main>) : (<main>{children}</main>)}
+        {showMainLayout && <Footer />}
     </Providers>
   )
 }
