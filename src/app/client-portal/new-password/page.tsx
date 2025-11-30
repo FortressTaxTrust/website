@@ -87,7 +87,11 @@ export default function NewPassword() {
         localStorage.setItem("expiresIn", res.data.tokens.expiresIn);
         sessionStorage.removeItem("mfa_session");
         sessionStorage.removeItem("mfa_username");
-        router.push("/client-portal/dashboard");
+        const redirect = sessionStorage.getItem("redirect_after_login");
+        if (redirect) {
+          sessionStorage.removeItem("redirect_after_login");
+          router.push(redirect);
+        } else router.push("/client-portal/dashboard");
       } else if (res.data.status === "challenge_required" && res.data.challengeName === "MFA_SETUP") {
         // Password set successfully, now need to setup MFA
         sessionStorage.setItem("mfa_session", res.data.session);

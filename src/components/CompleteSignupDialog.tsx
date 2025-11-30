@@ -278,15 +278,13 @@ const CompleteSignupDialog = ({
 
           return messages;
         };
-
-        const allErrorMessages = flattenErrors(response.errors);
-        console.log(allErrorMessages);
-
-        setErrors(
-          allErrorMessages.length
-            ? allErrorMessages
-            : ["Failed to create account."]
-        );
+        if(response.error) {
+          setErrors([response.error]);
+        } else {
+          const allErrorMessages = flattenErrors(response.errors);
+          console.log(allErrorMessages);
+          setErrors(allErrorMessages.length ? allErrorMessages : ["Failed to create account."]);
+        }
       } else {
         setSuccessMessage("Account and contacts created successfully!");
         setAccounts(response.data.accounts || []);

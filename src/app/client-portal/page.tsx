@@ -28,7 +28,11 @@ export default function ClientPortalLogin() {
         localStorage.setItem("idToken", res.data.tokens.idToken);
         localStorage.setItem("refreshToken", res.data.tokens.refreshToken);
         localStorage.setItem("expiresIn", res.data.tokens.expiresIn);
-        router.push("/client-portal/dashboard");
+        const redirect = sessionStorage.getItem("redirect_after_login");
+        if (redirect) {
+          sessionStorage.removeItem("redirect_after_login");
+          router.push(redirect);
+        } else router.push("/client-portal/dashboard");
       } else if (res.data.status === "TOTP_MFA_REQUIRED" || res.data.status === "SOFTWARE_TOKEN_MFA") {
         // Store session and username for MFA
         sessionStorage.setItem("mfa_session", res.data.session);

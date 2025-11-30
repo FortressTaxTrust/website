@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import NextImage from "next/image";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -23,6 +23,20 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
 import CodeBlock from "@tiptap/extension-code-block";
 import Dropcursor from "@tiptap/extension-dropcursor";
+
+const ResubscribeDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) => (
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent className="sm:max-w-md bg-background">
+      <DialogHeader>
+        <DialogTitle>Subscription Expired</DialogTitle>
+        <DialogDescription>
+          Your subscription has expired. Please resubscribe to continue accessing our premium case studies.
+        </DialogDescription>
+      </DialogHeader>
+      <Button asChild><Link href="/subscription/pricing">Resubscribe Now</Link></Button>
+    </DialogContent>
+  </Dialog>
+);
 
 interface CaseStudy {
   id: string;
@@ -39,12 +53,15 @@ interface CaseStudy {
 
 export default function CaseStudyDetail() {
   const { id } = useParams();
-  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const router = useRouter();
   const [study, setStudy] = useState<CaseStudy | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  type AuthStatus = 'loading' | 'loggedOut' | 'loggedInActive' | 'loggedInExpired';
+  const [authStatus, setAuthStatus] = useState<AuthStatus>('loading');
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -60,8 +77,7 @@ export default function CaseStudyDetail() {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    setIsLoggedIn(!!token);
+    setAuthStatus('loading');
 
     if (id) {
       const fetchStudy = async () => {
@@ -69,8 +85,6 @@ export default function CaseStudyDetail() {
           setLoading(true);
           setError(null);
 
-          // Step 1: Fetch public data first. Everyone gets this.
-          // We assume a public endpoint that doesn't return 'metadata'.
           const publicRes = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/casestudies/${id}/public`
           );
@@ -79,28 +93,41 @@ export default function CaseStudyDetail() {
           const publicData = await publicRes.json();
           setStudy(publicData.caseStudy);
 
-          // Step 2: If logged in, fetch the full content from the protected endpoint.
           const token = localStorage.getItem("accessToken");
           if (token) {
             const headers: HeadersInit = {
               Authorization: `Bearer ${token}`,
             };
-            const protectedRes = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL}/casestudies/${id}/private`,
-              { headers }
-            );
+            const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, { headers });
 
-            // If the token is valid, the backend returns the full study.
-            if (protectedRes.ok) {
-              const protectedData = await protectedRes.json();
-              // Update the study state with the full data, including metadata
-              setStudy(protectedData.caseStudy);
-              editor?.commands.setContent(protectedData.caseStudy.metadata);
-            } else {
-              // If token is invalid or another error occurs, treat user as logged out.
-              setIsLoggedIn(false);
+            if (!userRes.ok) {
+              setAuthStatus('loggedOut');
+              return;
             }
-            // If token is invalid, we stick with public data, and the paywall will show.
+            const userData = await userRes.json();
+            const subscriptionEndDate = userData.user_data?.end_date;
+            const subscriptionStatus = userData.user_data?.subscription_status;
+            const isSubscriptionActive = subscriptionStatus === 'active' && subscriptionEndDate && new Date(subscriptionEndDate) > new Date();
+
+            if (isSubscriptionActive) {
+              const protectedRes = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/casestudies/${id}/private`,
+                { headers }
+              );
+              if (protectedRes.ok) {
+                const protectedData = await protectedRes.json();
+                setStudy(protectedData.caseStudy);
+                editor?.commands.setContent(protectedData.caseStudy.metadata);
+                setAuthStatus('loggedInActive');
+              } else {
+                setError("Could not load premium content.");
+                setAuthStatus('loggedOut'); 
+              }
+            } else {
+              setAuthStatus('loggedInExpired');
+            }
+          } else {
+            setAuthStatus('loggedOut');
           }
         } catch (err: any) {
           setError(err.message);
@@ -111,6 +138,12 @@ export default function CaseStudyDetail() {
       fetchStudy();
     }
   }, [id, editor]);
+
+  useEffect(() => {
+    if (authStatus === 'loggedInExpired') {
+      setShowLoginDialog(true);
+    }
+  }, [authStatus]);
 
   if (loading) {
     return (
@@ -205,10 +238,6 @@ export default function CaseStudyDetail() {
     );
   }
 
-  const handleSubscribe = () => {
-    setShowLoginDialog(true);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -291,7 +320,7 @@ export default function CaseStudyDetail() {
           </div>
 
           {/* Paywall */}
-          {!isLoggedIn ? (
+          {authStatus !== 'loggedInActive' ? (
             <div className="relative">
               {/* Gradient Fade */}
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background pointer-events-none h-48 -top-24"></div>
@@ -380,7 +409,10 @@ export default function CaseStudyDetail() {
                     </div>
                   </div>
                   <Button
-                    onClick={handleSubscribe}
+                    onClick={() => {
+                      sessionStorage.setItem("redirect_after_login", window.location.pathname);
+                      router.push("/client-portal/signup");
+                    }}
                     size="lg"
                     className="w-full sm:w-auto text-white"
                   >
@@ -389,8 +421,11 @@ export default function CaseStudyDetail() {
                   <p className="text-xs text-muted-foreground mt-4">
                     Already a subscriber?{" "}
                     <button
-                      onClick={() => setShowLoginDialog(true)}
                       className="text-primary hover:underline"
+                      onClick={() => {
+                        sessionStorage.setItem("redirect_after_login", window.location.pathname);
+                        router.push("/client-portal");
+                      }}
                     >
                       Log in
                     </button>
@@ -411,64 +446,36 @@ export default function CaseStudyDetail() {
           )}
         </div>
       </article>
-
-      {/* Login/Subscribe Dialog */}
-      <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Subscribe to Access Premium Content</DialogTitle>
-            <DialogDescription>
-              Create an account or log in to access all case studies and premium
-              content.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                className="w-full px-3 py-2 border border-input rounded-md bg-background"
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                className="w-full px-3 py-2 border border-input rounded-md bg-background"
-              />
-              <Button
-                className="w-full"
-                onClick={() => {
-                  setShowLoginDialog(false);
-                }}
-              >
-                Continue with Email
-              </Button>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or
-                  </span>
-                </div>
+      {authStatus === 'loggedInExpired' ? (
+        <ResubscribeDialog open={showLoginDialog} onOpenChange={setShowLoginDialog} />
+      ) : (
+        <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Subscribe to Access Premium Content</DialogTitle>
+              <DialogDescription>
+                log in to access all case studies and premium
+                content.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label htmlFor="email" className="text-sm font-medium">Email</label>
+                <input id="email" type="email" placeholder="you@example.com" className="w-full px-3 py-2 border border-input rounded-md bg-background" />
               </div>
-              <Button variant="outline" className="w-full">
-                Continue with Google
-              </Button>
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-medium">Password</label>
+                <input id="password" type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-input rounded-md bg-background" />
+                <Button className="w-full" onClick={() => {
+                  sessionStorage.setItem("redirect_after_login", window.location.pathname);
+                  router.push('/client-portal');
+                  setShowLoginDialog(false); 
+                }}>Login</Button>
+              </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Related CTA */}
       <div className="border-t bg-muted/30 mt-16">

@@ -34,7 +34,11 @@ export default function MFAChallenge() {
         localStorage.setItem("expiresIn", res.data.tokens.expiresIn);
         sessionStorage.removeItem("mfa_session");
         sessionStorage.removeItem("mfa_username");
-        router.push("/client-portal/dashboard");
+        const redirect = sessionStorage.getItem("redirect_after_login");
+        if (redirect) {
+          sessionStorage.removeItem("redirect_after_login");
+          router.push(redirect);
+        } else router.push("/client-portal/dashboard");
       } else {
         setError(res.data.message || "Invalid code.");
       }

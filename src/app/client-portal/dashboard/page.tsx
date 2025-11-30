@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/navigation";
-import Breadcrumb, { BreadcrumbItem } from "../../../components/Breadcrumb";
+import Breadcrumb, { BreadcrumbItem } from "@/components/Breadcrumb";
 import UploadModal from "@/components/UploadModal";
-import { UploadCloud } from "lucide-react";
+import { UploadCloud, ShieldAlert } from "lucide-react";
 import CompleteSignupDialog from "@/components/CompleteSignupDialog";
 function parseJWT(token: string) {
   try {
@@ -39,6 +39,7 @@ export default function ClientPortalDashboard() {
   const [token, setToken] = useState<string | null>(null);
   const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
 
+  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
   const handleNavigateAccount = (accountName: string, accountId: string) => {
     router.push(`/client-portal/dashboard/${accountId}`);
   };
@@ -95,32 +96,60 @@ export default function ClientPortalDashboard() {
     }
   };
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const initializeDashboard = async () => {
+      if (typeof window === "undefined") return;
 
-    const idToken =
-      typeof window !== "undefined" ? localStorage.getItem("idToken") : null;
-    const storedToken =
-      typeof window !== "undefined"
-        ? localStorage.getItem("accessToken")
-        : null;
+      const idToken = localStorage.getItem("idToken");
+      const accessToken = localStorage.getItem("accessToken");
 
-    if (!storedToken) {
-      router.replace("/client-portal");
-      return;
-    }
+      if (!accessToken) {
+        router.replace("/client-portal");
+        return;
+      }
 
-    setToken(storedToken);
+      setToken(accessToken);
 
-    if (idToken) {
-      const payload = parseJWT(idToken);
-      setUser({
-        email: payload?.email,
-        username: payload?.["cognito:username"] || payload?.username,
-        given_name: payload?.given_name,
-      });
-    }
+      // 1. Check subscription status first
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/profile`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
 
-    fetchContact(storedToken);
+        const data = await res.json();
+        const userData = data.user_data;
+
+        const isSubscribed = userData?.subscription_status === 'active';
+        const endDate = userData?.end_date ? new Date(userData.end_date) : null;
+        const hasExpired = endDate ? endDate.getTime() < new Date().getTime() : false;
+
+        // Show dialog if the API call fails, subscription is not active, or it has expired.
+        if (!res.ok || !isSubscribed || hasExpired) {
+          setShowSubscriptionDialog(true);
+          return; // Stop further execution if not subscribed
+        }
+      } catch (error) {
+        console.error("Failed to check subscription status:", error);
+        // Decide if you want to block the user or not on API failure.
+        // For now, we'll let them proceed.
+      }
+
+      // 2. If subscribed, proceed to fetch user info and contact details
+      if (idToken) {
+        const payload = parseJWT(idToken);
+        setUser({
+          email: payload?.email,
+          username: payload?.["cognito:username"] || payload?.username,
+          given_name: payload?.given_name,
+        });
+      }
+
+      fetchContact(accessToken);
+    };
+
+    initializeDashboard();
   }, []);
 
   useEffect(() => {
@@ -200,6 +229,31 @@ export default function ClientPortalDashboard() {
 
       {/* Search & Header */}
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+        {showSubscriptionDialog && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 transition-opacity">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center transform transition-all">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 text-yellow-500">
+                <ShieldAlert className="h-8 w-8" />
+              </div>
+
+              <h3 className="mt-5 text-2xl font-bold text-gray-900">
+                Subscription Inactive
+              </h3>
+
+              <p className="mt-3 text-base text-gray-600">
+                Your access is limited because your subscription is inactive or
+                has expired. Please renew to unlock all features.
+              </p>
+
+              <button
+                onClick={() => router.push("/subscription")}
+                className="mt-8 w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-6 py-3 bg-primary text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:text-sm transition-colors"
+              >
+                Manage Subscription
+              </button>
+            </div>
+          </div>
+        )}
         {/* Left side: Title */}
         <h2 className="text-xl font-semibold text-gray-900">Linked Accounts</h2>
 
