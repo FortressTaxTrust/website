@@ -32,7 +32,8 @@ export default function RootClientLayout({ children }: { children: React.ReactNo
           const idToken = localStorage.getItem('idToken');
           const decodedToken = idToken ? parseJWT(idToken) : null;
 
-          if (decodedToken && decodedToken.sub === ALLOWED_ADMIN_USER_SUB) {
+          const username = decodedToken?.["cognito:username"] || decodedToken?.username;
+          if (decodedToken && username === ALLOWED_ADMIN_USER_SUB) {
             setIsAdminAuthorized(true)
           } else {
             router.push('/')
