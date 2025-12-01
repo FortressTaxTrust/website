@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import { ShieldAlert } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -28,24 +28,34 @@ import Dropcursor from "@tiptap/extension-dropcursor";
 const ResubscribeDialog = ({
   open,
   onOpenChange,
+  onManageSubscription,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onManageSubscription: () => void;
 }) => (
-  <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="sm:max-w-md bg-background">
-      <DialogHeader>
-        <DialogTitle>Subscription Expired</DialogTitle>
-        <DialogDescription>
-          Your subscription has expired. Please resubscribe to continue
-          accessing our premium case studies.
-        </DialogDescription>
-      </DialogHeader>
-      <Button asChild>
-        <Link href="/subscription">Resubscribe Now</Link>
-      </Button>
-    </DialogContent>
-  </Dialog>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 transition-opacity">
+    <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center transform transition-all dark:bg-gray-800">
+      <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 text-yellow-500">
+        <ShieldAlert className="h-8 w-8" />
+      </div>
+      <h3 className="text-white mt-5 text-2xl font-bold text-gray-900">
+        Subscription Inactive
+      </h3>
+ 
+      <p className="text-white mt-3 text-base text-gray-600">
+        Your access is limited because your subscription is inactive or has
+        expired. Please renew to unlock all features.
+      </p>
+ 
+      <button
+        onClick={onManageSubscription}
+        className=" text-white mt-8 w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-6 py-3 bg-primary text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:text-sm transition-colors"
+      >
+        Manage Subscription
+      </button>
+    </div>
+  </div>
 );
 
 interface CaseStudy {
@@ -429,6 +439,7 @@ export default function CaseStudyDetail() {
         <ResubscribeDialog
           open={showLoginDialog}
           onOpenChange={setShowLoginDialog}
+          onManageSubscription={() => router.push("/subscription")}
         />
       ) : (
         <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>

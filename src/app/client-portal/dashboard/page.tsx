@@ -230,29 +230,28 @@ export default function ClientPortalDashboard() {
       {/* Search & Header */}
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-center gap-3">
         {showSubscriptionDialog && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 transition-opacity">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center transform transition-all">
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 text-yellow-500">
-                <ShieldAlert className="h-8 w-8" />
-              </div>
-
-              <h3 className="mt-5 text-2xl font-bold text-gray-900">
-                Subscription Inactive
-              </h3>
-
-              <p className="mt-3 text-base text-gray-600">
-                Your access is limited because your subscription is inactive or
-                has expired. Please renew to unlock all features.
-              </p>
-
-              <button
-                onClick={() => router.push("/subscription")}
-                className="mt-8 w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-6 py-3 bg-primary text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:text-sm transition-colors"
-              >
-                Manage Subscription
-              </button>
-            </div>
-          </div>
+   <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 transition-opacity">
+       <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center transform transition-all dark:bg-gray-800">
+         <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 text-yellow-500">
+           <ShieldAlert className="h-8 w-8" />
+         </div>
+         <h3 className="text-white mt-5 text-2xl font-bold text-gray-900">
+           Subscription Inactive
+         </h3>
+    
+         <p className="text-white mt-3 text-base text-gray-600">
+           Your access is limited because your subscription is inactive or has
+           expired. Please renew to unlock all features.
+         </p>
+    
+         <button
+           onClick={()=> router.push("/subscription")}
+           className=" text-white mt-8 w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-6 py-3 bg-primary text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:text-sm transition-colors"
+         >
+           Manage Subscription
+         </button>
+       </div>
+     </div>
         )}
         {/* Left side: Title */}
         <h2 className="text-xl font-semibold text-gray-900">Linked Accounts</h2>
