@@ -7,7 +7,7 @@ import Footer from '@/components/Footer'
 import { Providers } from './providers'
 import { parseJWT } from '@/utils/parseTokenId'
 
-const ALLOWED_ADMIN_USER_SUB = process.env.ADMIN_COGNITO_ID;
+const ALLOWED_ADMIN_USER_SUB = process.env.NEXT_PUBLIC_ADMIN_COGNITO_ID;
 
 export default function RootClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -32,7 +32,10 @@ export default function RootClientLayout({ children }: { children: React.ReactNo
           const idToken = localStorage.getItem('idToken');
           const decodedToken = idToken ? parseJWT(idToken) : null;
 
-          const username = decodedToken?.["cognito:username"] || decodedToken?.username;
+          console.log("Decoded" , decodedToken)
+          const username = decodedToken?.["cognito:username"] || decodedToken?.sub;
+          console.log("username" ,username)
+          console.log("ADMIN_COGNITO_ID" , ALLOWED_ADMIN_USER_SUB)
           if (decodedToken && username === ALLOWED_ADMIN_USER_SUB) {
             setIsAdminAuthorized(true)
           } else {
@@ -55,7 +58,7 @@ export default function RootClientLayout({ children }: { children: React.ReactNo
 
   // If it's an admin path and still loading, show a loading message
   if (pathname.startsWith('/admin') && isLoading) {
-    return <Providers><div className="flex justify-center items-center min-h-screen text-lg">Loading admin dashboard...</div></Providers>
+    return <Providers><div className="flex justify-center items-center min-h-screen text-lg">Loading</div></Providers>
   }
 
   // If it's an admin path and not authorized, the redirect would have already happened.
