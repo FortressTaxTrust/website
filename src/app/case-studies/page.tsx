@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 
 interface CaseStudy {
@@ -88,8 +89,11 @@ export default function CaseStudies() {
       {/* Case Studies Grid */}
       <div className="container mx-auto px-4 md:px-8 py-12 md:py-16">
         {error && (
-          <div className="mb-8 text-center text-red-500 bg-red-100 border border-red-400 p-4 rounded-lg">
-            {error}
+          <div className="mb-8 flex justify-end"> {/* Changed from justify-center to justify-end */}
+            <div className="flex items-center gap-3 max-w-md bg-red-100 border border-red-400 text-red-800 px-4 py-3 rounded-lg shadow mr-4"> {/* Added mr-4 for some spacing from the right edge */}
+              <AlertTriangle className="h-5 w-5" />
+              <span className="font-medium">{error}</span>
+            </div>
           </div>
         )}
         {loading ? (
