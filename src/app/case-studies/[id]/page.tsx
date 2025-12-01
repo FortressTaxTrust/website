@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useParams, useRouter } from "next/navigation";
 import NextImage from "next/image";
 import { useEditor, EditorContent } from "@tiptap/react";
@@ -24,16 +25,25 @@ import Image from "@tiptap/extension-image";
 import CodeBlock from "@tiptap/extension-code-block";
 import Dropcursor from "@tiptap/extension-dropcursor";
 
-const ResubscribeDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) => (
+const ResubscribeDialog = ({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className="sm:max-w-md bg-background">
       <DialogHeader>
         <DialogTitle>Subscription Expired</DialogTitle>
         <DialogDescription>
-          Your subscription has expired. Please resubscribe to continue accessing our premium case studies.
+          Your subscription has expired. Please resubscribe to continue
+          accessing our premium case studies.
         </DialogDescription>
       </DialogHeader>
-      <Button asChild><Link href="/subscription">Resubscribe Now</Link></Button>
+      <Button asChild>
+        <Link href="/subscription">Resubscribe Now</Link>
+      </Button>
     </DialogContent>
   </Dialog>
 );
@@ -58,10 +68,14 @@ export default function CaseStudyDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  type AuthStatus = 'loading' | 'loggedOut' | 'loggedInActive' | 'loggedInExpired';
-  const [authStatus, setAuthStatus] = useState<AuthStatus>('loading');
+  type AuthStatus =
+    | "loading"
+    | "loggedOut"
+    | "loggedInActive"
+    | "loggedInExpired";
+  const [authStatus, setAuthStatus] = useState<AuthStatus>("loading");
   const [showLoginDialog, setShowLoginDialog] = useState(false);
-  
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -77,7 +91,7 @@ export default function CaseStudyDetail() {
   });
 
   useEffect(() => {
-    setAuthStatus('loading');
+    setAuthStatus("loading");
 
     if (id) {
       const fetchStudy = async () => {
@@ -98,16 +112,22 @@ export default function CaseStudyDetail() {
             const headers: HeadersInit = {
               Authorization: `Bearer ${token}`,
             };
-            const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, { headers });
+            const userRes = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/api/profile`,
+              { headers }
+            );
 
             if (!userRes.ok) {
-              setAuthStatus('loggedOut');
+              setAuthStatus("loggedOut");
               return;
             }
             const userData = await userRes.json();
             const subscriptionEndDate = userData.user_data?.end_date;
             const subscriptionStatus = userData.user_data?.subscription_status;
-            const isSubscriptionActive = subscriptionStatus === 'active' && subscriptionEndDate && new Date(subscriptionEndDate) > new Date();
+            const isSubscriptionActive =
+              subscriptionStatus === "active" &&
+              subscriptionEndDate &&
+              new Date(subscriptionEndDate) > new Date();
 
             if (isSubscriptionActive) {
               const protectedRes = await fetch(
@@ -118,16 +138,16 @@ export default function CaseStudyDetail() {
                 const protectedData = await protectedRes.json();
                 setStudy(protectedData.caseStudy);
                 editor?.commands.setContent(protectedData.caseStudy.metadata);
-                setAuthStatus('loggedInActive');
+                setAuthStatus("loggedInActive");
               } else {
                 setError("Could not load premium content.");
-                setAuthStatus('loggedOut'); 
+                setAuthStatus("loggedOut");
               }
             } else {
-              setAuthStatus('loggedInExpired');
+              setAuthStatus("loggedInExpired");
             }
           } else {
-            setAuthStatus('loggedOut');
+            setAuthStatus("loggedOut");
           }
         } catch (err: any) {
           setError(err.message);
@@ -140,88 +160,37 @@ export default function CaseStudyDetail() {
   }, [id, editor]);
 
   useEffect(() => {
-    if (authStatus === 'loggedInExpired') {
+    if (authStatus === "loggedInExpired") {
       setShowLoginDialog(true);
     }
   }, [authStatus]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="border-b">
-          <div className="container mx-auto px-4 md:px-8 py-6">
-            {/* Skeleton for "Back to Case Studies" link */}
-            <div className="h-5 w-48 bg-muted rounded animate-pulse"></div>
+      <article className="container mx-auto px-4 md:px-8 py-12">
+        <div className="max-w-3xl mx-auto">
+          <div
+            key={1}
+            className="animate-pulse flex flex-col items-start p-4 bg-white rounded-lg shadow hover:shadow-md cursor-pointer"
+          >
+            <div className="h-2 w-1/4 bg-gray-200 rounded mb-1"></div>
+            <div className="h-20 w-10/12 bg-gray-200 rounded mb-2"></div>
+            <div className="w-100 h-100 bg-grey-200 rounded flex items-center justify-center mb-3">
+              <img
+                src={"/images/placeholder.svg"}
+                alt={`dummay-image`}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+            <div className="h-10 w-3/4 bg-gray-200 rounded mb-2"></div>
+            <div className="h-3 w-full bg-gray-200 rounded"></div>
+            <div className="h-3 w-full bg-gray-200 rounded mb-2"></div>
+            <div className="h-2 w-1/4 bg-gray-200 rounded"></div>
           </div>
         </div>
-        <article className="container mx-auto px-4 md:px-8 py-12">
-          <div className="max-w-3xl mx-auto animate-pulse">
-            {/* Skeleton for Article Header */}
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-6 w-24 bg-muted rounded"></div>
-              <div className="h-2 w-2 bg-muted rounded-full"></div>
-              <div className="h-5 w-20 bg-muted rounded"></div>
-              <div className="h-2 w-2 bg-muted rounded-full"></div>
-              <div className="h-5 w-36 bg-muted rounded"></div>
-            </div>
-
-            {/* Skeleton for Title Block */}
-            <div className="space-y-3 mb-8">
-              <div className="h-10 bg-muted rounded w-4/5"></div>
-              <div className="h-10 bg-muted rounded w-5/6"></div>
-            </div>
-
-            {/* Featured Image Skeleton */}
-            <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-muted mb-12"></div>
-
-            {/* Skeleton for Summary Section */}
-            <div className="prose prose-lg max-w-none mb-8">
-              {/* Skeleton for Summary h2 */}
-              <div className="h-10 bg-muted rounded w-1/3 mb-4"></div>
-              {/* Skeleton for Summary p */}
-              <div className="space-y-2">
-                <div className="h-4 bg-muted rounded w-full"></div>
-                <div className="h-4 bg-muted rounded w-full"></div>
-                <div className="h-4 bg-muted rounded w-5/6"></div>
-              </div>
-            </div>
-
-            {/* Skeleton for Rich Content Body */}
-            <div className="space-y-12">
-              {/* Block 1 */}
-              <div>
-                <div className="h-7 bg-muted rounded w-1/3 mb-4"></div>
-                <div className="space-y-3">
-                  <div className="h-4 bg-muted rounded w-full"></div>
-                  <div className="h-4 bg-muted rounded w-full"></div>
-                  <div className="h-4 bg-muted rounded w-5/6"></div>
-                </div>
-              </div>
-
-              {/* Block 2 */}
-              <div>
-                <div className="h-7 bg-muted rounded w-1/2 mb-4"></div>
-                <div className="space-y-3">
-                  <div className="h-4 bg-muted rounded w-full"></div>
-                  <div className="h-4 bg-muted rounded w-11/12"></div>
-                </div>
-              </div>
-
-              {/* Block 3 */}
-              <div>
-                <div className="h-7 bg-muted rounded w-1/3 mb-4"></div>
-                <div className="space-y-3">
-                  <div className="h-4 bg-muted rounded w-10/12"></div>
-                  <div className="h-4 bg-muted rounded w-8/12"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-      </div>
+      </article>
     );
   }
-
 
   if (error || !study) {
     return (
@@ -296,7 +265,11 @@ export default function CaseStudyDetail() {
           {/* Featured Image */}
           <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-muted mb-12">
             <NextImage
-              src={study.content?.cover_image ? study.content?.cover_image :  "/images/placeholder.svg"}
+              src={
+                study.content?.cover_image
+                  ? study.content?.cover_image
+                  : "/images/placeholder.svg"
+              }
               alt={study.title}
               fill
               className="object-cover"
@@ -315,12 +288,12 @@ export default function CaseStudyDetail() {
               className="text-muted-foreground leading-relaxed mb-8"
               style={{ color: "#535353" }}
             >
-              {study?.content?.description || "No Case Study Description"} 
+              {study?.content?.description || "No Case Study Description"}
             </p>
           </div>
 
           {/* Paywall */}
-          {authStatus !== 'loggedInActive' ? (
+          {authStatus !== "loggedInActive" ? (
             <div className="relative">
               {/* Gradient Fade */}
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background pointer-events-none h-48 -top-24"></div>
@@ -410,7 +383,10 @@ export default function CaseStudyDetail() {
                   </div>
                   <Button
                     onClick={() => {
-                      sessionStorage.setItem("redirect_after_login", window.location.pathname);
+                      sessionStorage.setItem(
+                        "redirect_after_login",
+                        window.location.pathname
+                      );
                       router.push("/client-portal/signup");
                     }}
                     size="lg"
@@ -423,7 +399,10 @@ export default function CaseStudyDetail() {
                     <button
                       className="text-primary hover:underline"
                       onClick={() => {
-                        sessionStorage.setItem("redirect_after_login", window.location.pathname);
+                        sessionStorage.setItem(
+                          "redirect_after_login",
+                          window.location.pathname
+                        );
                         router.push("/client-portal");
                       }}
                     >
@@ -446,31 +425,55 @@ export default function CaseStudyDetail() {
           )}
         </div>
       </article>
-      {authStatus === 'loggedInExpired' ? (
-        <ResubscribeDialog open={showLoginDialog} onOpenChange={setShowLoginDialog} />
+      {authStatus === "loggedInExpired" ? (
+        <ResubscribeDialog
+          open={showLoginDialog}
+          onOpenChange={setShowLoginDialog}
+        />
       ) : (
         <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Subscribe to Access Premium Content</DialogTitle>
               <DialogDescription>
-                log in to access all case studies and premium
-                content.
+                log in to access all case studies and premium content.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">Email</label>
-                <input id="email" type="email" placeholder="you@example.com" className="w-full px-3 py-2 border border-input rounded-md bg-background" />
+                <label htmlFor="email" className="text-sm font-medium">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background"
+                />
               </div>
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">Password</label>
-                <input id="password" type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-input rounded-md bg-background" />
-                <Button className="w-full" onClick={() => {
-                  sessionStorage.setItem("redirect_after_login", window.location.pathname);
-                  router.push('/client-portal');
-                  setShowLoginDialog(false); 
-                }}>Login</Button>
+                <label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background"
+                />
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    sessionStorage.setItem(
+                      "redirect_after_login",
+                      window.location.pathname
+                    );
+                    router.push("/client-portal");
+                    setShowLoginDialog(false);
+                  }}
+                >
+                  Login
+                </Button>
               </div>
             </div>
           </DialogContent>

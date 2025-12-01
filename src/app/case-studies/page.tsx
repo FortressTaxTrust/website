@@ -55,11 +55,12 @@ export default function CaseStudies() {
         setCaseStudies(data.caseStudies || []);
         const totalCount = data.total || data.caseStudies?.length || 0;
         setTotalPages(Math.ceil(totalCount / limit) || 1);
-      } catch (err: any) {
-        setError(err.message || 'Something went wrong');
-      } finally {
         setLoading(false);
-      }
+
+      } catch (err: any) {
+        setError('Something went wrong');
+        // setLoading(false);
+      } 
     };
 
     fetchCaseStudies();
@@ -86,27 +87,32 @@ export default function CaseStudies() {
 
       {/* Case Studies Grid */}
       <div className="container mx-auto px-4 md:px-8 py-12 md:py-16">
+        {error && (
+          <div className="mb-8 text-center text-red-500 bg-red-100 border border-red-400 p-4 rounded-lg">
+            {error}
+          </div>
+        )}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {Array.from({ length: limit }).map((_, index) => (
-              <div key={index} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
-                   <div className="p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Skeleton className="h-2 w-2 rounded-full animate-pulse" />
-                  </div>
-                  <Skeleton className="h-6 w-3/4 mb-3 animate-pulse" />
-                  <div className="space-y-2 mb-4">
-                    <Skeleton className="h-4 animate-pulse" />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Skeleton className="h-4 w-20 animate-pulse" />
-                  </div>
+          {Array.from({ length: 6 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="animate-pulse flex flex-col items-start p-4 bg-white rounded-lg shadow hover:shadow-md cursor-pointer"
+              >
+                <div className="w-100 h-100 bg-yellow-300 rounded flex items-center justify-center mb-3">
+                  <img 
+                    src={ "/images/placeholder.svg"}
+                    alt={`${idx}-image`}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
                 </div>
+                <div className="h-10 w-3/4 bg-gray-300 rounded mb-2"></div>
+                <div className="h-3 w-full bg-gray-300 rounded"></div>
+                <div className="h-3 w-full bg-gray-300 rounded mb-2" ></div>
+                <div className="h-2 w-1/4 bg-gray-300 rounded"></div>
               </div>
             ))}
           </div>
-        ) : error ? (
-          <div className="text-center text-red-500">{error}</div>
         ) : caseStudies.length === 0 ? (
           <div className="text-center text-muted-foreground">No case studies found.</div>
         ) : (
