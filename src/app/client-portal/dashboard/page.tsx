@@ -126,10 +126,10 @@ export default function ClientPortalDashboard() {
         const hasExpired = endDate ? endDate.getTime() < new Date().getTime() : false;
 
         // Show dialog if the API call fails, subscription is not active, or it has expired.
-        if (!res.ok || !isSubscribed || hasExpired) {
-          setShowSubscriptionDialog(true);
-          return; // Stop further execution if not subscribed
-        }
+        // if (!res.ok || !isSubscribed || hasExpired) {
+          // setShowSubscriptionDialog(true);
+          // return; // Stop further execution if not subscribed
+        // }
       } catch (error) {
         console.error("Failed to check subscription status:", error);
         // Decide if you want to block the user or not on API failure.
@@ -229,7 +229,7 @@ export default function ClientPortalDashboard() {
 
       {/* Search & Header */}
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-        {showSubscriptionDialog && (
+        {/* {showSubscriptionDialog && (
    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 transition-opacity">
        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center transform transition-all dark:bg-gray-800">
          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 text-yellow-500">
@@ -252,7 +252,7 @@ export default function ClientPortalDashboard() {
          </button>
        </div>
      </div>
-        )}
+        )} */}
         {/* Left side: Title */}
         <h2 className="text-xl font-semibold text-gray-900">Linked Accounts</h2>
 

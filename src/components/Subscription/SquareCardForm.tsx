@@ -46,8 +46,8 @@ const SquareCardForm: React.FC<Props> = ({
   const [cardReady, setCardReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const appId = process.env.NEXT_PUBLIC_SQUARE_APP_ID! || "sandbox-sq0idb-aDqfJYN8w4TBmSx507Y5ng";
-  const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID! || "LJT99M9JCVW26";
+  const appId = process.env.NEXT_PUBLIC_SQUARE_APP_ID;
+  const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID;
   // Using a ref for the card element to avoid re-renders
   const cardRef = useRef<any>(null);
 
