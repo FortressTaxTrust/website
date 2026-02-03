@@ -122,23 +122,22 @@ export default function CaseStudyDetail() {
             const headers: HeadersInit = {
               Authorization: `Bearer ${token}`,
             };
-            const userRes = await fetch(
+            const res = await fetch(
               `${process.env.NEXT_PUBLIC_API_URL}/api/profile`,
               { headers }
             );
 
-            if (!userRes.ok) {
+          const userData = await res.json();
+            if (!userData?.user_data || !userData?.user_data) {
               setAuthStatus("loggedOut");
               return;
             }
-            const userData = await userRes.json();
             const subscriptionEndDate = userData.user_data?.end_date;
             const subscriptionStatus = userData.user_data?.subscription_status;
             const isSubscriptionActive =
-              subscriptionStatus === "active" &&
-              subscriptionEndDate &&
-              new Date(subscriptionEndDate) > new Date();
+              subscriptionStatus === "created" && subscriptionEndDate && new Date(subscriptionEndDate) > new Date();
 
+              console.log("isSubscriptionActive", isSubscriptionActive)
             if (isSubscriptionActive) {
               const protectedRes = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/casestudies/${id}/private`,
