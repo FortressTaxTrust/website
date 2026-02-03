@@ -273,24 +273,56 @@ const uploadAndAnalyze = async () => {
     setPickerTargetIndex(null);
   };
 
-  const handleConfirmUpload = () => {
-    if (!account || !files.length) return;
+const handleConfirmUpload = async () => {
+  if (!account || !files.length) return setError("Please select account and files");
+
+  try {
+    // Build payload
     const payload = files.map((f, i) => ({
       filename: f.name,
       fileType: f.type,
-      selectedFolderPath: folderPathByIndex[i] || null,
-      documentType: docTypeByIndex[i] || null,
-      analysis: analysisByIndex[i] || null,
+      selectedFolderPath: folderPathByIndex?.[i] ?? null,
+      documentType: docTypeByIndex?.[i] ?? null,
+      analysis: analysisByIndex?.[i] ?? null,
     }));
-    onUpload(files, account, payload);
-    setFiles([]);
-    setSelectedRows({});
-    setAccount("");
-    setContext("");
-    setDocTypeByIndex({});
-    setFolderPathByIndex({});
-    setAnalysisByIndex({});
-  };
+
+    const formData = new FormData();
+    files.forEach((file) => formData.append("files", file));
+    formData.append("accountId", account);
+    formData.append("payload", JSON.stringify(payload));
+
+    if (!token) return setError("Missing auth token");
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/zoho/document/upload`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    const data = await res.json();
+    if (!data.status || data.status !== "success") {
+      console.log("Upload error:", data);
+      setError(data.message || "Failed to upload and analyse files");
+    } else {
+      console.log("Analysis & upload result:", data);
+      setSuccessMessage("Files uploaded successfully!");
+      //  Your files will be available within 24hrs");
+      // Reset states
+      setFiles([]);
+      setSelectedRows({});
+      setAccount("");
+      setContext("");
+      setDocTypeByIndex({});
+      setFolderPathByIndex({});
+      setAnalysisByIndex({});
+    }
+  } catch (err) {
+    console.error("Upload failed:", err);
+    setError("Something went wrong while uploading files");
+  }
+};
 
   
   const getFileIcon = (file: File) => {

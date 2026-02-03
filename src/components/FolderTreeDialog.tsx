@@ -15,9 +15,16 @@ import {
   IconButton,
   Skeleton,
   Typography,
-  ListItemButton
+  ListItemButton,
+  Box
 } from "@mui/material";
-import { ExpandLess, ExpandMore, CreateNewFolder } from "@mui/icons-material";
+import {
+  ChevronDown,
+  ChevronRight,
+  Folder as FolderIcon,
+  FolderPlus,
+  Loader2,
+} from "lucide-react";
 
 interface Folder {
   id: string;
@@ -53,6 +60,8 @@ export default function FolderTreeDialog({
   const [newFolderName, setNewFolderName] = useState("");
   const [loadingRoot, setLoadingRoot] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
+  const [rootFolderId, setRootFolderId] = useState<string | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -61,6 +70,7 @@ export default function FolderTreeDialog({
       setLoading({});
       setNewFolderParent(null);
       setNewFolderName("");
+      setSelectedFolder(null);
       setErrorMsg("");
 
       if (!accountId) {
@@ -92,6 +102,7 @@ export default function FolderTreeDialog({
 
       const rootId = data.accounts?.[0]?.workdriveFolderId;
       if (!rootId) throw new Error("No root folderId found");
+      setRootFolderId(rootId);
 
       await loadChildren(rootId, null, true);
     } catch (err) {
@@ -152,7 +163,7 @@ export default function FolderTreeDialog({
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("Missing token");
 
-      const res = await fetch(`/api/zoho/create-folder`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/zoho/create-folder`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
@@ -185,143 +196,175 @@ export default function FolderTreeDialog({
     }
   };
 
+  const handleConfirmSelection = () => {
+    if (selectedFolder) {
+      onSelectPath?.({
+        parent_id: selectedFolder.parentId || rootFolderId,
+        folder_id: selectedFolder.id || rootFolderId,
+        name: selectedFolder.name,
+      });
+      onClose();
+    }
+  };
+
   const renderTree = (folder: Folder, level: number = 0) => {
     const isLoading = loading[folder.id];
+    const isExpanded = expanded[folder.id];
     const hasChildren = folder.children && folder.children.length > 0;
     const notLoadedYet = folder.children === undefined;
+    const isSelected = selectedFolder?.id === folder.id;
 
     return (
-      <div key={folder.id} className="w-full text-sm">
-          <ListItem disablePadding>
-            <ListItemButton
-              className={`rounded hover:bg-gray-100 px-2 py-1 flex items-center justify-between`}
-              style={{ marginLeft: `${level * 16}px` }} // dynamic indent
-            >
-            </ListItemButton>
-          <div className="flex items-center gap-1">
-            {folder.hasSubfolders && (
-              <IconButton
-                size="small"
-                onClick={async (e) => {
-                  e.stopPropagation();
-                  if (notLoadedYet) {
-                    await loadChildren(folder.id, folder);
-                  }
+      <Box key={folder.id}>
+        <ListItem disablePadding sx={{ pl: level * 2, my: 0.5 }}>
+          <ListItemButton
+            selected={isSelected}
+            onClick={async () => {
+              setSelectedFolder(folder);
+              if (folder.hasSubfolders) {
+                if (notLoadedYet) {
+                  await loadChildren(folder.id, folder);
+                } else {
                   setExpanded((prev) => ({ ...prev, [folder.id]: !prev[folder.id] }));
-                }}
-              >
-                {expanded[folder.id] ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            )}
+                }
+              }
+            }}
+            sx={{ borderRadius: 1, py: 0.5, display: "flex", alignItems: "center", gap: 1 }}
+          >
+            <IconButton
+              size="small"
+              sx={{ visibility: folder.hasSubfolders ? "visible" : "hidden" }}
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : isExpanded ? (
+                <ChevronDown size={16} />
+              ) : (
+                <ChevronRight size={16} />
+              )}
+            </IconButton>
 
-            <span
-              className="cursor-pointer"
-              onClick={() => {
-                onSelectPath?.({
-                  parent_id: folder.parentId || null,
-                  folder_id: folder.id,
-                  name: folder.name,
-                });
-                onClose();
+            <FolderIcon size={18} className="text-yellow-500 flex-shrink-0" />
+
+            <ListItemText
+              primary={folder.name}
+              primaryTypographyProps={{
+                variant: "body2",
+                sx: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+              }}
+            />
+
+            <IconButton
+              size="small"
+              title="Create subfolder"
+              onClick={async (e) => {
+                e.stopPropagation();
+                setNewFolderParent(newFolderParent === folder.id ? null : folder.id);
+                setNewFolderName("");
+                if (notLoadedYet) await loadChildren(folder.id, folder);
+                if (!isExpanded) setExpanded((prev) => ({ ...prev, [folder.id]: true }));
               }}
             >
-              {folder.name}
-            </span>
-          </div>
-
-          {/* <IconButton
-            size="small"
-            onClick={(e) => {
-              e.stopPropagation();
-              setNewFolderParent(newFolderParent === folder.id ? null : folder.id);
-            }}
-          >
-            <CreateNewFolder className="text-gray-500" />
-          </IconButton> */}
+              <FolderPlus size={16} className="text-gray-500 hover:text-primary" />
+            </IconButton>
+          </ListItemButton>
         </ListItem>
 
         {newFolderParent === folder.id && (
-          <div className={`ml-${(level + 1) * 4} flex gap-2 items-center my-1 flex-wrap`}>
+          <Box sx={{ pl: (level + 2) * 2, my: 1 }} className="flex gap-2 items-center">
             <TextField
+              autoFocus
               size="small"
-              placeholder={
-                suggestForFilename
-                  ? `Suggested: ${suggestForFilename.split(".")[0]}`
-                  : "New folder name"
-              }
+              placeholder="New folder name"
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
-              className="bg-gray-50 rounded text-sm flex-1 min-w-[150px]"
+              onKeyDown={(e) => e.key === "Enter" && handleCreateFolder(folder.id)}
+              sx={{ flexGrow: 1, "& .MuiInputBase-root": { fontSize: "0.875rem" } }}
             />
-
-            <button
-            onClick={() => handleCreateFolder(folder.id)}
-            className="py-2 px-4 text-sm font-inter font-medium text-[#FFFFFF] rounded-md bg-[#5A6863] hover:bg-[#535353] transition-colors disabled:opacity-50"
-          >
-            Create
-          </button>
-          </div>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => handleCreateFolder(folder.id)}
+              disabled={!newFolderName.trim()}
+              sx={{ backgroundColor: "#5A6863", "&:hover": { backgroundColor: "#535353" } }}
+            >
+              Create
+            </Button>
+          </Box>
         )}
 
-        <Collapse in={expanded[folder.id]} timeout="auto" unmountOnExit>
-          <List disablePadding className={`ml-${(level + 1) * 4}`}>
-            {isLoading || notLoadedYet ? (
-              <>
-                {[...Array(3)].map((_, idx) => (
-                  <Skeleton
-                    key={idx}
-                    variant="rectangular"
-                    width="90%"
-                    height={24}
-                    className="my-1 rounded"
-                  />
-                ))}
-              </>
+        <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+          <List disablePadding>
+            {isLoading ? (
+              [...Array(2)].map((_, idx) => (
+                <ListItem key={idx} sx={{ pl: (level + 1) * 2, gap: 2 }}>
+                  <Skeleton variant="circular" width={20} height={20} />
+                  <Skeleton variant="text" width="80%" />
+                </ListItem>
+              ))
             ) : hasChildren ? (
               folder.children!.map((child) => renderTree(child, level + 1))
             ) : (
-              <ListItem>
+              <ListItem sx={{ pl: (level + 1) * 2 }}>
                 <ListItemText
-                  primary="No folders"
-                  className="text-gray-400 italic text-sm"
+                  primary="No subfolders"
+                  primaryTypographyProps={{
+                    variant: "body2",
+                    fontStyle: "italic",
+                    color: "text.secondary",
+                  }}
                 />
               </ListItem>
             )}
           </List>
         </Collapse>
-      </div>
+      </Box>
     );
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle className="text-sm font-medium">Select or Create Folder</DialogTitle>
-      <DialogContent dividers className="max-h-[600px] overflow-y-auto p-2 text-sm">
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Typography variant="h6" component="div">
+          Select Destination
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {selectedFolder ? `Selected: ${selectedFolder.name}` : "Choose a folder"}
+        </Typography>
+      </DialogTitle>
+      <DialogContent dividers sx={{ p: 1, minHeight: "400px", maxHeight: "60vh" }}>
         {errorMsg ? (
           <Typography color="error" className="text-sm text-center py-4">
             {errorMsg}
           </Typography>
         ) : loadingRoot ? (
           <>
-            {[...Array(3)].map((_, idx) => (
-              <Skeleton
-                key={idx}
-                variant="rectangular"
-                width="100%"
-                height={28}
-                className="my-1 rounded"
-              />
+            {[...Array(5)].map((_, idx) => (
+              <ListItem key={idx} sx={{ gap: 2 }}>
+                <Skeleton variant="circular" width={20} height={20} />
+                <Skeleton variant="text" width="80%" />
+              </ListItem>
             ))}
           </>
         ) : folders.length === 0 ? (
-          <p className="text-gray-500 text-sm">No folders found.</p>
+          <Typography sx={{ p: 2, textAlign: "center", color: "text.secondary" }}>
+            No folders found.
+          </Typography>
         ) : (
           <List>{folders.map((f) => renderTree(f))}</List>
         )}
       </DialogContent>
-      <DialogActions className="flex flex-wrap gap-2">
-        <Button onClick={onClose} variant="outlined" color="secondary" size="small">
+      <DialogActions sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
+        <Button onClick={onClose} color="inherit">
           Cancel
+        </Button>
+        <Button
+          onClick={handleConfirmSelection}
+          variant="contained"
+          disabled={!selectedFolder}
+          sx={{ backgroundColor: "#5A6863", "&:hover": { backgroundColor: "#535353" } }}
+        >
+          Select Folder
         </Button>
       </DialogActions>
     </Dialog>
