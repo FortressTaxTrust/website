@@ -50,7 +50,7 @@ export default function SubscriptionPage() {
   const [loading, setLoading] = useState(true);
   const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'savingCard' | 'creatingSubscription'>('idle');
   const [error, setError] = useState<string | null>(null);
-  const [redirectPath, setRedirectPath] = useState<string>("/client-portal/dashboard");
+  const [redirectPath, setRedirectPath] = useState<string>("/case-studies");
 
   useEffect(() => {
     const initialize = async () => {
@@ -158,7 +158,7 @@ export default function SubscriptionPage() {
         throw new Error("Failed to create the subscription.");
       }
 
-      router.push(`/subscription/success?redirect=${encodeURIComponent(redirectPath)}`);
+      router.push(`${redirectPath}`);
 
     } catch (err: any) {
       setError(err.message);
