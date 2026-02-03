@@ -33,33 +33,54 @@ const ResubscribeDialog = ({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onManageSubscription: () => void;
-}) => (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/75 transition-opacity">
-  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center transform transition-all">
-    <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 text-yellow-500">
-      <ShieldAlert className="h-8 w-8" />
+}) => {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 max-w-sm w-full text-center relative">
+        {/* Close Button */}
+        <button
+          onClick={() => onOpenChange(false)}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          ✕
+        </button>
+
+        {/* Icon */}
+        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 text-yellow-500">
+          <ShieldAlert className="h-8 w-8" />
+        </div>
+
+        {/* Title */}
+        <h3 className="mt-4 text-xl font-bold text-gray-900 dark:text-white">
+          Subscription Inactive
+        </h3>
+
+        {/* Message */}
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+          Your subscription is inactive. Renew to unlock all premium features.
+        </p>
+
+        {/* Buttons */}
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <button
+            onClick={onManageSubscription}
+            className="flex-1 rounded-xl px-5 py-2 bg-primary text-white font-medium hover:bg-primary-dark transition-colors shadow-md"
+          >
+            Manage Subscription
+          </button>
+          <button
+            onClick={() => onOpenChange(false)}
+            className="flex-1 rounded-xl px-5 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-sm"
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
     </div>
-
-    <h3 className="mt-5 text-2xl font-bold text-gray-900 dark:text-white">
-      Subscription Inactive
-    </h3>
-
-    <p className="mt-3 text-base text-gray-600 dark:text-gray-300">
-      Your access is limited because your subscription is inactive or has
-      expired. Please renew to unlock all features.
-    </p>
-
-    <button
-      onClick={onManageSubscription}
-      className="mt-8 w-full inline-flex justify-center rounded-lg shadow-sm px-6 py-3 bg-primary text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:text-sm transition-colors"
-    >
-      Manage Subscription
-    </button>
-  </div>
-</div>
-
-);
-
+  );
+};
 interface CaseStudy {
   id: string;
   title: string;
