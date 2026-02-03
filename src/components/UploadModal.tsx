@@ -102,10 +102,10 @@ export default function UploadModal({
   >({});
 
   // Folder Picker
-  // const [pickerOpen, setPickerOpen] = useState(false);
-  // const [pickerTargetIndex, setPickerTargetIndex] = useState<number | null>(
-  //   null
-  // );
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerTargetIndex, setPickerTargetIndex] = useState<number | null>(
+    null
+  );
 
   const token =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
@@ -147,59 +147,59 @@ export default function UploadModal({
     });
   };
 
-  // const runAnalysisUnassigned = async () => {
-  //   const toAnalyze = files
-  //     .map((f, i) => ({ file: f, index: i }))
-  //     .filter(({ index }) => !folderPathByIndex[index]);
-  //   if (!toAnalyze.length) return;
+  const runAnalysisUnassigned = async () => {
+    const toAnalyze = files
+      .map((f, i) => ({ file: f, index: i }))
+      .filter(({ index }) => !folderPathByIndex[index]);
+    if (!toAnalyze.length) return;
 
-  //   setAnalyzing(true);
-  //   try {
-  //     const res = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/ai/analyze-files/and/create-folders`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body: JSON.stringify({
-  //           files: toAnalyze.map(({ file }) => ({
-  //             filename: file.name,
-  //             fileType: file.type,
-  //           })),
-  //           userContext: context || null,
-  //         }),
-  //       }
-  //     );
-  //     if (!res.ok) setError("Failed to Analyze or Login again!");
-  //     const data = await res.json();
-  //     const byName: Record<string, any> = {};
-  //     (data.analyses || []).forEach((a: any) => (byName[a.filename] = a));
+    setAnalyzing(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/ai/analyze-files/and/create-folders`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            files: toAnalyze.map(({ file }) => ({
+              filename: file.name,
+              fileType: file.type,
+            })),
+            userContext: context || null,
+          }),
+        }
+      );
+      if (!res.ok) setError("Failed to Analyze or Login again!");
+      const data = await res.json();
+      const byName: Record<string, any> = {};
+      (data.analyses || []).forEach((a: any) => (byName[a.filename] = a));
 
-  //     const newAnalysis: Record<number, any> = {};
-  //     const newFolderPaths = { ...folderPathByIndex };
+      const newAnalysis: Record<number, any> = {};
+      const newFolderPaths = { ...folderPathByIndex };
 
-  //     toAnalyze.forEach(({ file, index }) => {
-  //       newAnalysis[index] = byName[file?.name];
-  //       if (byName[file?.name]?.analysis?.suggested_path) {
-  //         newFolderPaths[index] = {
-  //           ...newFolderPaths[index],
-  //           name: byName[file?.name]?.analysis.suggested_path,
-  //           folder_id: null,
-  //           parent_id: null,
-  //         };
-  //       }
-  //     });
+      toAnalyze.forEach(({ file, index }) => {
+        newAnalysis[index] = byName[file?.name];
+        if (byName[file?.name]?.analysis?.suggested_path) {
+          newFolderPaths[index] = {
+            ...newFolderPaths[index],
+            name: byName[file?.name]?.analysis.suggested_path,
+            folder_id: null,
+            parent_id: null,
+          };
+        }
+      });
 
-  //     setAnalysisByIndex((prev) => ({ ...prev, ...newAnalysis }));
-  //     setFolderPathByIndex(newFolderPaths);
-  //   } catch (e) {
-  //     console.error(e);
-  //   } finally {
-  //     setAnalyzing(false);
-  //   }
-  // };
+      setAnalysisByIndex((prev) => ({ ...prev, ...newAnalysis }));
+      setFolderPathByIndex(newFolderPaths);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setAnalyzing(false);
+    }
+  };
 
 const uploadAndAnalyze = async () => {
   if (!files?.length && !account) return;
@@ -251,46 +251,46 @@ const uploadAndAnalyze = async () => {
 
 
 
-  // const openPickerFor = (idx: number) => {
-  //   setPickerTargetIndex(idx);
-  //   setPickerOpen(true);
-  // };
+  const openPickerFor = (idx: number) => {
+    setPickerTargetIndex(idx);
+    setPickerOpen(true);
+  };
 
-  // const onPickFolder = (node: FolderNode) => {
-  //   setFolderPathByIndex((prev) => ({
-  //     ...prev,
-  //     [pickerTargetIndex!]: {
-  //       folder_id: node.folder_id,
-  //       parent_id: node.parent_id,
-  //       name: node.name,
-  //     },
-  //   }));
-  //   setAnalysisByIndex((prev) => {
-  //     const copy = { ...prev };
-  //     delete copy[pickerTargetIndex!];
-  //     return copy;
-  //   });
-  //   setPickerTargetIndex(null);
-  // };
+  const onPickFolder = (node: FolderNode) => {
+    setFolderPathByIndex((prev) => ({
+      ...prev,
+      [pickerTargetIndex!]: {
+        folder_id: node.folder_id,
+        parent_id: node.parent_id,
+        name: node.name,
+      },
+    }));
+    setAnalysisByIndex((prev) => {
+      const copy = { ...prev };
+      delete copy[pickerTargetIndex!];
+      return copy;
+    });
+    setPickerTargetIndex(null);
+  };
 
-  // const handleConfirmUpload = () => {
-  //   if (!account || !files.length) return;
-  //   const payload = files.map((f, i) => ({
-  //     filename: f.name,
-  //     fileType: f.type,
-  //     selectedFolderPath: folderPathByIndex[i] || null,
-  //     documentType: docTypeByIndex[i] || null,
-  //     analysis: analysisByIndex[i] || null,
-  //   }));
-  //   onUpload(files, account, payload);
-  //   // setFiles([]);
-  //   // setSelectedRows({});
-  //   // setAccount("");
-  //   // setContext("");
-  //   // setDocTypeByIndex({});
-  //   // setFolderPathByIndex({});
-  //   // setAnalysisByIndex({});
-  // };
+  const handleConfirmUpload = () => {
+    if (!account || !files.length) return;
+    const payload = files.map((f, i) => ({
+      filename: f.name,
+      fileType: f.type,
+      selectedFolderPath: folderPathByIndex[i] || null,
+      documentType: docTypeByIndex[i] || null,
+      analysis: analysisByIndex[i] || null,
+    }));
+    onUpload(files, account, payload);
+    setFiles([]);
+    setSelectedRows({});
+    setAccount("");
+    setContext("");
+    setDocTypeByIndex({});
+    setFolderPathByIndex({});
+    setAnalysisByIndex({});
+  };
 
   
   const getFileIcon = (file: File) => {
@@ -327,7 +327,7 @@ const uploadAndAnalyze = async () => {
         maxWidth="lg"
         fullWidth
         PaperProps={{
-          className: "rounded-lg w-full max-w-6xl",
+          className: "rounded-lg w-full max-w-4xl",
           sx: { display: "flex", flexDirection: "column", maxHeight: "90vh" },
         }}
       >
@@ -394,7 +394,7 @@ const uploadAndAnalyze = async () => {
               </FormControl>
             </Box>
 
-            <Box>
+            {/* <Box>
               <InputLabel className="mb-1 text-gray-600 text-sm">
                 Business Context (optional)
               </InputLabel>
@@ -406,7 +406,7 @@ const uploadAndAnalyze = async () => {
                 fullWidth
                 className="text-gray-800"
               />
-            </Box>
+            </Box> */}
           </Box>
 
           {/* Drag & Drop */}
@@ -449,9 +449,9 @@ const uploadAndAnalyze = async () => {
                         </TableCell>
                         <TableCell>File</TableCell>
                         <TableCell>Type</TableCell>
-                        {/* <TableCell>Folder</TableCell>
+                        <TableCell>Folder</TableCell>
                         <TableCell width={200}>Select Folder</TableCell>
-                        <TableCell width={200}>Analysis</TableCell> */}
+                        <TableCell width={200}>Analysis</TableCell>
                         <TableCell align="right">Remove</TableCell>
                       </TableRow>
                     </TableHead>
@@ -501,7 +501,7 @@ const uploadAndAnalyze = async () => {
                               />
                             </TableCell>
 
-                            {/* <TableCell className="min-w-[180px]">
+                            <TableCell className="min-w-[180px]">
                               {folder?.name ? (
                                 folder.name
                               ) : (
@@ -509,9 +509,9 @@ const uploadAndAnalyze = async () => {
                                   Not selected
                                 </Typography>
                               )}
-                            </TableCell> */}
+                            </TableCell> 
 
-                            {/* <TableCell>
+                             <TableCell>
                               <Stack
                                 direction="row"
                                 spacing={2}
@@ -524,9 +524,9 @@ const uploadAndAnalyze = async () => {
                                   onClick={() => openPickerFor(idx)}
                                 />
                               </Stack>
-                            </TableCell> */}
+                            </TableCell>
 
-                            {/* <TableCell>
+                            <TableCell>
                               {!folder?.folder_id && ai ? (
                                 <div className="p-1 border border-gray-300 bg-gray-50 rounded-sm">
                                   <p className="text-gray-800 text-xs break-words">
@@ -541,7 +541,7 @@ const uploadAndAnalyze = async () => {
                                   N/A
                                 </Typography>
                               )}
-                            </TableCell> */}
+                            </TableCell>
 
                             <TableCell align="right">
                               <IconButton
@@ -573,7 +573,7 @@ const uploadAndAnalyze = async () => {
           </button>
 
           {/* Analyze Unassigned Button */}
-           {!successMessage && (
+           {/* {!successMessage && (
           <button
             onClick={uploadAndAnalyze}
             disabled={
@@ -590,27 +590,27 @@ const uploadAndAnalyze = async () => {
               </>
             )}
           </button>
-           )}
+           )} */}
           {/* Confirm Button */}
-          {/* <button
+          <button
             onClick={handleConfirmUpload}
             disabled={!files.length || !account || !folderPathByIndex}
             className="py-2 px-4 text-sm font-inter font-medium text-[#FFFFFF] rounded-md bg-[#5A6863] hover:bg-[#535353] transition-colors disabled:opacity-50"
           >
             Confirm
-          </button> */}
+          </button>
         </DialogActions>
       </Dialog>
 
       {/* Folder Picker */}
-      {/* {pickerOpen && (
+      {pickerOpen && (
         <FolderTreeDialog
           open={pickerOpen}
           onClose={() => setPickerOpen(false)}
           accountId={account}
           onSelectPath={onPickFolder}
         />
-      )} */}
+      )}
     </>
   );
 }

@@ -74,7 +74,7 @@ export default function ClientPortalDashboard() {
       formData.append("payload", JSON.stringify(payload));
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/documents/upload`,
+        `${process.env.NEXT_PUBLIC_API_URL}/zoho/document/upload`,
         {
           method: "POST",
           headers: {
